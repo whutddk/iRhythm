@@ -28,26 +28,7 @@
  *
 --------------------------------------------- */
 
-/**
- * \defgroup	EMBARC_APP_BAREMETAL_BLINKY	embARC Blinky Example
- * \ingroup	EMBARC_APPS_TOTAL
- * \ingroup	EMBARC_APPS_BAREMETAL
- * \brief	embARC example for toggle leds on board
- *
- * \details
- * ### Extra Required Tools
- *
- * ### Extra Required Peripherals
- *
- * ### Design Concept
- *     This example is designed to test board without any extra peripheral
- *
- * ### Usage Manual
- *     Toggle all leds on board in 1s period
- *
- * ### Extra Comments
- *
- */
+
 
 /**
  * \file
@@ -62,22 +43,47 @@
 /* embARC HAL */
 #include "embARC.h"
 #include "embARC_debug.h"
+#include "include.h"
+#include "inc_task.h"
 
-#define LED_TOGGLE_MASK		BOARD_LED_MASK
-
+static TaskHandle_t MUSIC_task_handle = NULL;
+static TaskHandle_t GUI_task_handle = NULL;
+static TaskHandle_t NET_task_handle = NULL;
 /**
  * \brief	Test hardware board without any peripheral
  */
 int main(void)
 {
-	uint16_t led_toggle_val = LED_TOGGLE_MASK;
+	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
+	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
+	
+	vTaskSuspendAll();
 
-	while (1) {
-		led_write(led_toggle_val, BOARD_LED_MASK);
-		led_toggle_val = ~led_toggle_val;
-		board_delay_ms(500, 1);
+
+// Create Tasks
+	if (xTaskCreate(net_task, "net_task", 128, (void *)NULL, configMAX_PRIORITIES-1, &NET_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create NET_task error\r\n");
+		return -1;
+	}
+	if (xTaskCreate(music_task, "music_task", 128, (void *)NULL, configMAX_PRIORITIES-2, &MUSIC_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create music_task error\r\n");
+		return -1;
+	}
+	if (xTaskCreate(gui_task, "gui_task", 128, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create GUI_task error\r\n");
+		return -1;
 	}
 
+	//other task
+
+
+	//other task end//
+
+	xTaskResumeAll();
+	while(1);
 	return E_SYS;
 }
 
