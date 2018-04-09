@@ -1,54 +1,54 @@
 #include "embARC.h"
 #include "embARC_debug.h"
 #include "stdlib.h"
-#define NUM_BYTE_READ 4096
+
+#include "include.h"
 
 
 FATFS fs_p;
-int32_t error_num = 0;
-FIL fp;
-unsigned char buf_read[NUM_BYTE_READ];
-// FATFS_DISKIO *fs;
+
+
+
+uint8_t *file_buff;
 void music_task()
 {
-	uint32_t num_read;
+	DIR dir;
+	FILINFO fileinfo;
 	EMBARC_PRINTF("MUSIC_TASK START\r\n");
 
-	uint8_t *file_buff;
-	file_buff = malloc(sizeof(uint8_t) * 10*1024*1024);
-	// fs = get_fatfs_diskio(EMSK_SDCARD_0_DRVID);
-	// if (error_num = disk_initialize (	EMSK_SDCARD_0_DRVID	/* Physical drive nmuber (0..) */)  == STA_NOINIT)
-	// {
-	// 	EMBARC_PRINTF("SD_card init fail!\r\n");
-	// }
-	// else
-	// {
-	// 	EMBARC_PRINTF("SD_card init status:%d !\r\n",error_num);
-	// }
+	
+	file_buff = malloc(sizeof(uint8_t) * 10 * 1024 * 1024);
 	error_num = f_mount(&fs_p,"0:/",1);
-
 	if( error_num != FR_OK)
 	{
 		EMBARC_PRINTF("File f_mount failed!\r\nstop!\r\n");
 		while(1);
 	}
-	error_num = f_open(&fp,"0:/mint_summer.mp3",FA_READ);
-	if( error_num != FR_OK)
+
+	//checkout directory
+
+	error_num = f_opendir (&dir, "0:/");
+	if ( error_num != FR_OK )
 	{
-		EMBARC_PRINTF("File open failed!\r\nstop!\r\n");
-		while(1);
+		;
 	}
 
-	EMBARC_PRINTF("Start To Trace!!!\r\n");
-	error_num = f_read(&fp,buf_read,NUM_BYTE_READ,&num_read);
-
-	while( num_read!=0 )
+	do
 	{
-		error_num = f_read(&fp,buf_read,NUM_BYTE_READ,&num_read);
-		
+		error_num = f_readdir (&dir, &fileinfo);
+		if ( dir.sect == 0 ) //end of directory
+		{
+			break;
+		}
+		EMBARC_PRINTF("File name: %s  File size:%d\r\n",fileinfo.fname,fileinfo.fsize);
 	}
-	EMBARC_PRINTF("File Read End\r\n");
-	f_close(&fp);
+	while( 1 );
+	EMBARC_PRINTF("Close Directory\r\n");
+	f_closedir(&dir);
+
+
+	readout_file();
+	
 	while(1);
 }
 

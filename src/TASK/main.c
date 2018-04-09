@@ -52,6 +52,10 @@ static TaskHandle_t NET_task_handle = NULL;
 /**
  * \brief	Test hardware board without any peripheral
  */
+
+
+int32_t error_num = 0;
+
 int main(void)
 {
 	board_init();
