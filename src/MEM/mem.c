@@ -24,6 +24,9 @@ void readout_file()
 		while(1);
 	}
 
+//try to check file size here
+
+//try to check file size here
 	EMBARC_PRINTF("Start To Read!!!\r\n");
 	memset( file_buff, 0, sizeof(uint8_t) * 10 * 1024 * 1024 );
 	num_read = 1;
