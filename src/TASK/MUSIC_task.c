@@ -48,7 +48,7 @@ void music_task()
 
 
 	readout_file();
-	
+	spi_poll();
 	while(1);
 }
 
