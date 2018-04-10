@@ -47,7 +47,7 @@ void music_task()
 	f_closedir(&dir);
 
 
-	readout_file();
+	//readout_file();
 	spi_poll();
 	while(1);
 }

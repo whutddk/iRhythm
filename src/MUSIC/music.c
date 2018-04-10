@@ -15,6 +15,7 @@ void spi_poll()
 
 	spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
 	EMBARC_PRINTF("Start TO Pull\r\n");
+	EMBARC_PRINTF("spi freq:%d\r\n",spi->spi_info.freq);
 	while(1)
 	{
 		spi->spi_write(spi_buff,2);
