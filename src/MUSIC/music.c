@@ -12,7 +12,7 @@ void spi_dma_test()
 
 	DEV_SPI_PTR spi;
 
-	 spi_dma_prepare();
+	spi_dma_prepare();
 
 	spi =  spi_get_dev(DW_SPI_0_ID);
 

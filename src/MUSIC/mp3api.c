@@ -13,7 +13,7 @@ short buf_rec2[2304];
 unsigned char buf_read[NUM_BYTE_READ];
 	
 
-void play_mp3(char* filename)
+void play_mp3()
 {
 
 	uint32_t temp = 0;
@@ -26,26 +26,12 @@ void play_mp3(char* filename)
 	MP3DecInfo *mp3_dec;
 
 	read_ptr = buf_read;
-	FILE* fd;
+	
 
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
 
-	char mp3file[50] = "/fs/";
-	strcat(mp3file,filename);
-	EMBARC_PRINTF("open %s!\r\n",mp3file);
-	fd = fopen(mp3file,"rb");
 
-	if (fd == NULL)
-	{
-		EMBARC_PRINTF(" Failure. %d \r\n", errno);
-		return;
-	}
-	else
-	{
-		EMBARC_PRINTF(" done.\r\n");
-	}
-
-	fread(buf_read,1,NUM_BYTE_READ,fd);
+				fread(buf_read,1,NUM_BYTE_READ,fd);
 	EMBARC_PRINTF("start to trace\r\n");
 	int flag_start = 0;
 
@@ -60,7 +46,7 @@ void play_mp3(char* filename)
 			//uartpc.printf("offset:%d\r\n",offset);
 			if( flag_start == 0 )
 			{
-				fread(buf_read,1,NUM_BYTE_READ,fd);
+							fread(buf_read,1,NUM_BYTE_READ,fd);
 				if ( num_read == 0 )
 				{
 					break;
@@ -97,17 +83,13 @@ void play_mp3(char* filename)
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
 				read_ptr += 2;
 				flag_start = 0;
-				num_read = fread(buf_read,1,NUM_BYTE_READ,fd);
+						num_read = fread(buf_read,1,NUM_BYTE_READ,fd);
 				if ( num_read == 0 )
 				{
 					break;
 				}
 				continue;
 			}
-		// uartpc.printf("GO1\r\n");
-			// led1 = 1;
-
-
 
 			while( isTransferCompleted == false )//|| isFinished == false )
 			{
@@ -159,7 +141,7 @@ void play_mp3(char* filename)
 			{
 				memmove(buf_read,read_ptr,byte_left);
 
-				num_read = fread(buf_read + byte_left,1,NUM_BYTE_READ - byte_left,fd);
+						num_read = fread(buf_read + byte_left,1,NUM_BYTE_READ - byte_left,fd);
 
 				if(num_read == 0) 
 				{
@@ -176,7 +158,6 @@ void play_mp3(char* filename)
 		}
 	}
 	MP3FreeDecoder(mp3_dec);
-	fclose(fd);
 
 	EMBARC_PRINTF("MP3 file:%s decorder is over!\n\r" ,mp3file);
 }

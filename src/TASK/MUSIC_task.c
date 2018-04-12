@@ -47,8 +47,8 @@ void music_task()
 	f_closedir(&dir);
 
 
-	//readout_file();
-	spi_dma_test();
+	readout_file();
+	// spi_dma_test();
 	while(1);
 }
 
