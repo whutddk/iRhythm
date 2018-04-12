@@ -29,7 +29,6 @@ typedef struct spi_xfer SPI_XFER, *SPI_XFER_PTR;
  *
  */
 struct spi_xfer {
-	SPI_XFER *next;
 	/* Set by user */
 	uint8_t *tx_buf;
 	// uint8_t *rx_buf;
@@ -180,7 +179,6 @@ int32_t spiflash_write(const void *data)
 
 	data_xfer.tx_buf = (uint8_t *)(xfer_buf);
 	data_xfer.len = 4608;
-	data_xfer.next = NULL;
 
 	/*ask dma to send here*/
 	if (spi_xfer(&data_xfer) != 0) 
