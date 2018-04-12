@@ -43,7 +43,6 @@ void play_mp3()
 		offset = MP3FindSyncWord(read_ptr, byte_left);
 		if (offset < 0 ) 
 		{
-			//uartpc.printf("offset:%d\r\n",offset);
 			if( flag_start == 0 )
 			{
 							fread(buf_read,1,NUM_BYTE_READ,fd);
