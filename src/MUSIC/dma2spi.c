@@ -80,8 +80,7 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 	dma_callback_t xfer_cb = NULL;
 
 	SPI_XFER *cur_xfer = xfer;
-	uint8_t i = 0;
-	uint8_t j = 0;
+
 	uint32_t txtemp = 0xFFFFFFFF, rxtemp  = 0;
 
 	{
@@ -94,12 +93,12 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 		if (cur_xfer->tx_buf) 
 		{
 			DMA_CTRL_SET_AM(&dma_ctrl_tx, DMA_AM_SRCINC_DSTNOT);
-			dmac_config_desc(&dma_desc_tx[i], (void *)(cur_xfer->tx_buf), (void *)(&spi_reg->DATAREG), cur_xfer->len, &dma_ctrl_tx);
+			dmac_config_desc(&dma_desc_tx[0], (void *)(cur_xfer->tx_buf), (void *)(&spi_reg->DATAREG), cur_xfer->len, &dma_ctrl_tx);
 		} 
 		else 
 		{
 			DMA_CTRL_SET_AM(&dma_ctrl_tx, DMA_AM_SRCNOT_DSTNOT);
-			dmac_config_desc(&dma_desc_tx[i], (void *)(&txtemp), (void *)(&spi_reg->DATAREG), cur_xfer->len, &dma_ctrl_tx);
+			dmac_config_desc(&dma_desc_tx[0], (void *)(&txtemp), (void *)(&spi_reg->DATAREG), cur_xfer->len, &dma_ctrl_tx);
 		}
 		DMA_CTRL_SET_OP(&dma_ctrl_rx, DMA_MANUAL_LINKED_TRANSFER);
 		DMA_CTRL_SET_RT(&dma_ctrl_rx, DMA_MANUAL_REQUEST);
@@ -110,16 +109,13 @@ static int32_t spi_xfer(SPI_XFER *xfer)
  
 
 		DMA_CTRL_SET_AM(&dma_ctrl_rx, DMA_AM_SRCNOT_DSTNOT);
-		dmac_config_desc(&dma_desc_rx[i], (void *)(&spi_reg->DATAREG), (void *)(&rxtemp), cur_xfer->len, &dma_ctrl_rx);
+		dmac_config_desc(&dma_desc_rx[0], (void *)(&spi_reg->DATAREG), (void *)(&rxtemp), cur_xfer->len, &dma_ctrl_rx);
 
-		i ++;
+		
 	}	
-	dmac_desc_add_linked(&dma_desc_tx[i-1], NULL);
-	dmac_desc_add_linked(&dma_desc_rx[i-1], NULL);
-	for (j = i; j > 1; j --) {
-		dmac_desc_add_linked(&dma_desc_tx[j-2], &dma_desc_tx[j-1]);
-		dmac_desc_add_linked(&dma_desc_rx[j-2], &dma_desc_rx[j-1]);
-	}
+	dmac_desc_add_linked(&dma_desc_tx[0], NULL);
+	dmac_desc_add_linked(&dma_desc_rx[0], NULL);
+	
 	/* Init and configure dma channel transfer with transfer descriptor */
 	dmac_config_channel(&dma_chn_tx, &dma_desc_tx[0]);
 	dmac_config_channel(&dma_chn_rx, &dma_desc_rx[0]);
