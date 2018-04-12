@@ -17,8 +17,12 @@ extern void readout_file();
 
 
 /***********define in music.c ************/
-
+extern uint8_t flag_dma_finish;
 extern void spi_dma_test();
+
+/***********define in dma2spi.c*********/
+extern void spi_dma_prepare(void);
+extern int32_t spiflash_write(const void *data);
 
 
 
