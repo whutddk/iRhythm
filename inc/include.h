@@ -18,7 +18,7 @@ extern void readout_file();
 
 /***********define in music.c ************/
 
-extern void spi_poll();
+extern void spi_dma_test();
 
 
 
