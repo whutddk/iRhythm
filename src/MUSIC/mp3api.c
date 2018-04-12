@@ -3,6 +3,8 @@
 
 #include "include.h"
 
+#define NUM_BYTE_READ 4096
+
 
 volatile bool isFinished = true;
 volatile uint8_t flag_sw = 0; 
@@ -20,7 +22,8 @@ void play_mp3()
 
 	int32_t offset;
 	uint8_t *read_ptr;
-	int byte_left = NUM_BYTE_READ;
+						/*这里改文件大小*/
+						int byte_left = NUM_BYTE_READ;
 	uint32_t res_dec;
 	unsigned int num_read;
 	MP3DecInfo *mp3_dec;
@@ -31,7 +34,7 @@ void play_mp3()
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
 
 
-				fread(buf_read,1,NUM_BYTE_READ,fd);
+				// fread(buf_read,1,NUM_BYTE_READ,fd);
 	EMBARC_PRINTF("start to trace\r\n");
 	int flag_start = 0;
 
@@ -41,26 +44,14 @@ void play_mp3()
 	while(1)
 	{
 		offset = MP3FindSyncWord(read_ptr, byte_left);
+
 		if (offset < 0 ) 
-		{
-			if( flag_start == 0 )
-			{
-							fread(buf_read,1,NUM_BYTE_READ,fd);
-				if ( num_read == 0 )
-				{
-					break;
-				}
-				continue;
-			}
-			else
-			{
-				break;
-			}
+		{										
+			break;
 		} 
 		else 
 		{
 
-			flag_start = 1;
 			read_ptr += offset;         //data start point
 			byte_left -= offset;        //in buffer
 
@@ -81,79 +72,63 @@ void play_mp3()
 			{
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
 				read_ptr += 2;
-				flag_start = 0;
-						num_read = fread(buf_read,1,NUM_BYTE_READ,fd);
-				if ( num_read == 0 )
-				{
-					break;
-				}
 				continue;
 			}
-
-			while( isTransferCompleted == false )//|| isFinished == false )
+			else
 			{
-				;
+				EMBARC_PRINTF("MP3Decode Pass!\n\r");
 			}
 
-			 while(!LCRK.read());
+			// while( isTransferCompleted == false )//|| isFinished == false )
+			// {
+			// 	;
+			// }
+
+			 //while(!LCRK.read());
    //      	while(!LCRK.read());
-			// led1 = 0;
+
 			// isFinished = false;
-			isTransferCompleted = false;
+			// isTransferCompleted = false;
 			// uartpc.printf("GO2\r\n");
 			// while(!LCRK.read());
 			// while(LCRK.read());
 
-		    if ( flag_sw == 0 )
-		    {
-		        temp = (uint32_t)buf_rec1;
-		        flag_sw = 1;
-		    }
-		    else
-		    {
-		        temp = (uint32_t)buf_rec2;
-		        flag_sw = 0;
-		    }
+		    // if ( flag_sw == 0 )
+		    // {
+		    //     temp = (uint32_t)buf_rec1;
+		    //     flag_sw = 1;
+		    // }
+		    // else
+		    // {
+		    //     temp = (uint32_t)buf_rec2;
+		    //     flag_sw = 0;
+		    // }
 
 		    // /*  xfer structure */
 		    // xfer.data = (uint8_t *)temp;
 		    // xfer.dataSize = 4608;
 		    // SAI_TransferSendEDMA(I2S0, &txHandle, &xfer);
 
-			masterXfer.txData = (uint8_t *)temp;
-			masterXfer.rxData = NULL;
-			masterXfer.dataSize = 4608;
-			masterXfer.configFlags = kDSPI_MasterCtar0 | kDSPI_MasterPcs0 | kDSPI_MasterPcsContinuous;
+			// masterXfer.txData = (uint8_t *)temp;
+			// masterXfer.rxData = NULL;
+			// masterXfer.dataSize = 4608;
+			// masterXfer.configFlags = kDSPI_MasterCtar0 | kDSPI_MasterPcs0 | kDSPI_MasterPcsContinuous;
 
-		    if (kStatus_Success !=
-		        DSPI_MasterTransferEDMA(SPI0, &g_dspi_edma_m_handle, &masterXfer))
-		    {
-		        EMBARC_PRINTF("There is error when start DSPI_MasterTransferEDMA \r\n ");
-		    }
-		    else
-		    {
-		        // EMBARC_PRINTF(" start DSPI_MasterTransferEDMA DONE\r\n ");
-		    }
+		 //    if (kStatus_Success !=
+		 //        DSPI_MasterTransferEDMA(SPI0, &g_dspi_edma_m_handle, &masterXfer))
+		 //    {
+		 //        EMBARC_PRINTF("There is error when start DSPI_MasterTransferEDMA \r\n ");
+		 //    }
+		 //    else
+		 //    {
+		 //        // EMBARC_PRINTF(" start DSPI_MasterTransferEDMA DONE\r\n ");
+		 //    }
 
 
-			if (byte_left < NUM_BYTE_READ) 
-			{
-				memmove(buf_read,read_ptr,byte_left);
-
-						num_read = fread(buf_read + byte_left,1,NUM_BYTE_READ - byte_left,fd);
-
-				if(num_read == 0) 
-				{
-					EMBARC_PRINTF("num_read:%d\r\n",num_read);
-					break;
-				}
-				if (num_read < NUM_BYTE_READ - byte_left)
-				{
-					memset(buf_read + byte_left + num_read, 0, NUM_BYTE_READ - byte_left - num_read);
-				}
-				byte_left = NUM_BYTE_READ;
-				read_ptr = buf_read;
-			}
+			
+				// byte_left = NUM_BYTE_READ;
+				// read_ptr = buf_read;
+			
 		}
 	}
 	MP3FreeDecoder(mp3_dec);
