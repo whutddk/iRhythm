@@ -81,36 +81,33 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 
 	uint32_t txtemp = 0xFFFFFFFF, rxtemp  = 0;
 
+	
+	DMA_CTRL_SET_OP(&dma_ctrl_tx, DMA_MANUAL_LINKED_TRANSFER);
+	DMA_CTRL_SET_RT(&dma_ctrl_tx, DMA_MANUAL_REQUEST);
+	DMA_CTRL_SET_DTT(&dma_ctrl_tx, DMA_MEM2MEM);
+	DMA_CTRL_SET_DWINC(&dma_ctrl_tx, DMA_DW1INC1);
+	DMA_CTRL_SET_ARB(&dma_ctrl_tx, SPI_XFER_ARB_SZ);
+	DMA_CTRL_SET_INT(&dma_ctrl_tx, DMA_INT_DISABLE);
+	if (cur_xfer->tx_buf) 
 	{
-		DMA_CTRL_SET_OP(&dma_ctrl_tx, DMA_MANUAL_LINKED_TRANSFER);
-		DMA_CTRL_SET_RT(&dma_ctrl_tx, DMA_MANUAL_REQUEST);
-		DMA_CTRL_SET_DTT(&dma_ctrl_tx, DMA_MEM2MEM);
-		DMA_CTRL_SET_DWINC(&dma_ctrl_tx, DMA_DW1INC1);
-		DMA_CTRL_SET_ARB(&dma_ctrl_tx, SPI_XFER_ARB_SZ);
-		DMA_CTRL_SET_INT(&dma_ctrl_tx, DMA_INT_DISABLE);
-		if (cur_xfer->tx_buf) 
-		{
-			DMA_CTRL_SET_AM(&dma_ctrl_tx, DMA_AM_SRCINC_DSTNOT);
-			dmac_config_desc(&dma_desc_tx, (void *)(cur_xfer->tx_buf), (void *)(&spi_reg->DATAREG), cur_xfer->len, &dma_ctrl_tx);
-		} 
-		else 
-		{
-			DMA_CTRL_SET_AM(&dma_ctrl_tx, DMA_AM_SRCNOT_DSTNOT);
-			dmac_config_desc(&dma_desc_tx, (void *)(&txtemp), (void *)(&spi_reg->DATAREG), cur_xfer->len, &dma_ctrl_tx);
-		}
-		DMA_CTRL_SET_OP(&dma_ctrl_rx, DMA_MANUAL_LINKED_TRANSFER);
-		DMA_CTRL_SET_RT(&dma_ctrl_rx, DMA_MANUAL_REQUEST);
-		DMA_CTRL_SET_DTT(&dma_ctrl_rx, DMA_MEM2MEM);
-		DMA_CTRL_SET_DWINC(&dma_ctrl_rx, DMA_DW1INC1);
-		DMA_CTRL_SET_ARB(&dma_ctrl_rx, SPI_XFER_ARB_SZ);
-		DMA_CTRL_SET_INT(&dma_ctrl_rx, DMA_INT_DISABLE);
- 
+		DMA_CTRL_SET_AM(&dma_ctrl_tx, DMA_AM_SRCINC_DSTNOT);
+		dmac_config_desc(&dma_desc_tx, (void *)(cur_xfer->tx_buf), (void *)(&spi_reg->DATAREG), cur_xfer->len, &dma_ctrl_tx);
+	} 
+	else 
+	{
+		DMA_CTRL_SET_AM(&dma_ctrl_tx, DMA_AM_SRCNOT_DSTNOT);
+		dmac_config_desc(&dma_desc_tx, (void *)(&txtemp), (void *)(&spi_reg->DATAREG), cur_xfer->len, &dma_ctrl_tx);
+	}
+	DMA_CTRL_SET_OP(&dma_ctrl_rx, DMA_MANUAL_LINKED_TRANSFER);
+	DMA_CTRL_SET_RT(&dma_ctrl_rx, DMA_MANUAL_REQUEST);
+	DMA_CTRL_SET_DTT(&dma_ctrl_rx, DMA_MEM2MEM);
+	DMA_CTRL_SET_DWINC(&dma_ctrl_rx, DMA_DW1INC1);
+	DMA_CTRL_SET_ARB(&dma_ctrl_rx, SPI_XFER_ARB_SZ);
+	DMA_CTRL_SET_INT(&dma_ctrl_rx, DMA_INT_DISABLE);
 
-		DMA_CTRL_SET_AM(&dma_ctrl_rx, DMA_AM_SRCNOT_DSTNOT);
-		dmac_config_desc(&dma_desc_rx, (void *)(&spi_reg->DATAREG), (void *)(&rxtemp), cur_xfer->len, &dma_ctrl_rx);
-
+	DMA_CTRL_SET_AM(&dma_ctrl_rx, DMA_AM_SRCNOT_DSTNOT);
+	dmac_config_desc(&dma_desc_rx, (void *)(&spi_reg->DATAREG), (void *)(&rxtemp), cur_xfer->len, &dma_ctrl_rx);
 		
-	}	
 	dmac_desc_add_linked(&dma_desc_tx, NULL);
 	dmac_desc_add_linked(&dma_desc_rx, NULL);
 	
@@ -162,20 +159,17 @@ void spi_dma_prepare(void)
 }
 
 /**
- * \brief	write data to spi flash
+ * \brief	write data to SPI to exchange to I2S
  *
- * \param[in]	address	start address
- * \param[in]	size	data size
  * \param[in]	data	pointer to data
  *
- * \retval	>=0		written bytes number
+ * \retval	=0		finish
  * \retval 	<0 		error
  */
-int32_t spiflash_write(const void *data)
+int32_t spi_writeraw(const void *data)
 {
 	SPI_XFER data_xfer;
 	uint8_t *xfer_buf = (uint8_t *)data;
-
 
 	data_xfer.tx_buf = (uint8_t *)(xfer_buf);
 	data_xfer.len = 4608;

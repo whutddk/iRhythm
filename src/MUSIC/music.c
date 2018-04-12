@@ -24,7 +24,7 @@ void spi_dma_test()
 	while(1)
 	{
 		// spi->spi_write(spi_buff,2);
-		spiflash_write(buff_A);
+		spi_writeraw(buff_A);
 		while(flag_dma_finish == 0);
 		flag_dma_finish = 0;
 	}
