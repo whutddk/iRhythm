@@ -1,6 +1,6 @@
 TOOLCHAIN=gnu
 BOARD=emsk
-BD_VER=22
+BD_VER=23
 CUR_CORE=arcem7d
 
 # Application name

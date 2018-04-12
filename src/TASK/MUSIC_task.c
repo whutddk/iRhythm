@@ -25,7 +25,7 @@ void music_task()
 		while(1);
 	}
 
-	//checkout directory
+	/*checkout directory*/
 
 	error_num = f_opendir (&dir, "0:/");
 	if ( error_num != FR_OK )
@@ -47,8 +47,8 @@ void music_task()
 	f_closedir(&dir);
 
 
-	readout_file();
-	
+	//readout_file();
+	spi_dma_test();
 	while(1);
 }
 
