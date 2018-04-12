@@ -65,7 +65,7 @@ static void invalidate_xfer_data(SPI_XFER *xfer)
 
 void spi_xfer_callback(void *param)
 {
-	EMBARC_PRINTF("dma finish\r\n");
+	// EMBARC_PRINTF("dma finish\r\n");
 	flag_dma_finish = 1;
 }
 
