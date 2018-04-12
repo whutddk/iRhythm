@@ -33,7 +33,7 @@ struct spi_xfer {
 	SPI_XFER *next;
 	/* Set by user */
 	uint8_t *tx_buf;
-	uint8_t *rx_buf;
+	// uint8_t *rx_buf;
 	uint32_t len;
 	/* Should auto set to proper value during set buffer value */
 	uint32_t tx_idx;
@@ -48,10 +48,6 @@ static void flush_xfer_data(SPI_XFER *xfer)
 		if (cur_xfer->tx_buf) {
 			_MEMORY_FENCE();
 			_DCACHE_FLUSH_MLINES((void *)(cur_xfer->tx_buf), cur_xfer->len);
-		}
-		if (cur_xfer->rx_buf) {
-			_MEMORY_FENCE();
-			_DCACHE_FLUSH_MLINES((void *)(cur_xfer->rx_buf), cur_xfer->len);
 		}
 		i ++;
 		if (i >= SPI_XFER_LIST_LEN) {
@@ -69,10 +65,6 @@ static void invalidate_xfer_data(SPI_XFER *xfer)
 		if (cur_xfer->tx_buf) {
 			_MEMORY_FENCE();
 			_DCACHE_INVALIDATE_MLINES((void *)(cur_xfer->tx_buf), cur_xfer->len);
-		}
-		if (cur_xfer->rx_buf) {
-			_MEMORY_FENCE();
-			_DCACHE_INVALIDATE_MLINES((void *)(cur_xfer->rx_buf), cur_xfer->len);
 		}
 		i ++;
 		if (i >= SPI_XFER_LIST_LEN) {
@@ -125,16 +117,11 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 		DMA_CTRL_SET_DWINC(&dma_ctrl_rx, DMA_DW1INC1);
 		DMA_CTRL_SET_ARB(&dma_ctrl_rx, SPI_XFER_ARB_SZ);
 		DMA_CTRL_SET_INT(&dma_ctrl_rx, DMA_INT_DISABLE);
-		if (cur_xfer->rx_buf) 
-		{
-			DMA_CTRL_SET_AM(&dma_ctrl_rx, DMA_AM_SRCNOT_DSTINC);
-			dmac_config_desc(&dma_desc_rx[i], (void *)(&spi_reg->DATAREG), (void *)(cur_xfer->rx_buf), cur_xfer->len, &dma_ctrl_rx);
-		} 
-		else 
-		{
-			DMA_CTRL_SET_AM(&dma_ctrl_rx, DMA_AM_SRCNOT_DSTNOT);
-			dmac_config_desc(&dma_desc_rx[i], (void *)(&spi_reg->DATAREG), (void *)(&rxtemp), cur_xfer->len, &dma_ctrl_rx);
-		}
+ 
+
+		DMA_CTRL_SET_AM(&dma_ctrl_rx, DMA_AM_SRCNOT_DSTNOT);
+		dmac_config_desc(&dma_desc_rx[i], (void *)(&spi_reg->DATAREG), (void *)(&rxtemp), cur_xfer->len, &dma_ctrl_rx);
+
 		i ++;
 		if (i >= SPI_XFER_LIST_LEN) {
 			break;
@@ -211,7 +198,6 @@ int32_t spiflash_write(const void *data)
 
 
 	data_xfer.tx_buf = (uint8_t *)(xfer_buf);
-	data_xfer.rx_buf = NULL;
 	data_xfer.len = 4608;
 	data_xfer.next = NULL;
 
