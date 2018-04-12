@@ -84,7 +84,6 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 	uint8_t j = 0;
 	uint32_t txtemp = 0xFFFFFFFF, rxtemp  = 0;
 
-	while (cur_xfer)
 	{
 		DMA_CTRL_SET_OP(&dma_ctrl_tx, DMA_MANUAL_LINKED_TRANSFER);
 		DMA_CTRL_SET_RT(&dma_ctrl_tx, DMA_MANUAL_REQUEST);
@@ -114,11 +113,7 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 		dmac_config_desc(&dma_desc_rx[i], (void *)(&spi_reg->DATAREG), (void *)(&rxtemp), cur_xfer->len, &dma_ctrl_rx);
 
 		i ++;
-		if (i >= SPI_XFER_LIST_LEN) {
-			break;
-		}
-		cur_xfer = cur_xfer->next;
-	}
+	}	
 	dmac_desc_add_linked(&dma_desc_tx[i-1], NULL);
 	dmac_desc_add_linked(&dma_desc_rx[i-1], NULL);
 	for (j = i; j > 1; j --) {
