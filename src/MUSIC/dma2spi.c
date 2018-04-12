@@ -44,34 +44,25 @@ static void flush_xfer_data(SPI_XFER *xfer)
 {
 	SPI_XFER *cur_xfer = xfer;
 	uint8_t i = 0;
-	while (cur_xfer) {
-		if (cur_xfer->tx_buf) {
-			_MEMORY_FENCE();
-			_DCACHE_FLUSH_MLINES((void *)(cur_xfer->tx_buf), cur_xfer->len);
-		}
-		i ++;
-		if (i >= SPI_XFER_LIST_LEN) {
-			break;
-		}
-		cur_xfer = cur_xfer->next;
+
+	if (cur_xfer->tx_buf) 
+	{
+		_MEMORY_FENCE();
+		_DCACHE_FLUSH_MLINES((void *)(cur_xfer->tx_buf), cur_xfer->len);
 	}
+		
+	
 }
 
 static void invalidate_xfer_data(SPI_XFER *xfer)
 {
 	SPI_XFER *cur_xfer = xfer;
-	uint8_t i = 0;
-	while (cur_xfer) {
-		if (cur_xfer->tx_buf) {
-			_MEMORY_FENCE();
-			_DCACHE_INVALIDATE_MLINES((void *)(cur_xfer->tx_buf), cur_xfer->len);
-		}
-		i ++;
-		if (i >= SPI_XFER_LIST_LEN) {
-			break;
-		}
-		cur_xfer = cur_xfer->next;
+
+	if (cur_xfer->tx_buf) {
+		_MEMORY_FENCE();
+		_DCACHE_INVALIDATE_MLINES((void *)(cur_xfer->tx_buf), cur_xfer->len);
 	}
+		
 }
 
 void spi_xfer_callback(void *param)
