@@ -4,7 +4,7 @@
 #include "include.h"
 
 uint8_t buff_A[4608] ={0xaa,0xab,0xaa,0xab};
-uint8_t flag_dma_finish = 0;
+volatile uint8_t flag_dma_finish = 0;
 
 void spi_dma_test()
 {
