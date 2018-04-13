@@ -6,6 +6,8 @@ CUR_CORE=arcem7d
 # Application name
 APPL ?= blinky
 
+OLEVEL ?= O3
+
 HEAPSZ ?= 83886080 
 STACKSZ ?= 1048576
 

@@ -66,18 +66,18 @@ void play_mp3()
 				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec1, 0);
 				
 			}
-			// else
-			// {
+			else
+			{
 				
-			// 	res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec2, 0);
+				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec2, 0);
 				
-			// }
+			}
 			iosignal_ctrl(0,0);
 			if (res_dec == ERR_MP3_NONE)
 			{
 				// EMBARC_PRINTF("MP3Decode Pass!\n\r");
-				memcpy(raw_ptr,(uint8_t*)(buf_rec1),4608);
-				raw_ptr += 4608;
+				// memcpy(raw_ptr,(uint8_t*)(buf_rec1),4608);
+				// raw_ptr += 4608;
 			}
 			else
 			{
@@ -104,20 +104,20 @@ void play_mp3()
 
 
 
-			// if ( flag_sw == 0 )
-			// {
-			// 	temp = (uint32_t)buf_rec1;
-			// 	flag_sw = 1;
-			// }
-			// else
-			// {
-			// 	temp = (uint32_t)buf_rec2;
-		 // 		flag_sw = 0;
-		 //    }
+			if ( flag_sw == 0 )
+			{
+				spi_writeraw((uint8_t*)buf_rec1);
+				flag_sw = 1;
+			}
+			else
+			{
+				spi_writeraw((uint8_t*)buf_rec2);
+		 		flag_sw = 0;
+		    }
 
 
 
-   //  		spi_writeraw(temp);
+    		// spi_writeraw(temp);
 
 
 			// while(flag_dma_finish == 0);
