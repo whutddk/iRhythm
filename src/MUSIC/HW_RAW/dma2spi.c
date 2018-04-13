@@ -38,6 +38,8 @@ struct spi_xfer {
 	uint32_t rx_idx;
 };
 
+
+SPI_XFER data_xfer;
 static void flush_xfer_data(SPI_XFER *xfer)
 {
 	SPI_XFER *cur_xfer = xfer;
@@ -65,6 +67,17 @@ static void invalidate_xfer_data(SPI_XFER *xfer)
 
 void spi_xfer_callback(void *param)
 {
+
+	spi_reg->SSIENR = DW_SPI_SSI_DISABLE;
+	spi_reg->DMACR = 0;
+	spi_reg->DMATDLR = 0;
+	spi_reg->DMARDLR = 0;
+	spi_reg->SER = 0;
+	spi_reg->SSIENR = DW_SPI_SSI_ENABLE;
+
+	invalidate_xfer_data(&data_xfer);
+
+
 	// EMBARC_PRINTF("dma finish\r\n");
 	flag_dma_finish = 1;
 }
@@ -132,17 +145,10 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 	spi_reg->SSIENR = DW_SPI_SSI_ENABLE;
 	/* enable rx and tx dma */
 	spi_reg->DMACR = 3;
-	dmac_wait_channel(&dma_chn_tx);
-	dmac_wait_channel(&dma_chn_rx);
+	// dmac_wait_channel(&dma_chn_tx);
+	// dmac_wait_channel(&dma_chn_rx);
 	/* deselect device */
-	spi_reg->SSIENR = DW_SPI_SSI_DISABLE;
-	spi_reg->DMACR = 0;
-	spi_reg->DMATDLR = 0;
-	spi_reg->DMARDLR = 0;
-	spi_reg->SER = 0;
-	spi_reg->SSIENR = DW_SPI_SSI_ENABLE;
-
-	invalidate_xfer_data(xfer);
+	
 
 	return 0;
 }
@@ -168,7 +174,7 @@ void spi_dma_prepare(void)
  */
 int32_t spi_writeraw(const void *data)
 {
-	SPI_XFER data_xfer;
+	
 	uint8_t *xfer_buf = (uint8_t *)data;
 
 	data_xfer.tx_buf = (uint8_t *)(xfer_buf);
