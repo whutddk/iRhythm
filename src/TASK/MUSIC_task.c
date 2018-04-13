@@ -81,6 +81,7 @@ void music_task()
 	iosignal_ctrl(0,0);
 	// spi_dma_test();
 	play_mp3();
+	send2spi();
 	while(1)
 	{
 		;

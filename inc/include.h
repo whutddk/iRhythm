@@ -28,6 +28,7 @@ extern int32_t spi_writeraw(const void *data);
 
 /**************define in mp3api.c************/
 extern void play_mp3();
+extern void send2spi();
 
 /**************define in iosignal.c**********/
 

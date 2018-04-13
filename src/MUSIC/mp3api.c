@@ -167,6 +167,10 @@ void send2spi()
 	while(flag_dma_finish == 0);
 	flag_dma_finish = 0;
 	raw_ptr += 4608;
+
+	// iosignal_ctrl(iosignal_read(0),0);
+	// while(!iosignal_read(0));
+	// iosignal_ctrl(iosignal_read(0),0);
 }
 
 
