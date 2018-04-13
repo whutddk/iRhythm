@@ -25,6 +25,10 @@ extern void spi_dma_prepare(void);
 extern int32_t spi_writeraw(const void *data);
 
 
+/**************define in mp3api.c************/
+void play_mp3();
+
+
 
 
 

@@ -1,19 +1,20 @@
 #include "embARC.h"
 #include "embARC_debug.h"
 
+#include "mp3dec.h"
+#include "mp3common.h"
+#include "coder.h"
+
 #include "include.h"
 
-#define NUM_BYTE_READ 4096
+// #define NUM_BYTE_READ 4096
 
 
-volatile bool isFinished = true;
+// volatile bool isFinished = true;
 volatile uint8_t flag_sw = 0; 
 
 short buf_rec1[2304];
 short buf_rec2[2304];
-
-unsigned char buf_read[NUM_BYTE_READ];
-	
 
 void play_mp3()
 {
@@ -21,25 +22,27 @@ void play_mp3()
 	uint32_t temp = 0;
 
 	int32_t offset;
-	uint8_t *read_ptr;
-						/*这里改文件大小*/
-						int byte_left = NUM_BYTE_READ;
+	uint8_t *read_ptr = file_buff;
+
+	/*这里改文件大小*/
+	int byte_left = 4271541;
+
 	uint32_t res_dec;
-	unsigned int num_read;
 	MP3DecInfo *mp3_dec;
 
-	read_ptr = buf_read;
-	
-
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
-
+	if ( mp3_dec == NULL )
+	{
+		EMBARC_PRINTF("Malloc mp3_dec buff fail!\r\nstop!\r\n");
+		while(1);
+	}
 
 				// fread(buf_read,1,NUM_BYTE_READ,fd);
 	EMBARC_PRINTF("start to trace\r\n");
 	int flag_start = 0;
 
-	isTransferCompleted = true;
-	isFinished = true;
+	// isTransferCompleted = true;
+	// isFinished = true;
 
 	while(1)
 	{
@@ -133,7 +136,7 @@ void play_mp3()
 	}
 	MP3FreeDecoder(mp3_dec);
 
-	EMBARC_PRINTF("MP3 file:%s decorder is over!\n\r" ,mp3file);
+	EMBARC_PRINTF("MP3 file: decorder is over!\n\r" );
 }
 
 

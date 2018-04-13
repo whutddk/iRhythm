@@ -15,11 +15,11 @@ EMBARC_ROOT = ..
 MID_SEL = common fatfs 
 OS_SEL = freertos
 # application source dirs
-APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/NET ./src/TASK 
+APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/MUSIC/mp3_dec ./src/NET ./src/TASK 
 APPL_ASMSRC_DIR = .
 
 # application include dirs
-APPL_INC_DIR = ./inc
+APPL_INC_DIR =  ./inc ./inc/mp3_dec
 
 # include current project makefile
 COMMON_COMPILE_PREREQUISITES += makefile
