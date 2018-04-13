@@ -17,6 +17,7 @@ extern void readout_file();
 
 
 /***********define in music.c ************/
+extern DEV_SPI_PTR spi;
 extern volatile uint8_t flag_dma_finish;
 extern void spi_dma_test();
 

@@ -16,6 +16,7 @@ void music_task()
 	FILINFO fileinfo;
 	EMBARC_PRINTF("MUSIC_TASK START\r\n");
 
+	spi_dma_prepare();
 	
 	file_buff = malloc(sizeof(uint8_t) * 10 * 1024 * 1024);
 	if ( file_buff == NULL )
@@ -55,6 +56,11 @@ void music_task()
 	while( 1 );
 	EMBARC_PRINTF("Close Directory\r\n");
 	f_closedir(&dir);
+
+	spi =  spi_get_dev(DW_SPI_0_ID);
+	spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
+
+
 
 	iosignal_init();
 

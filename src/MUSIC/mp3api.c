@@ -100,17 +100,22 @@ void play_mp3()
 			// while(!LCRK.read());
 			// while(LCRK.read());
 
-		    // if ( flag_sw == 0 )
-		    // {
-		    //     temp = (uint32_t)buf_rec1;
-		    //     flag_sw = 1;
-		    // }
-		    // else
-		    // {
-		    //     temp = (uint32_t)buf_rec2;
-		    //     flag_sw = 0;
-		    // }
+			if ( flag_sw == 0 )
+			{
+				temp = (uint32_t)buf_rec1;
+				flag_sw = 1;
+			}
+			else
+			{
+				temp = (uint32_t)buf_rec2;
+		 		flag_sw = 0;
+		    }
 
+
+
+    		spi_writeraw(temp);
+			// while(flag_dma_finish == 0);
+			// flag_dma_finish = 0;
 		    // /*  xfer structure */
 		    // xfer.data = (uint8_t *)temp;
 		    // xfer.dataSize = 4608;
