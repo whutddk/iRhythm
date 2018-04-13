@@ -10,6 +10,7 @@ FATFS fs_p;
 
 
 uint8_t *file_buff;
+uint8_t *raw_buff;
 void music_task()
 {
 	DIR dir;
@@ -27,6 +28,17 @@ void music_task()
 	else
 	{
 		EMBARC_PRINTF("Malloc file buff pass!\r\n");
+	}
+
+	raw_buff = malloc(sizeof(uint8_t) * 60 * 1024 * 1024);
+	if ( file_buff == NULL )
+	{
+		EMBARC_PRINTF("Malloc raw file buff fail!\r\nstop!\r\n");
+		while(1);
+	}
+	else
+	{
+		EMBARC_PRINTF("Malloc raw file buff pass!\r\n");
 	}
 	
 	error_num = f_mount(&fs_p,"0:/",1);

@@ -10,7 +10,7 @@ extern int32_t error_num ;
 
 /***********define in MUSIC_task.c ************/
 extern uint8_t *file_buff; 
-
+extern uint8_t *raw_buff;
 
 /***********define in mem.c ************/
 extern void readout_file();
@@ -33,7 +33,7 @@ extern void play_mp3();
 
 extern void iosignal_init();
 extern void iosignal_ctrl(uint8_t val,uint8_t num);
-
+extern uint8_t iosignal_read(uint8_t num);
 
 
 
