@@ -56,11 +56,24 @@ void music_task()
 	EMBARC_PRINTF("Close Directory\r\n");
 	f_closedir(&dir);
 
+	iosignal_init();
 
-	readout_file();
+
+	// readout_file();
 	// spi_dma_test();
-	play_mp3();
-	while(1);
+	// play_mp3();
+	while(1)
+	{
+		iosignal_ctrl(1,0);
+		iosignal_ctrl(0,2);
+		iosignal_ctrl(1,1);
+		iosignal_ctrl(0,3);
+		iosignal_ctrl(1,2);
+		iosignal_ctrl(0,0);
+		iosignal_ctrl(1,3);
+		iosignal_ctrl(0,1);
+		;
+	}
 }
 
 
