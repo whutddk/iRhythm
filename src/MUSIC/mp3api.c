@@ -38,7 +38,7 @@ void play_mp3()
 	}
 	else
 	{
-		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\nstop!\r\n");
+		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\n");
 	}
 
 				// fread(buf_read,1,NUM_BYTE_READ,fd);
@@ -51,12 +51,8 @@ void play_mp3()
 	while(1)
 	{
 		offset = MP3FindSyncWord(read_ptr, byte_left);
-
-		if (offset < 0 ) 
-		{										
-			break;
-		} 
-		else 
+ 
+		if ( offset >= 0 )
 		{
 
 			read_ptr += offset;         //data start point
@@ -138,7 +134,12 @@ void play_mp3()
 				// read_ptr = buf_read;
 			
 		}
+		else
+		{
+			break;
+		}
 	}
+	EMBARC_PRINTF("Free mp3_dec!\n\r" );
 	MP3FreeDecoder(mp3_dec);
 
 	EMBARC_PRINTF("MP3 file: decorder is over!\n\r" );
