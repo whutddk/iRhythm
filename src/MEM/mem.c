@@ -38,8 +38,8 @@ void readout_file()
 	{
 		error_num = f_read(&fp,fbuff_p,NUM_BYTE_READ,&num_read);
 		fbuff_p += num_read;
-		read_sum += num_read;
-		EMBARC_PRINTF("readout %d!!!\r\n",read_sum);
+		// read_sum += num_read;
+		// EMBARC_PRINTF("readout %d!!!\r\n",read_sum);
 	}
 	EMBARC_PRINTF("File Read End\r\n");
 	f_close(&fp);

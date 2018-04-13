@@ -84,7 +84,7 @@ void play_mp3()
 			}
 			else
 			{
-				EMBARC_PRINTF("MP3Decode Pass!\n\r");
+				// EMBARC_PRINTF("MP3Decode Pass!\n\r");
 			}
 
 			// while( isTransferCompleted == false )//|| isFinished == false )

@@ -1,0 +1,35 @@
+diff --git a/board/emsk/emsk.h b/board/emsk/emsk.h
+index dca13a02..e7e66b99 100644
+--- a/board/emsk/emsk.h
++++ b/board/emsk/emsk.h
+@@ -82,7 +82,7 @@
+ #define BOARD_SFLASH_SPI_LIN		EMSK_SPI_LINE_SFLASH
+ 
+ #ifndef BOARD_SPI_FREQ
+-#define BOARD_SPI_FREQ			(5000000)
++#define BOARD_SPI_FREQ			(1000000)
+ #endif
+ 
+ 
+diff --git a/board/emsk/emsk.mk b/board/emsk/emsk.mk
+index d61aaf42..844cb267 100644
+--- a/board/emsk/emsk.mk
++++ b/board/emsk/emsk.mk
+@@ -23,7 +23,7 @@ BOARD_EMSK_DIR = $(BOARDS_ROOT)/emsk
+ SUPPORTED_BD_VERS = 11 22 23
+ 
+ ## Select Board Version
+-BD_VER ?= 23
++BD_VER ?= 22
+ 
+ override BD_VER := $(strip $(BD_VER))
+ 
+@@ -71,7 +71,7 @@ else
+ OPENOCD_CFG_FILE = $(OPENOCD_SCRIPT_ROOT)/board/snps_em_sk_v2.2.cfg
+ endif
+ OPENOCD_OPTIONS  = -s $(OPENOCD_SCRIPT_ROOT) -f $(OPENOCD_CFG_FILE)
+-BOARD_EMSK_DEFINES += -DBOARD_SPI_FREQ=2000000
++BOARD_EMSK_DEFINES += -DBOARD_SPI_FREQ=800000
+ 
+ 
+ ##
