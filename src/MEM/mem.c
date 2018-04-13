@@ -16,6 +16,9 @@ uint8_t buf_read[NUM_BYTE_READ];
 void readout_file()
 {
 	uint32_t num_read;
+	uint8_t *fbuff_p = file_buff;
+	uint32_t read_sum = 0;
+
 
 	error_num = f_open(&fp,"0:/mint_summer.mp3",FA_READ);
 	if( error_num != FR_OK)
@@ -33,9 +36,10 @@ void readout_file()
 
 	while( num_read != 0 )
 	{
-		error_num = f_read(&fp,buf_read,NUM_BYTE_READ,&num_read);
-		strcat(file_buff,buf_read);
-
+		error_num = f_read(&fp,fbuff_p,NUM_BYTE_READ,&num_read);
+		fbuff_p += num_read;
+		// read_sum += num_read;
+		// EMBARC_PRINTF("readout %d!!!\r\n",read_sum);
 	}
 	EMBARC_PRINTF("File Read End\r\n");
 	f_close(&fp);

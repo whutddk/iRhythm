@@ -18,6 +18,16 @@ void music_task()
 
 	
 	file_buff = malloc(sizeof(uint8_t) * 10 * 1024 * 1024);
+	if ( file_buff == NULL )
+	{
+		EMBARC_PRINTF("Malloc file buff fail!\r\nstop!\r\n");
+		while(1);
+	}
+	else
+	{
+		EMBARC_PRINTF("Malloc file buff pass!\r\n");
+	}
+	
 	error_num = f_mount(&fs_p,"0:/",1);
 	if( error_num != FR_OK)
 	{
@@ -46,10 +56,17 @@ void music_task()
 	EMBARC_PRINTF("Close Directory\r\n");
 	f_closedir(&dir);
 
+	iosignal_init();
 
-	//readout_file();
-	spi_dma_test();
-	while(1);
+	iosignal_ctrl(1,0);
+	readout_file();
+	iosignal_ctrl(0,0);
+	// spi_dma_test();
+	play_mp3();
+	while(1)
+	{
+		;
+	}
 }
 
 
