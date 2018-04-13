@@ -58,6 +58,8 @@ void play_mp3()
 			read_ptr += offset;         //data start point
 			byte_left -= offset;        //in buffer
 
+
+			iosignal_ctrl(1,0);
 			if ( flag_sw == 0 )
 			{
 				
@@ -70,7 +72,7 @@ void play_mp3()
 				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec2, 0);
 				
 			}
-
+			iosignal_ctrl(0,0);
 			if (res_dec != ERR_MP3_NONE)
 			{
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);

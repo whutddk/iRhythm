@@ -17,10 +17,10 @@ void iosignal_init()
 		io_signal->gpio_control(GPIO_CMD_DIS_BIT_INT, (void *)(BOARD_SIGN_MASK));
 	}
 
-	iosignal_ctrl(1,0);
-	iosignal_ctrl(1,1);
-	iosignal_ctrl(1,2);
-	iosignal_ctrl(1,3);
+	iosignal_ctrl(0,0);
+	iosignal_ctrl(0,1);
+	iosignal_ctrl(0,2);
+	iosignal_ctrl(0,3);
 error_exit:
 	return;
 }

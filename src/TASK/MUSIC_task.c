@@ -58,20 +58,13 @@ void music_task()
 
 	iosignal_init();
 
-
-	// readout_file();
+	iosignal_ctrl(1,0);
+	readout_file();
+	iosignal_ctrl(0,0);
 	// spi_dma_test();
-	// play_mp3();
+	play_mp3();
 	while(1)
 	{
-		iosignal_ctrl(1,0);
-		iosignal_ctrl(0,2);
-		iosignal_ctrl(1,1);
-		iosignal_ctrl(0,3);
-		iosignal_ctrl(1,2);
-		iosignal_ctrl(0,0);
-		iosignal_ctrl(1,3);
-		iosignal_ctrl(0,1);
 		;
 	}
 }
