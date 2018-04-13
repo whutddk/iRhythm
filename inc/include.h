@@ -26,10 +26,12 @@ extern int32_t spi_writeraw(const void *data);
 
 
 /**************define in mp3api.c************/
-void play_mp3();
+extern void play_mp3();
 
+/**************define in iosignal.c**********/
 
-
+extern void iosignal_init();
+extern void iosignal_ctrl(uint8_t val,uint8_t num);
 
 
 
