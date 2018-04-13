@@ -36,6 +36,10 @@ void play_mp3()
 		EMBARC_PRINTF("Malloc mp3_dec buff fail!\r\nstop!\r\n");
 		while(1);
 	}
+	else
+	{
+		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\nstop!\r\n");
+	}
 
 				// fread(buf_read,1,NUM_BYTE_READ,fd);
 	EMBARC_PRINTF("start to trace\r\n");
@@ -75,6 +79,7 @@ void play_mp3()
 			{
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
 				read_ptr += 2;
+				byte_left -= 2;
 				continue;
 			}
 			else

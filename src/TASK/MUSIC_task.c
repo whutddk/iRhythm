@@ -23,6 +23,11 @@ void music_task()
 		EMBARC_PRINTF("Malloc file buff fail!\r\nstop!\r\n");
 		while(1);
 	}
+	else
+	{
+		EMBARC_PRINTF("Malloc file buff pass!\r\n");
+	}
+	
 	error_num = f_mount(&fs_p,"0:/",1);
 	if( error_num != FR_OK)
 	{
@@ -52,7 +57,7 @@ void music_task()
 	f_closedir(&dir);
 
 
-	//readout_file();
+	readout_file();
 	// spi_dma_test();
 	play_mp3();
 	while(1);
