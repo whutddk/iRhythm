@@ -73,16 +73,17 @@ void play_mp3()
 				
 			}
 			iosignal_ctrl(0,0);
-			if (res_dec != ERR_MP3_NONE)
+			if (res_dec == ERR_MP3_NONE)
+			{
+				// EMBARC_PRINTF("MP3Decode Pass!\n\r");
+			}
+			else
 			{
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
 				read_ptr += 2;
 				byte_left -= 2;
 				continue;
-			}
-			else
-			{
-				// EMBARC_PRINTF("MP3Decode Pass!\n\r");
+				
 			}
 
 			// while( isTransferCompleted == false )//|| isFinished == false )
