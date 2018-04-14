@@ -13,8 +13,8 @@
 // volatile bool isFinished = true;
 volatile uint8_t flag_sw = 0; 
 
-short buf_rec1[2304];
-short buf_rec2[2304];
+short buf_rec1[2304]={1};
+short buf_rec2[2304]={1};
 
 void play_mp3()
 {
