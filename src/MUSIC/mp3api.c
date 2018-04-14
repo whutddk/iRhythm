@@ -7,7 +7,7 @@
 
 #include "include.h"
 
-// #define NUM_BYTE_READ 4096
+ #define NUM_BYTE_READ 4096
 
 
 // volatile bool isFinished = true;
@@ -16,16 +16,20 @@ volatile uint8_t flag_sw = 0;
 short buf_rec1[2304]={1};
 short buf_rec2[2304]={1};
 
+uint8_t dec_buff[NUM_BYTE_READ] = {1};
+
 void play_mp3()
 {
 
 	uint32_t temp = 0;
 
 	int32_t offset;
-	uint8_t *read_ptr = file_buff;
+	uint8_t *read_ptr = dec_buff;
 	uint8_t *raw_ptr = raw_buff;
+	uint8_t *file_ptr = file_buff;
 	/*这里改文件大小*/
-	int byte_left = 4271541;
+	int file_left = 4271541;
+	int byte_left = NUM_BYTE_READ;
 
 	uint32_t res_dec;
 	MP3DecInfo *mp3_dec;
@@ -42,6 +46,10 @@ void play_mp3()
 	}
 
 				// fread(buf_read,1,NUM_BYTE_READ,fd);
+				memmove(dec_buff,file_ptr,NUM_BYTE_READ);
+				file_ptr += NUM_BYTE_READ;
+				file_left -= NUM_BYTE_READ;
+
 	EMBARC_PRINTF("start to trace\r\n");
 	int flag_start = 0;
 
@@ -84,6 +92,14 @@ void play_mp3()
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
 				read_ptr += 2;
 				byte_left -= 2;
+						memmove(dec_buff,file_ptr,NUM_BYTE_READ);
+								file_ptr += NUM_BYTE_READ;
+								file_left -= NUM_BYTE_READ;
+						if ( file_left <= 0 )
+						{
+							//这里可能越界，需要保护
+							break;
+						}
 				continue;
 				
 			}
@@ -119,38 +135,49 @@ void play_mp3()
 
     		// spi_writeraw(temp);
 
+			if (byte_left < NUM_BYTE_READ) 
+			{
+				memmove(dec_buff,read_ptr,byte_left);
 
-			// while(flag_dma_finish == 0);
-			// flag_dma_finish = 0;
-		    // /*  xfer structure */
-		    // xfer.data = (uint8_t *)temp;
-		    // xfer.dataSize = 4608;
-		    // SAI_TransferSendEDMA(I2S0, &txHandle, &xfer);
-
-			// masterXfer.txData = (uint8_t *)temp;
-			// masterXfer.rxData = NULL;
-			// masterXfer.dataSize = 4608;
-			// masterXfer.configFlags = kDSPI_MasterCtar0 | kDSPI_MasterPcs0 | kDSPI_MasterPcsContinuous;
-
-		 //    if (kStatus_Success !=
-		 //        DSPI_MasterTransferEDMA(SPI0, &g_dspi_edma_m_handle, &masterXfer))
-		 //    {
-		 //        EMBARC_PRINTF("There is error when start DSPI_MasterTransferEDMA \r\n ");
-		 //    }
-		 //    else
-		 //    {
-		 //        // EMBARC_PRINTF(" start DSPI_MasterTransferEDMA DONE\r\n ");
-		 //    }
-
-
-			
-				// byte_left = NUM_BYTE_READ;
-				// read_ptr = buf_read;
+							//num_read = fread(buf_read + byte_left,1,NUM_BYTE_READ - byte_left,fd);
+							memmove(dec_buff + byte_left,file_ptr,NUM_BYTE_READ - byte_left);
+								file_ptr += NUM_BYTE_READ - byte_left;
+								file_left -= NUM_BYTE_READ - byte_left;
+						if ( file_left <= 0 )
+						{
+							//这里可能越界，需要保护
+							break;
+						}
+				
+				// if (NUM_BYTE_READ - byte_left < NUM_BYTE_READ - byte_left)
+				// {
+				// 	memset(buf_read + byte_left + num_read, 0, NUM_BYTE_READ - byte_left - num_read);
+				// }
+				byte_left = NUM_BYTE_READ;
+				read_ptr = dec_buff;
+			}
 			
 		}
 		else
 		{
-			break;
+			//uartpc.printf("offset:%d\r\n",offset);
+			if( flag_start == 0 )
+			{
+					//fread(buf_read,1,NUM_BYTE_READ,fd);
+						memmove(dec_buff,file_ptr,NUM_BYTE_READ);
+						file_ptr += NUM_BYTE_READ;
+						file_left -= NUM_BYTE_READ;
+				if ( file_left <= 0 )
+				{
+					//这里可能越界，需要保护
+					break;
+				}
+				continue;
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
 	EMBARC_PRINTF("Free mp3_dec!\n\r" );
