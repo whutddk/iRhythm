@@ -34,22 +34,22 @@ void play_mp3()
 	uint32_t res_dec;
 	MP3DecInfo *mp3_dec;
 
-	uint16_t i ;
+	// uint16_t i ;
 
-	for (i = 0;i<2304;i++)
-	{
-		buf_rec1[i]=0xffff-i;
-	}
+	// for (i = 0;i<2304;i++)
+	// {
+	// 	buf_rec1[i]=0xffff-i;
+	// }
 	flag_dma_finish = 1;
-	while(1)
-	{	
-		while(flag_dma_finish==0);
-		flag_dma_finish = 0;
-			//while(iosignal_read(0));
-		spi_writeraw(buf_rec1);
+	// while(1)
+	// {	
+	// 	while(flag_dma_finish==0);
+	// 	flag_dma_finish = 0;
+	// 		//while(iosignal_read(0));
+	// 	spi_writeraw(buf_rec1);
 
 		
-	}
+	// }
 
 
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
@@ -138,6 +138,9 @@ void play_mp3()
 			// while(!LCRK.read());
 			// while(LCRK.read());
 
+			while(flag_dma_finish==0);
+			flag_dma_finish = 0;
+
 			while(iosignal_read(0));
 
 			if ( flag_sw == 0 )
@@ -213,7 +216,7 @@ void send2spi()
 	spi_writeraw(raw_ptr);
 	while(flag_dma_finish == 0);
 	flag_dma_finish = 0;
-	raw_ptr += 4608;
+	raw_ptr += 4096;
 
 	// iosignal_ctrl(iosignal_read(0),0);
 	// while(!iosignal_read(0));
