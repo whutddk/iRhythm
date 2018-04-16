@@ -34,6 +34,24 @@ void play_mp3()
 	uint32_t res_dec;
 	MP3DecInfo *mp3_dec;
 
+	uint16_t i ;
+
+	for (i = 0;i<2304;i++)
+	{
+		buf_rec1[i]=0xffff-i;
+	}
+	flag_dma_finish = 1;
+	while(1)
+	{	
+		while(flag_dma_finish==0);
+		flag_dma_finish = 0;
+			//while(iosignal_read(0));
+		spi_writeraw(buf_rec1);
+
+		
+	}
+
+
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
 	if ( mp3_dec == NULL )
 	{
@@ -55,6 +73,8 @@ void play_mp3()
 
 	// isTransferCompleted = true;
 	// isFinished = true;
+
+
 
 	while(1)
 	{
