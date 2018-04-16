@@ -67,6 +67,8 @@ static void invalidate_xfer_data(SPI_XFER *xfer)
 
 void spi_xfer_callback(void *param)
 {
+	// dmac_wait_channel(&dma_chn_tx);
+	// dmac_wait_channel(&dma_chn_rx);
 	spi_reg->SSIENR = DW_SPI_SSI_DISABLE;
 	spi_reg->DMACR = 0;
 	spi_reg->DMATDLR = 0;
@@ -74,7 +76,7 @@ void spi_xfer_callback(void *param)
 	spi_reg->SER = 0;
 	spi_reg->SSIENR = DW_SPI_SSI_ENABLE;
 
-	invalidate_xfer_data(&data_xfer);
+	// invalidate_xfer_data(&data_xfer);
 	// EMBARC_PRINTF("dma finish\r\n");
 	flag_dma_finish = 1;
 }
@@ -136,7 +138,7 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 	spi_reg->DMATDLR = 32-SPI_XFER_ARB_SZ;
 	spi_reg->DMARDLR = SPI_XFER_ARB_SZ-1;
 	flush_xfer_data(xfer);
-	dmac_start_channel(&dma_chn_rx, xfer_cb, DMA_CHN_HIGH_PRIO);
+	// dmac_start_channel(&dma_chn_rx, xfer_cb, DMA_CHN_HIGH_PRIO);
 	dmac_start_channel(&dma_chn_tx, xfer_cb, DMA_CHN_HIGH_PRIO);
 	spi_reg->SER = 1<<EMSK_SPI_LINE_0;
 	spi_reg->SSIENR = DW_SPI_SSI_ENABLE;

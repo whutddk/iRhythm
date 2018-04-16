@@ -133,7 +133,7 @@ void play_mp3()
 
 
 
-    		// spi_writeraw(temp);
+    		 //spi_writeraw(temp);
 
 			if (byte_left < NUM_BYTE_READ) 
 			{
