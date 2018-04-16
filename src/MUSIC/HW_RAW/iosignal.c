@@ -64,14 +64,22 @@ void iosignal_ctrl(uint8_t val,uint8_t num)
 
 uint8_t iosignal_read(uint8_t num)
 {
+	uint32_t value = 0,mask;
+
 	if ( num == 0 )
 	{
-		io_signal->gpio_read(0x40000000, (void *)(0x40000000));
+		mask = 0x40000000;
+		io_signal->gpio_read(&value, mask);
+		value = (~value) & mask;
 	}
 	else
-	{
-		io_signal->gpio_read(0x80000000, (void *)(0x80000000));
+	{	
+		mask =0x80000000;
+		io_signal->gpio_read(&value, mask);
+		value = (~value) & mask;
 	}
+
+	return (value?1:0);
 }
 
 

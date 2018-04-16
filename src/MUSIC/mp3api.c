@@ -118,7 +118,7 @@ void play_mp3()
 			// while(!LCRK.read());
 			// while(LCRK.read());
 
-
+			while(iosignal_read(0));
 
 			if ( flag_sw == 0 )
 			{
