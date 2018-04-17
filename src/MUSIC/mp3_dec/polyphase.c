@@ -75,20 +75,24 @@
 #define MC0M(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));			vHi = *(vb1+(23-(x))); \
-	sum1L = MADD64(sum1L, vLo,  c1);	sum1L = MADD64(sum1L, vHi, -c2); \
+	cal_temp0 = (short)(vLo>>13) * (short)(c1>>13);  cal_temp1 = (short)(vHi>>13)*(short)(c2>>13); \
+	sum1L += cal_temp0 - cal_temp1; \
 }
 
 #define MC1M(x)	{ \
 	c1 = *coef;		coef++; \
 	vLo = *(vb1+(x)); \
-	sum1L = MADD64(sum1L, vLo,  c1); \
+	cal_temp0 = (short)(vLo>>13) * (short)(c1>>13); \
+	sum1L += cal_temp0; \
 }
 
 #define MC2M(x)	{ \
 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
-		sum1L = MADD64(sum1L, vLo,  c1);	sum2L = MADD64(sum2L, vLo,  c2); \
-		sum1L = MADD64(sum1L, vHi, -c2);	sum2L = MADD64(sum2L, vHi,  c1); \
+		cal_temp0 = (short)(vLo>>13) * (short)(c1>>13);  cal_temp1 = (short)(vLo>>13)*(short)(c2>>13); \
+		cal_temp2 = (short)(vHi>>13) * (short)(c2>>13);  cal_temp3 = (short)(vHi>>13)*(short)(c1>>13); \
+		sum1L += cal_temp0 - cal_temp2; \
+		sum2L += cal_temp1 + cal_temp3; \
 }
 
 /**************************************************************************************
@@ -116,9 +120,12 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 	const int *coef;
 	int *vb1;
 	int vLo, vHi, c1, c2;
-	Word64 sum1L, sum2L, rndVal;
+	// Word64 sum1L, sum2L, rndVal;
+	int sum1L, sum2L, rndVal;
+	int cal_temp0,cal_temp1,cal_temp2,cal_temp3;
 
-	rndVal = (Word64)( 1 << (DEF_NFRACBITS - 1 + (32 - CSHIFT)) );
+	// rndVal = (Word64)( 1 << (DEF_NFRACBITS - 1 + (32 - CSHIFT)) );
+	rndVal = 0;
 
 	/* special case, output sample 0 */
 	coef = coefBase;
@@ -134,7 +141,8 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 	MC0M(6)
 	MC0M(7)
 
-	*(pcm + 0) = (short)SAR64(sum1L, 32-CSHIFT + DEF_NFRACBITS);
+	// *(pcm + 0) = (short)SAR64(sum1L, 32-CSHIFT + DEF_NFRACBITS);
+	*(pcm + 0) = (short)sum1L;
 
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
@@ -150,7 +158,8 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 	MC1M(6)
 	MC1M(7)
 
-	*(pcm + 16) = (short)SAR64(sum1L, (32 - CSHIFT + DEF_NFRACBITS));
+	// *(pcm + 16) = (short)SAR64(sum1L, (32 - CSHIFT + DEF_NFRACBITS));
+	*(pcm + 16) = (short)sum1L;
 
 	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
 	coef = coefBase + 16;
@@ -171,8 +180,11 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 		MC2M(7)
 
 		vb1 += 64;
-		*(pcm)       = (short)SAR64(sum1L, (32-CSHIFT + DEF_NFRACBITS));
-		*(pcm + 2*i) = (short)SAR64(sum2L, (32-CSHIFT + DEF_NFRACBITS));
+		// *(pcm)       = (short)SAR64(sum1L, (32-CSHIFT + DEF_NFRACBITS));
+		// *(pcm + 2*i) = (short)SAR64(sum2L, (32-CSHIFT + DEF_NFRACBITS));
+		*(pcm)       = (short)sum1L;
+		*(pcm + 2*i) = (short)sum2L;
+
 		pcm++;
 	}
 }
