@@ -34,24 +34,8 @@ void play_mp3()
 	uint32_t res_dec;
 	MP3DecInfo *mp3_dec;
 
-	// uint16_t i ;
 
-	// for (i = 0;i<2304;i++)
-	// {
-	// 	buf_rec1[i]=0xffff-i;
-	// }
-	flag_dma_finish = 1;
-	// while(1)
-	// {	
-	// 	while(flag_dma_finish==0);
-	// 	flag_dma_finish = 0;
-	// 		//while(iosignal_read(0));
-	// 	spi_writeraw(buf_rec1);
-
-		
-	// }
-
-
+	/*code*/
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
 	if ( mp3_dec == NULL )
 	{
@@ -71,10 +55,7 @@ void play_mp3()
 	EMBARC_PRINTF("start to trace\r\n");
 	int flag_start = 0;
 
-	// isTransferCompleted = true;
-	// isFinished = true;
-
-
+	flag_dma_finish = 1;
 
 	while(1)
 	{
@@ -124,20 +105,6 @@ void play_mp3()
 				
 			}
 
-			// while( isTransferCompleted == false )//|| isFinished == false )
-			// {
-			// 	;
-			// }
-
-			 //while(!LCRK.read());
-   //      	while(!LCRK.read());
-
-			// isFinished = false;
-			// isTransferCompleted = false;
-			// uartpc.printf("GO2\r\n");
-			// while(!LCRK.read());
-			// while(LCRK.read());
-
 			while(flag_dma_finish==0);
 			flag_dma_finish = 0;
 
@@ -155,9 +122,6 @@ void play_mp3()
 		    }
 
 
-
-    		 //spi_writeraw(temp);
-
 			if (byte_left < NUM_BYTE_READ) 
 			{
 				memmove(dec_buff,read_ptr,byte_left);
@@ -172,10 +136,6 @@ void play_mp3()
 							break;
 						}
 				
-				// if (NUM_BYTE_READ - byte_left < NUM_BYTE_READ - byte_left)
-				// {
-				// 	memset(buf_read + byte_left + num_read, 0, NUM_BYTE_READ - byte_left - num_read);
-				// }
 				byte_left = NUM_BYTE_READ;
 				read_ptr = dec_buff;
 			}
@@ -183,7 +143,6 @@ void play_mp3()
 		}
 		else
 		{
-			//uartpc.printf("offset:%d\r\n",offset);
 			if( flag_start == 0 )
 			{
 					//fread(buf_read,1,NUM_BYTE_READ,fd);
@@ -209,6 +168,7 @@ void play_mp3()
 	EMBARC_PRINTF("MP3 file: decorder is over!\n\r" );
 }
 
+/*第二方案——异步解码播放
 void send2spi()
 {
 	uint8_t *raw_ptr = raw_buff;
@@ -222,6 +182,9 @@ void send2spi()
 	// while(!iosignal_read(0));
 	// iosignal_ctrl(iosignal_read(0),0);
 }
+第二方案——异步解码播放*/
+
+
 
 
 // void playlist_init()
