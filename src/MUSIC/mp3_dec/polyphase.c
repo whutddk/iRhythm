@@ -56,7 +56,8 @@
  */
 #define DEF_NFRACBITS	(DQ_FRACBITS_OUT - 2 - 2 - 15)
 #define CSHIFT	12	/* coefficients have 12 leading sign bits for early-terminating mulitplies */
-
+#define MOVE_BIT 13 
+#define CHECK_BIT 0
 // static __inline short ClipToShort(int x, int fracBits)
 // {
 // 	int sign;
@@ -75,22 +76,22 @@
 #define MC0M(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));			vHi = *(vb1+(23-(x))); \
-	cal_temp0 = (short)(vLo>>13) * (short)(c1>>13);  cal_temp1 = (short)(vHi>>13)*(short)(c2>>13); \
+	cal_temp0 = (short)(vLo>>MOVE_BIT) * (short)(c1>>MOVE_BIT);  cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
 	sum1L += cal_temp0 - cal_temp1; \
 }
 
 #define MC1M(x)	{ \
 	c1 = *coef;		coef++; \
 	vLo = *(vb1+(x)); \
-	cal_temp0 = (short)(vLo>>13) * (short)(c1>>13); \
+	cal_temp0 = (short)(vLo>>MOVE_BIT) * (short)(c1>>MOVE_BIT); \
 	sum1L += cal_temp0; \
 }
 
 #define MC2M(x)	{ \
 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
-		cal_temp0 = (short)(vLo>>13) * (short)(c1>>13);  cal_temp1 = (short)(vLo>>13)*(short)(c2>>13); \
-		cal_temp2 = (short)(vHi>>13) * (short)(c2>>13);  cal_temp3 = (short)(vHi>>13)*(short)(c1>>13); \
+		cal_temp0 = (short)(vLo>>MOVE_BIT) * (short)(c1>>MOVE_BIT);  cal_temp1 = (short)(vLo>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
+		cal_temp2 = (short)(vHi>>MOVE_BIT) * (short)(c2>>MOVE_BIT);  cal_temp3 = (short)(vHi>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
 		sum1L += cal_temp0 - cal_temp2; \
 		sum2L += cal_temp1 + cal_temp3; \
 }
@@ -142,7 +143,7 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 	MC0M(7)
 
 	// *(pcm + 0) = (short)SAR64(sum1L, 32-CSHIFT + DEF_NFRACBITS);
-	*(pcm + 0) = (short)sum1L;
+	*(pcm + 0) = (short)(sum1L>>CHECK_BIT);
 
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
@@ -159,7 +160,7 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 	MC1M(7)
 
 	// *(pcm + 16) = (short)SAR64(sum1L, (32 - CSHIFT + DEF_NFRACBITS));
-	*(pcm + 16) = (short)sum1L;
+	*(pcm + 16) = (short)(sum1L>>CHECK_BIT);
 
 	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
 	coef = coefBase + 16;
@@ -182,8 +183,8 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 		vb1 += 64;
 		// *(pcm)       = (short)SAR64(sum1L, (32-CSHIFT + DEF_NFRACBITS));
 		// *(pcm + 2*i) = (short)SAR64(sum2L, (32-CSHIFT + DEF_NFRACBITS));
-		*(pcm)       = (short)sum1L;
-		*(pcm + 2*i) = (short)sum2L;
+		*(pcm)       = (short)(sum1L>>CHECK_BIT);
+		*(pcm + 2*i) = (short)(sum2L>>CHECK_BIT);
 
 		pcm++;
 	}
@@ -192,22 +193,22 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 #define MC0S(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));		vHi = *(vb1+(23-(x))); \
-	cal_temp0 = (short)(vLo>>13)*(short)(c1>>13); cal_temp1 = (short)(vHi>>13)*(short)(c2>>13);\
+	cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT);\
 	sum1L += cal_temp0 - cal_temp1;\
 	\
 	vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
-	cal_temp0 = (short)(vLo>>13)*(short)(c1>>13); cal_temp1 = (short)(vHi>>13)*(short)(c2>>13);\
+	cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT);\
 	sum1R += cal_temp0 - cal_temp1;\
 }
 
 #define MC1S(x)	{ \
 	c1 = *coef;		coef++; \
 	vLo = *(vb1+(x)); \
-	cal_temp0 = (short)(vLo>>13)*(short)(c1>>13); \
+	cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
 	sum1L += cal_temp0;\
 	\
 	vLo = *(vb1+32+(x)); \
-	cal_temp1 = (short)(vLo>>13)*(short)(c1>>13);\
+	cal_temp1 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT);\
 	sum1R += cal_temp1;\
 }
 
@@ -215,19 +216,19 @@ void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase)
 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
 		\
-		cal_temp0 = (short)(vLo>>13)*(short)(c1>>13); \
-		cal_temp1 = (short)(vHi>>13)*(short)(c2>>13); \
-		cal_temp2 = (short)(vLo>>13)*(short)(c2>>13); \
-		cal_temp3 = (short)(vHi>>13)*(short)(c1>>13); \
+		cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
+		cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
+		cal_temp2 = (short)(vLo>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
+		cal_temp3 = (short)(vHi>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
 		\
 		sum1L += cal_temp0 - cal_temp1;\
 		sum2L += cal_temp2 + cal_temp3;\
 		\
 		vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
-		cal_temp0 = (short)(vLo>>13)*(short)(c1>>13); \
-		cal_temp1 = (short)(vHi>>13)*(short)(c2>>13); \
-		cal_temp2 = (short)(vLo>>13)*(short)(c2>>13); \
-		cal_temp3 = (short)(vHi>>13)*(short)(c1>>13); \
+		cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
+		cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
+		cal_temp2 = (short)(vLo>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
+		cal_temp3 = (short)(vHi>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
 		sum1R += cal_temp0 - cal_temp1; \
 		sum2R += cal_temp2 + cal_temp3; \
 }
@@ -280,8 +281,8 @@ void PolyphaseStereo(short *pcm, int *vbuf, const int *coefBase)
 	MC0S(6)
 	MC0S(7)
 
-	*(pcm + 0) = (short)sum1L;
-	*(pcm + 1) = (short)sum1R;
+	*(pcm + 0) = (short)(sum1L>>CHECK_BIT);
+	*(pcm + 1) = (short)(sum1R>>CHECK_BIT);
 
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
@@ -297,8 +298,8 @@ void PolyphaseStereo(short *pcm, int *vbuf, const int *coefBase)
 	MC1S(6)
 	MC1S(7)
 
-	*(pcm + 2*16 + 0) = (short)sum1L;
-	*(pcm + 2*16 + 1) = (short)sum1R;
+	*(pcm + 2*16 + 0) = (short)(sum1L>>CHECK_BIT);
+	*(pcm + 2*16 + 1) = (short)(sum1R>>CHECK_BIT);
 
 	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
 	coef = coefBase + 16;
@@ -320,10 +321,10 @@ void PolyphaseStereo(short *pcm, int *vbuf, const int *coefBase)
 		MC2S(7)
 
 		vb1 += 64;
-		*(pcm + 0)         = (short)sum1L;
-		*(pcm + 1)         = (short)sum1R;
-		*(pcm + 2*2*i + 0) = (short)sum2L;
-		*(pcm + 2*2*i + 1) = (short)sum2R;
+		*(pcm + 0)         = (short)(sum1L>>CHECK_BIT);
+		*(pcm + 1)         = (short)(sum1R>>CHECK_BIT);
+		*(pcm + 2*2*i + 0) = (short)(sum2L>>CHECK_BIT);
+		*(pcm + 2*2*i + 1) = (short)(sum2R>>CHECK_BIT);
 		pcm += 2;
 	}
 }
