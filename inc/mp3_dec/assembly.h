@@ -249,11 +249,11 @@ static __inline Word64 SAR64(Word64 x, int n)
 
 static __inline int MULSHIFT32(int x, int y)
 {
-	Word64  res;
-	res = (Word64)x*(Word64)y;
-	y = (int)(res>>32);
- 	return y;
-	// return _arc_mpym(x,y);
+	// Word64  res;
+	// res = (Word64)x*(Word64)y;
+	// y = (int)(res>>32);
+ // 	return y;
+	return _arc_mpym(x,y);
 }
 
 static __inline int FASTABS(int x)

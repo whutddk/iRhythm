@@ -6,8 +6,10 @@ CUR_CORE=arcem7d
 # Application name
 APPL ?= blinky
 
-HEAPSZ ?= 41943040 
-STACKSZ ?= 1048576
+OLEVEL ?= O3
+
+HEAPSZ ?= 83886080 
+# STACKSZ ?= 1048576
 
 #
 # root dir of embARC
