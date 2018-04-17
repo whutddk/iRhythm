@@ -57,20 +57,20 @@
 #define DEF_NFRACBITS	(DQ_FRACBITS_OUT - 2 - 2 - 15)
 #define CSHIFT	12	/* coefficients have 12 leading sign bits for early-terminating mulitplies */
 
-static __inline short ClipToShort(int x, int fracBits)
-{
-	int sign;
+// static __inline short ClipToShort(int x, int fracBits)
+// {
+// 	int sign;
 
-	/* assumes you've already rounded (x += (1 << (fracBits-1))) */
-	x >>= fracBits;
+// 	/* assumes you've already rounded (x += (1 << (fracBits-1))) */
+// 	x >>= fracBits;
 
-	/* Ken's trick: clips to [-32768, 32767] */
-	// sign = x >> 31;
-	// if (sign != (x >> 15))
-	// 	x = sign ^ ((1 << 15) - 1);
+// 	/* Ken's trick: clips to [-32768, 32767] */
+// 	// sign = x >> 31;
+// 	// if (sign != (x >> 15))
+// 	// 	x = sign ^ ((1 << 15) - 1);
 
-	return (short)x;
-}
+// 	return (short)x;
+// }
 
 #define MC0M(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
