@@ -65,9 +65,9 @@ static __inline short ClipToShort(int x, int fracBits)
 	x >>= fracBits;
 
 	/* Ken's trick: clips to [-32768, 32767] */
-	sign = x >> 31;
-	if (sign != (x >> 15))
-		x = sign ^ ((1 << 15) - 1);
+	// sign = x >> 31;
+	// if (sign != (x >> 15))
+	// 	x = sign ^ ((1 << 15) - 1);
 
 	return (short)x;
 }
