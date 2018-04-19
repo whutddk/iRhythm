@@ -46,7 +46,7 @@ void music_task()
 
 /**Malloc file name string space**/
 	music_filename = malloc(sizeof(char) * 50);
-
+	spi =  spi_get_dev(DW_SPI_0_ID);
 	
 
 
@@ -80,13 +80,14 @@ void music_task()
 		EMBARC_PRINTF("\r\nfile lenth = %d \r\n",file_lenth);
 
 /**read out file to DDR2 from SD card ,can product by another task**/
+		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(1000000));
 		iosignal_ctrl(1,0);
 		readout_file(music_filename);
 		iosignal_ctrl(0,0);	
 
-		spi =  spi_get_dev(DW_SPI_0_ID);
+		
 		spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
-
+		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(3000000));
 		EMBARC_PRINTF("\r\nfile lenth %d \r\n",file_lenth);
 		play_mp3(file_lenth);
 
