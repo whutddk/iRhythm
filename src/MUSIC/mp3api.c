@@ -13,8 +13,8 @@
 // volatile bool isFinished = true;
 volatile uint8_t flag_sw = 0; 
 
-short buf_rec1[2304]={1};
-short buf_rec2[2304]={1};
+char buf_rec1[2304]={1};
+char buf_rec2[2304]={1};
 
 uint8_t dec_buff[NUM_BYTE_READ] = {1};
 

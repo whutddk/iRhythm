@@ -287,8 +287,8 @@ extern const int quadTabMaxBits[2];
 #ifdef __cplusplus
 extern "C" {
 #endif
-void PolyphaseMono(short *pcm, int *vbuf, const int *coefBase);
-void PolyphaseStereo(short *pcm, int *vbuf, const int *coefBase);
+void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase);
+void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase);
 #ifdef __cplusplus
 }
 #endif
