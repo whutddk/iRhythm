@@ -10,7 +10,7 @@ struct filelist *Songid_END = NULL;
 struct filelist *Playlist_HEAD = NULL ;
 struct filelist *Playlist_END = NULL;
 
-void list_init()
+void filelist_init()
 {
 	struct filelist *lists = NULL;
 
@@ -29,7 +29,7 @@ void list_init()
 }
 
 //每获得一个歌曲id则后面加一个链
-void list_add(uint8_t list_id,char* id_data,int lenth)
+void filelist_add(uint8_t list_id,char* id_data,int lenth)
 {
 	struct filelist *lists = NULL;
 
@@ -70,7 +70,7 @@ void list_add(uint8_t list_id,char* id_data,int lenth)
 }
 
 //每获得一首歌的信息，删掉一个头节点
-void list_delete(uint8_t list_id)
+void filelist_delete(uint8_t list_id)
 {
 	struct filelist *lists = NULL;
 	switch (list_id)

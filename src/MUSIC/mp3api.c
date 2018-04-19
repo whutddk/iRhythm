@@ -20,7 +20,7 @@ short buf_rec2[2304]={1};
 
 uint8_t dec_buff[NUM_BYTE_READ] = {1};
 
-void play_mp3()
+void play_mp3(int filelenth)
 {
 
 	uint32_t temp = 0;
@@ -30,7 +30,7 @@ void play_mp3()
 	uint8_t *raw_ptr = raw_buff;
 	uint8_t *file_ptr = file_buff;
 	/*这里改文件大小*/
-	int file_left = 4271541;
+	int file_left = filelenth;
 	int byte_left = NUM_BYTE_READ;
 
 	uint32_t res_dec;
@@ -154,12 +154,14 @@ void play_mp3()
 				if ( file_left <= 0 )
 				{
 					//这里可能越界，需要保护
+					EMBARC_PRINTF("decorder never start and file end!\n\r" );
 					break;
 				}
 				continue;
 			}
 			else
 			{
+				EMBARC_PRINTF("decorder start and complete!\n\r" );
 				break;
 			}
 		}
@@ -220,7 +222,7 @@ void playlist_init()
 		}
 		if ( fileinfo.fattrib == 32 )
 		{
-			list_add(FILE_LIST,&(fileinfo.fname[0]),fileinfo.fsize);
+			filelist_add(FILE_LIST,&(fileinfo.fname[0]),fileinfo.fsize);
 			EMBARC_PRINTF("File name: %s  File size:%d   \r\n",fileinfo.fname,fileinfo.fsize);
 		}
 	}
