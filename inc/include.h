@@ -1,7 +1,26 @@
 #ifndef _INCLUDE_H_
 #define _INCLUDE_H_
 
+/********define in playlist.c******/
+struct filelist
+{
+	char data[50];
+	int lenth;
+	struct list* next;
+};
 
+#define NET_LIST 0
+#define FILE_LIST 1
+
+extern struct filelist *Songid_HEAD ;
+extern struct filelist *Songid_END ;
+
+extern struct filelist *Playlist_HEAD;
+extern struct filelist *Playlist_END;
+
+extern void list_init();
+extern void list_add(uint8_t list_id,char* id_data,int lenth);
+extern void list_delete(uint8_t list_id);
 
 
 /***********define in main.c ************/
@@ -28,8 +47,8 @@ extern int32_t spi_writeraw(const void *data);
 
 /**************define in mp3api.c************/
 extern void play_mp3();
-extern void send2spi();
-
+// extern void send2spi();
+extern void playlist_init();
 /**************define in iosignal.c**********/
 
 extern void iosignal_init();

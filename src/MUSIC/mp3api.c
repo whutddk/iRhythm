@@ -1,9 +1,11 @@
 #include "embARC.h"
 #include "embARC_debug.h"
+#include "stdlib.h"
 
 #include "mp3dec.h"
 #include "mp3common.h"
 #include "coder.h"
+
 
 #include "include.h"
 
@@ -187,47 +189,61 @@ void send2spi()
 
 
 
-// void playlist_init()
-// {
-// 	EMBARC_PRINTF("\r\nCreate Play List\r\n");
+void playlist_init()
+{
+	DIR dir;
+	FILINFO fileinfo;
 
-// 	struct list *lists = NULL;
-// 	lists = (struct list *)malloc(sizeof(struct list));
-// 	if ( NULL == lists )
-// 	{
-// 		uartpc.printf("\r\nPlay List Init Error!\r\n");
-// 	}
+	EMBARC_PRINTF("\r\nCreate Play List\r\n");
+
+	struct filelist *lists = NULL;
+	lists = (struct filelist *)malloc(sizeof(struct filelist));
+	if ( NULL == lists )
+	{
+		EMBARC_PRINTF("\r\nPlay List Init Error!\r\n");
+	}
+
+/*open and checkout the directory*/
+	// DIR* dir = opendir("/fs");
+	error_num = f_opendir (&dir, "0:/");
+	if ( error_num != FR_OK )
+	{
+		;
+	}
+
+	do
+	{
+		error_num = f_readdir (&dir, &fileinfo);
+		if ( dir.sect == 0 ) //end of directory
+		{
+			break;
+		}
+		if ( fileinfo.fattrib == 32 )
+		{
+			list_add(FILE_LIST,&(fileinfo.fname[0]),fileinfo.fsize);
+			EMBARC_PRINTF("File name: %s  File size:%d   \r\n",fileinfo.fname,fileinfo.fsize);
+		}
+	}
+	while( 1 );
 
 
-// 	DIR* dir = opendir("/fs");
-// 	errno_error(dir);
 
-// 	struct dirent* de;
-// 	// uartpc.printf("Printing all filenames:\r\n");
+	// struct dirent* de;
 
-// 	// if ( ( de = readdir(dir)) != NULL )
-// 	// {
-// 	// 	strcat(lists -> data, &(de->d_name)[0]);
-// 	// 	lists -> next = NULL;
-// 	// 	Playlist_HEAD = lists;
-// 	// 	Playlist_END = lists;
-// 	// 	uartpc.printf("Add %s into Play List\r\n", &(de->d_name)[0]);
-// 	// }
-
-
-// 	while((de = readdir(dir)) != NULL)
-// 	{
+	// while((de = readdir(dir)) != NULL)
+	// {
 		
-// 		//uartpc.printf("Format %d \r\n", de->d_type);
-// 		if ( de->d_type == 5 )
-// 		{
-// 			list_add(1,&(de->d_name)[0]);
-// 			uartpc.printf("Add %s into Play List\r\n", &(de->d_name)[0]);
-// 		}
-// 	}
+	// 	//uartpc.printf("Format %d \r\n", de->d_type);
+	// 	if ( de->d_type == 5 )
+	// 	{
+	// 		list_add(1,&(de->d_name)[0]);
+	// 		EMBARC_PRINTF("Add %s into Play List\r\n", &(de->d_name)[0]);
+	// 	}
+	// }
 
-// 	uartpc.printf("\r\nCloseing root directory. \r\n");
-// 	closedir(dir);
-// 	// return_error(error);
+	EMBARC_PRINTF("\r\nCloseing root directory. \r\n");
+	f_closedir(&dir);
+	// return_error(error);
 
-// }
+}
+
