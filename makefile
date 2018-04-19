@@ -18,7 +18,7 @@ EMBARC_ROOT = ..
 MID_SEL = common fatfs 
 OS_SEL = freertos
 # application source dirs
-APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/MUSIC/mp3_dec ./src/MUSIC/HW_RAW ./src/NET ./src/TASK 
+APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/MUSIC/mp3_dec ./src/MUSIC/HW_RAW ./src/MUSIC/dsp ./src/NET ./src/TASK 
 APPL_ASMSRC_DIR = .
 
 # application include dirs
