@@ -56,7 +56,7 @@ void music_task()
 	
 	while(1)
 	{
-		
+		file_lenth = Playlist_HEAD -> lenth;
 		memset( music_filename, 0, sizeof(char) * 50 );
 		strcat(music_filename,Playlist_HEAD -> data); 
 		//file_lenth = Playlist_HEAD -> lenth;
@@ -72,7 +72,7 @@ void music_task()
 
 		EMBARC_PRINTF("\r\nplay %s\r\n",music_filename);
 
-		if ( ( file_lenth = Playlist_HEAD -> lenth ) > 10 * 1024* 1024 )
+		if ( file_lenth  > 10 * 1024* 1024 )
 		{
 		 	EMBARC_PRINTF("\r\nfile too big,play fail!\r\n");
 		 	continue;
