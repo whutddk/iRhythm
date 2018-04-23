@@ -76,6 +76,7 @@ void net_init()
 /*************获取下载地址*******/
 
 #define REC_BUFF_SIZE (4096)
+#define REC_FIFO_SIZE (100)
 int socket_request(unsigned char option)
 {
 	int http_cnt;
@@ -124,23 +125,44 @@ int socket_request(unsigned char option)
     esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
     free(http_cmd);
 
+
 	EMBARC_PRINTF("============================ Find header ============================\r\n");
-	rec_buf = (char *)malloc(sizeof(char) * 8);
+	rec_buf = (char *)malloc(sizeof(char) * REC_FIFO_SIZE);
 	response = (char *)malloc(sizeof(char) * REC_BUFF_SIZE);
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
 
-	while(1)
+// EMBARC_PRINTF("============================ TEST ============================\r\n");
+// memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
+// while(1)
+// {
+// if ( rb_isempty(&(ESP8266_A->p_at->psio->rcv_rb) ))
+// {
+// 	EMBARC_PRINTF("============================ EMPTY ============================\r\n");
+// }
+// else
+// {
+// 	EMBARC_PRINTF("============================ NOT EMPTY ============================\r\n");
+// }
+// esp8266_nread( ESP8266_A, rec_buf, 1);
+// EMBARC_PRINTF("============================ PASS =======%s====================\r\n",rec_buf);
+// }
+
+// while(1);
+
+	while( !(rb_isempty(&(ESP8266_A->p_at->psio->rcv_rb) )) /* && not time out (read too fast) */ )
 	{
-    	memset(rec_buf, 0, sizeof(char) * 8);
+    	memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
     	// http_cnt = socket.recv(rec_buf, 1);
-    	http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,1, 10000);
-    	if ( http_cnt <= 0 )
-		{
-			// free(rec_buf);
-			EMBARC_PRINTF("Error In Header\r\n");
-			break;
-    	}
-    	rec_buf[1] = '\0';
+    	// http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,REC_FIFO_SIZE - 1, 10000);
+    	esp8266_nread(ESP8266_A, http_cnt, 1);
+    	EMBARC_PRINTF("%s\n\r",http_cnt);
+  //   	if ( http_cnt <= 0 )
+		// {
+		// 	// free(rec_buf);
+		// 	EMBARC_PRINTF("Error In Header\r\n");
+		// 	break;
+  //   	}
+    	//rec_buf[1] = '\0';
     	strcat(response,rec_buf);
 
 		/*******找到响应头的头部信息, 两个"\n\r"为分割点*******/
@@ -153,6 +175,11 @@ int socket_request(unsigned char option)
 			break;
 		}	
 	}
+	/*******************Fail to Get Header*********************************/
+
+
+	/*******************END Fail to Get Header*********************************/
+
 
 	EMBARC_PRINTF("============================ Get Response ============================\r\n");
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
@@ -161,17 +188,18 @@ int socket_request(unsigned char option)
 	do 
 	{
 		// http_cnt = socket.recv(rec_buf, 1);
-		http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,1, 1000);
+		http_cnt = esp8266_nread(ESP8266_A, http_cnt, 1);
 	}
-	while(*rec_buf != '{' && http_cnt != 0);
+	while(*rec_buf != '{' && http_cnt != 0 /*&& 8266 protect*/ );
 
 	strcat(response,"{\0");
 
 	while(1)
 	{		
-    	memset(rec_buf, 0, sizeof(char) * 8);
+    	memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
     	// http_cnt = socket.recv(rec_buf, 1);
-    	http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,1, 1000);
+    	// http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,REC_FIFO_SIZE - 1, 1000);
+    	http_cnt = esp8266_nread(ESP8266_A, http_cnt, 1);
     	rec_sum += http_cnt;
     	if ( http_cnt <= 0 )
 		{			
