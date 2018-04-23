@@ -3,10 +3,10 @@
 
 void gui_task()
 {
-	EMBARC_PRINTF("GUI_TASK START\r\n");
+	
 	while(1)
 	{
-		
-		// vTaskDelay( 1000 );
+		EMBARC_PRINTF("GUI_TASK START\r\n");
+		vTaskDelay( 1000 );
 	}
 }
