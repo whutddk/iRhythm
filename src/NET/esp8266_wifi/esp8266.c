@@ -148,7 +148,7 @@ int32_t esp8266_wifi_disconnect(ESP8266_DEF_PTR obj){
 }
 
 int32_t esp8266_address_get(ESP8266_DEF_PTR obj){
-	char rcv_buf[64];
+	char rcv_buf[100];
 	AT_PARSER_DEF_PTR p_at = obj->p_at;
 	at_send_cmd(p_at, AT_EXECUTE, "CIFSR");
 	return at_get_reply(p_at, rcv_buf, AT_NORMAL_TIMEOUT);

@@ -3,10 +3,11 @@
 
 void music_task()
 {
+	EMBARC_PRINTF("MUSIC_TASK START\r\n");
 	while(1)
 	{
-		EMBARC_PRINTF("MUSIC_TASK START\r\n");
-		vTaskDelay( 1000 );
+		
+		// vTaskDelay( 1000 );
 	}
 }
 
