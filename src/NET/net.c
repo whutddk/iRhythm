@@ -133,7 +133,7 @@ int socket_request(unsigned char option)
 	{
     	memset(rec_buf, 0, sizeof(char) * 8);
     	// http_cnt = socket.recv(rec_buf, 1);
-    	http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,1, 1000);
+    	http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,1, 10000);
     	if ( http_cnt <= 0 )
 		{
 			// free(rec_buf);

@@ -350,7 +350,7 @@ int32_t esp8266_read_timeout(ESP8266_DEF_PTR obj, char *buf,uint32_t cnt_aim, ui
 	uint32_t read_cnt;
 	uint32_t cur_time;
 
-	if(obj->wifi_connected && obj->trans_mode == ESP8266_PASSTHR)
+	if( obj->wifi_connected )
 	{
 		cur_time = OSP_GET_CUR_MS();
 		do 
