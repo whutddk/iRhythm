@@ -201,7 +201,7 @@ int32_t esp8266_dns_lookup(ESP8266_DEF_PTR obj, char * domain_ip, AT_STRING doma
 }
 
 int32_t esp8266_tcp_connect(ESP8266_DEF_PTR obj, AT_STRING server_IP, uint32_t port){
-	char rcv_buf[64];
+	char rcv_buf[100];
 	char IP_Str[32], port_Str[16];
 	sprintf(IP_Str, "\"%s\"", server_IP);
 	sprintf(port_Str, "%d", port);

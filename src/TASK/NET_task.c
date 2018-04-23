@@ -79,8 +79,12 @@ void net_task()
     EMBARC_PRINTF("============================ Show IP ============================\n");
 
     esp8266_address_get(esp8266);
-    // vTaskDelay( 1 );
+    vTaskDelay( 1 );
     // board_delay_ms(1000, 1);
+
+	EMBARC_PRINTF("============================ connect socket ============================\n");
+	esp8266_tcp_connect(esp8266,"180.76.141.217", 80);
+
 
     EMBARC_PRINTF("============================ while ============================\n");
 
