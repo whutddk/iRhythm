@@ -23,8 +23,7 @@ void net_task()
 
     net_init();
 
-	EMBARC_PRINTF("============================ connect socket ============================\n");
-	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
+    socket_request(0);
 
 
     EMBARC_PRINTF("============================ while ============================\n");

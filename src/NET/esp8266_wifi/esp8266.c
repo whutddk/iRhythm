@@ -344,6 +344,29 @@ int32_t esp8266_read(ESP8266_DEF_PTR obj, char *buf, uint32_t timeout){
 	return AT_ERROR;
 }
 
+int32_t esp8266_read_timeout(ESP8266_DEF_PTR obj, char *buf,uint32_t cnt_aim, uint32_t timeout)
+{
+	uint32_t cur_ofs = 0;
+	uint32_t read_cnt;
+	uint32_t cur_time;
+
+	if(obj->wifi_connected && obj->trans_mode == ESP8266_PASSTHR)
+	{
+		cur_time = OSP_GET_CUR_MS();
+		do 
+		{
+			read_cnt = at_read(obj->p_at, &buf[cur_ofs], 1);
+			cur_ofs += read_cnt;
+		} 
+		while((OSP_GET_CUR_MS()-cur_time) < timeout && cur_ofs < cnt_aim);
+		buf[cur_ofs] = '\0';
+		dbg_printf(DBG_LESS_INFO, "[%s]%d: \"%s\" (%d)\r\n", __FUNCTION__, __LINE__, buf, strlen(buf));
+		return (int32_t)(cur_ofs);
+	}
+	return -1;
+}
+
+
 uint32_t esp8266_nread(ESP8266_DEF_PTR obj, char *buf, uint32_t n){
 	if(obj->wifi_connected){
 		return at_read(obj->p_at, buf, n);
