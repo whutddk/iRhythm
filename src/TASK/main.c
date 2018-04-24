@@ -56,7 +56,7 @@ int main(void)
 {
 	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
 	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
-	
+	board_init();
 	vTaskSuspendAll();
 
 

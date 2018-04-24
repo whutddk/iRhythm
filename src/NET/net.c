@@ -33,14 +33,14 @@ void net_init()
 	
     esp8266_init(ESP8266_A, UART_BAUDRATE_115200);
     at_test(ESP8266_A->p_at);
-    vTaskDelay( 1 );
+    //vTaskDelay( 1 );
 
     // //Set Mode
     EMBARC_PRINTF("============================ Set Mode ============================\n");
     esp8266_wifi_mode_get(ESP8266_A, false);
-    vTaskDelay( 1 );
+    //vTaskDelay( 1 );
     esp8266_wifi_mode_set(ESP8266_A, 3, false);
-    vTaskDelay( 1 );
+    //vTaskDelay( 1 );
 
     //Connect WiFi
     EMBARC_PRINTF("============================ Connect WiFi ============================\n");
@@ -58,7 +58,7 @@ void net_init()
     while(esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false)!=AT_OK)
     {
         EMBARC_PRINTF("WIFI %s connect failed\n", WIFI_SSID);
-        vTaskDelay( 1 );
+        //vTaskDelay( 1 );
     }
     EMBARC_PRINTF("WIFI %s connect succeed\n", WIFI_SSID);
 
@@ -118,19 +118,17 @@ int socket_request(unsigned char option)
     }
     
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-    esp8266_passthr_start(ESP8266_A);
-	esp8266_passthr_write(ESP8266_A, http_cmd, strlen(http_cmd));
     // http_cnt = socket.send(http_cmd, strlen(http_cmd));
-	//esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-    free(http_cmd);
+	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+    //free(http_cmd);
 
     
-
+    // EMBARC_PRINTF("OSP_GET_CUR_MS()= =======%d====================\r\n",OSP_GET_CUR_MS());
 	EMBARC_PRINTF("============================ Find header ============================\r\n");
 	rec_buf = (char *)malloc(sizeof(char) * REC_FIFO_SIZE);
 	response = (char *)malloc(sizeof(char) * REC_BUFF_SIZE);
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
-	//clear_recbuf(ESP8266_A);
+	clear_recbuf(ESP8266_A);
     
 // EMBARC_PRINTF("============================ TEST ============================\r\n");
 // memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
@@ -148,42 +146,21 @@ int socket_request(unsigned char option)
 // EMBARC_PRINTF("============================ PASS =======%s====================\r\n",rec_buf);
 // }
 
-// while(1);
-	//vTaskDelay( 500 );
-
 	/************NEED Protect Here***********************/
-	// while(1)
-	// {
+	while(rec_sum < 1000)
+	{
+		// EMBARC_PRINTF("OSP_GET_CUR_MS()= =======%d====================\r\n",OSP_GET_CUR_MS());
     	memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
     	// http_cnt = socket.recv(rec_buf, 1);
     	// http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,REC_FIFO_SIZE - 1, 10000);
     	// esp8266_nread(ESP8266_A, rec_buf, 1);
-    	// at_read(ESP8266_A->p_at, response, 1000);
-    	esp8266_read(ESP8266_A, response, 1000);
-    	EMBARC_PRINTF("%s",response);
-  //   	if ( http_cnt <= 0 )
-		// {
-		// 	// free(rec_buf);
-		// 	EMBARC_PRINTF("Error In Header\r\n");
-		// 	break;
-  //   	}
-    	//rec_buf[1] = '\0';
-    	// strcat(response,rec_buf);
+		rec_sum += at_read(ESP8266_A->p_at, rec_buf, 99);
+    	
+    	EMBARC_PRINTF("%d\r",rec_sum);
 
-		/*******找到响应头的头部信息, 两个"\n\r"为分割点*******/
-		// i = strlen(response) - 1 ;
-		// for ( ; response[i] == '\n' || response[i] == '\r' ; i--, flag++ );
-		// if ( flag == 4 )
-		// {
-		// 	//EMBARC_PRINTF("Final Header is:\n\r %s\r\n",response);
-			
-		// 	//break;
-		// }
-		// else
-		// {
-		// 	flag = 0;
-		// }	
-	// }
+    	strcat(response,rec_buf);
+
+	}
 	/*******************Fail to Get Header*********************************/
 
 
@@ -192,6 +169,10 @@ int socket_request(unsigned char option)
 
 	EMBARC_PRINTF("============================ Get Response ============================\r\n");
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
+
+while(1);
+
+
 
 	//skip error head until "{" appear
 	do 
