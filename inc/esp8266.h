@@ -60,6 +60,8 @@ uint32_t esp8266_nread(ESP8266_DEF_PTR obj, char *buf, uint32_t n);
 
 int32_t esp8266_CIPCLOSE(ESP8266_DEF_PTR obj, char * conn_buf);
 
+
+extern void clear_recbuf(ESP8266_DEF_PTR obj);
 /*read byte and timeout*/
 extern int32_t esp8266_read_timeout(ESP8266_DEF_PTR obj, char *buf,uint32_t cnt, uint32_t timeout);
 #endif
