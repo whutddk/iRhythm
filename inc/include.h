@@ -7,6 +7,29 @@
 #include <string.h>
 #include <stdio.h>
 #include <malloc.h>
+
+/********define in playlist.c******/
+struct filelist
+{
+	char data[50];
+	int lenth;
+	struct filelist* next;
+};
+
+#define NET_LIST 0
+#define FILE_LIST 1
+
+
+extern struct filelist *Songid_HEAD ;
+extern struct filelist *Songid_END ;
+
+extern struct filelist *Playlist_HEAD;
+extern struct filelist *Playlist_END;
+
+extern void filelist_init();
+extern void filelist_add(uint8_t list_id,char* id_data,int lenth);
+extern void filelist_delete(uint8_t list_id);
+
 /*************define in net.c****************/
 extern uint8_t flag_netpoll ;
 extern char *net_buff;
