@@ -35,7 +35,7 @@ static int get_songid(const char *jsonstr)
 	char songid[12] = "";
 
  /*************Get Id Here only 10 ,Can Change to Get More Song once Request***************************************/
-	uint8_t i = 10;
+	uint8_t i = 10,j = 0;
 	while(i--)
 	{
 		string = strstr(string,"\"id\":");
@@ -46,11 +46,12 @@ static int get_songid(const char *jsonstr)
 		}
 		string += 5;
 
-		for (i = 0 ; (*string) != ',' ;i++,string ++ )
+/******************Caution "+IPD" May Appear in the string"*****************************************/
+		for (j = 0 ; (*string) != ',' ;j++,string ++ )
 		{
-			songid[i] = *(string);
+			songid[j] = *(string);
 		}
-		songid[i] = '\0';
+		songid[j] = '\0';
 		EMBARC_PRINTF("\r\n%s\r\n",songid);
 
 		/***建议两张表分开写******/
@@ -258,7 +259,7 @@ int socket_request(unsigned char option)
 
     
     // EMBARC_PRINTF("OSP_GET_CUR_MS()= =======%d====================\r\n",OSP_GET_CUR_MS());
-	EMBARC_PRINTF("============================ Find header ============================\r\n");
+	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
 	rec_buf = (char *)malloc(sizeof(char) * REC_FIFO_SIZE);
 	response = (char *)malloc(sizeof(char) * REC_BUFF_SIZE);
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
@@ -268,30 +269,13 @@ int socket_request(unsigned char option)
 	cur_time = OSP_GET_CUR_MS();
 	while( OSP_GET_CUR_MS() - cur_time < 5000 );
 
-	// do
-
-    	// memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
-
     EMBARC_PRINTF("%s\r\n",(net_buff));
-	
-	flag_netpoll = 0;//end to poll
+
+	/*********end to poll.reset***************/
+	flag_netpoll = 0;
 	bypass_cnt = 0;
-	/*******************Fail to Get Header*********************************/
-
-
-	/*******************END Fail to Get Header*********************************/
-
 
 	EMBARC_PRINTF("============================ Get Response ============================\r\n");
-	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
-
-
-
-
-
-	//skip error head until "{" appear
-
-	while(*rec_buf != '{' /*&& 8266 protect*/ );
 
 	strcat(response,"{\0");
 
@@ -300,7 +284,7 @@ int socket_request(unsigned char option)
 	switch(option)
 	{
 		case SONG_ID :
-			if (-1 == get_songid(response))
+			if (-1 == get_songid(net_buff))
 			{
 				return -1;
 			}
