@@ -29,9 +29,6 @@ ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
 void net_init()
 {
-	char *conn_buf;
-    char scan_result[1024];
-
 	EMBARC_PRINTF("============================ Init ============================\n");
 	
     esp8266_init(ESP8266_A, UART_BAUDRATE_115200);
@@ -121,10 +118,10 @@ int socket_request(unsigned char option)
     }
     
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-
-	
+    esp8266_passthr_start(ESP8266_A);
+	esp8266_passthr_write(ESP8266_A, http_cmd, strlen(http_cmd));
     // http_cnt = socket.send(http_cmd, strlen(http_cmd));
-	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+	//esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
     free(http_cmd);
 
     
@@ -133,7 +130,7 @@ int socket_request(unsigned char option)
 	rec_buf = (char *)malloc(sizeof(char) * REC_FIFO_SIZE);
 	response = (char *)malloc(sizeof(char) * REC_BUFF_SIZE);
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
-	clear_recbuf(ESP8266_A);
+	//clear_recbuf(ESP8266_A);
     
 // EMBARC_PRINTF("============================ TEST ============================\r\n");
 // memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
@@ -161,7 +158,8 @@ int socket_request(unsigned char option)
     	// http_cnt = socket.recv(rec_buf, 1);
     	// http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,REC_FIFO_SIZE - 1, 10000);
     	// esp8266_nread(ESP8266_A, rec_buf, 1);
-    	at_read(ESP8266_A->p_at, response, 1000);
+    	// at_read(ESP8266_A->p_at, response, 1000);
+    	esp8266_read(ESP8266_A, response, 1000);
     	EMBARC_PRINTF("%s",response);
   //   	if ( http_cnt <= 0 )
 		// {
