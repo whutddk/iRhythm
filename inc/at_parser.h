@@ -39,7 +39,7 @@
 #define AT_OK_STR		"OK"
 #define AT_ERROR_STR	"ERROR"
 
-#define AT_RX_BUFSIZE	512
+#define AT_RX_BUFSIZE	2048
 #define AT_TX_BUFSIZE	128
 
 #define AT_NORMAL_TIMEOUT 	100
