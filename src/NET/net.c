@@ -155,10 +155,9 @@ int socket_request(unsigned char option)
     	// memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
 
     EMBARC_PRINTF("%s\r\n",(net_buff));
-
-
 	
 	flag_netpoll = 0;//end to poll
+	bypass_cnt = 0;
 	/*******************Fail to Get Header*********************************/
 
 
@@ -168,62 +167,35 @@ int socket_request(unsigned char option)
 	EMBARC_PRINTF("============================ Get Response ============================\r\n");
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
 
-while(1);
+
 
 
 
 	//skip error head until "{" appear
-	do 
-	{
-		// http_cnt = socket.recv(rec_buf, 1);
-		// esp8266_nread(ESP8266_A, rec_buf, 1);
-		at_read(ESP8266_A->p_at, rec_buf, 1);
-	}
+
 	while(*rec_buf != '{' /*&& 8266 protect*/ );
 
 	strcat(response,"{\0");
 
-	EMBARC_PRINTF("============================ Jump over top of response ============================\r\n");
-	while(1)
-	{		
-    	memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
-    	// http_cnt = socket.recv(rec_buf, 1);
-    	// http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,REC_FIFO_SIZE - 1, 1000);
-    	http_cnt = esp8266_nread(ESP8266_A, rec_buf, 1);
-    	rec_sum += http_cnt;
-    	if ( http_cnt <= 0 )
-		{			
-			EMBARC_PRINTF("Recv End\n\r");
+	EMBARC_PRINTF("============================ Extract Information ============================\r\n");
+
+	switch(option)
+	{
+		case 0 :
+			if (-1 == get_songid(response))
+			{
+				return -1;
+			}
 			break;
-    	}
-    	if ( rec_sum >= REC_BUFF_SIZE )
-		{			
-			EMBARC_PRINTF("Too Big,Break!\n\r");
+		case 1:
+			if (-1 == get_songinfo(response))
+			{
+				return -1;
+			}
 			break;
-    	}
-    	rec_buf[http_cnt] ='\0';  	
-    	strcat(response,rec_buf);  	
 	}
 
-	EMBARC_PRINTF("%s\r\n",response);
-
-	// switch(option)
-	// {
-	// 	case 0 :
-	// 		if (-1 == get_songid(response))
-	// 		{
-	// 			return -1;
-	// 		}
-	// 		break;
-	// 	case 1:
-	// 		if (-1 == get_songinfo(response))
-	// 		{
-	// 			return -1;
-	// 		}
-	// 		break;
-	// }
-
-
+	while(1);
 	free(rec_buf);
 	free(response);
 	EMBARC_PRINTF("Recv Done.\r\n");
