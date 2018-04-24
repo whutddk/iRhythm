@@ -20,10 +20,12 @@ void net_task()
     // EMBARC_PRINTF("============================ Connect Server ============================\n");
 
     // esp8266_tcp_server_open(esp8266, 80);
+    /***init songid list*****/
+    filelist_init();
 
     net_init();
 
-    socket_request(0);
+    socket_request(SONG_ID);
 
 
     EMBARC_PRINTF("============================ while ============================\n");

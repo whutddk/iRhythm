@@ -31,6 +31,9 @@ extern void filelist_add(uint8_t list_id,char* id_data,int lenth);
 extern void filelist_delete(uint8_t list_id);
 
 /*************define in net.c****************/
+
+#define SONG_ID 0
+#define SONG_INFO 1
 extern uint8_t flag_netpoll ;
 extern char *net_buff;
 extern uint16_t bypass_cnt;
