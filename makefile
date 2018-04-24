@@ -7,7 +7,7 @@ CUR_CORE=arcem7d
 APPL ?= blinky
 
 
-
+HEAPSZ ?= 83886080
 #
 # root dir of embARC
 #

@@ -97,6 +97,7 @@ static void sio_rx_callback(void *ptr)
 	DEV_UART_INFO *uart_info;
 	EZ_SIO *sio;
 	uint32_t cpu_status;
+	uint16_t bypass_cnt = 0
 
 	if (ptr == NULL) return;
 
@@ -112,16 +113,25 @@ static void sio_rx_callback(void *ptr)
 	uart_obj->uart_control(UART_CMD_GET_RXAVAIL, (void *)(&rd_avail));
 	while (rd_avail > 0) {
 		rd_cnt = (rd_avail<BUFSZ_LOCAL) ? rd_avail : BUFSZ_LOCAL;
-		cpu_status = cpu_lock_save();
-		if (rb_isfull(rcv_rb) == 0) {
-			uart_obj->uart_read((void *)rbbuf, rd_cnt);
-			pushed_cnt = rb_push(rcv_rb, (rb_buftype *)rbbuf, rd_cnt);
-		} else {
-			pushed_cnt = 0;
+		/***************Add a Capacitance When Receive Data*************************/
+		if ( flag_netpoll == 1 ) 
+		{
+			uart_obj->uart_read((void *)net_buff + bypass_cnt, rd_cnt);
+			bypass_cnt += rd_cnt;
 		}
-		cpu_unlock_restore(cpu_status);
-		if (pushed_cnt != rd_cnt) {
-			break;
+		else
+		{
+			cpu_status = cpu_lock_save();
+			if (rb_isfull(rcv_rb) == 0) {
+				uart_obj->uart_read((void *)rbbuf, rd_cnt);
+				pushed_cnt = rb_push(rcv_rb, (rb_buftype *)rbbuf, rd_cnt);
+			} else {
+				pushed_cnt = 0;
+			}
+			cpu_unlock_restore(cpu_status);
+			if (pushed_cnt != rd_cnt) {
+				break;
+			}
 		}
 		uart_obj->uart_control(UART_CMD_GET_RXAVAIL, (void *)(&rd_avail));
 	}

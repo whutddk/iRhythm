@@ -23,7 +23,8 @@
 // static char cmd_getlist = "GET http://fm.baidu.com/dev/api/?tn=playlist&id=public_tuijian_rege&hashcode=&_=1519727783752 HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\n\r\n";
 
 
-
+uint8_t flag_netpoll = 0;
+char *net_buff;
 ESP8266_DEF __ESP8266_A;
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
@@ -31,6 +32,19 @@ void net_init()
 {
 	EMBARC_PRINTF("============================ Init ============================\n");
 	
+	net_buff = malloc(sizeof(char) * 10 * 1024 * 1024);
+	if ( net_buff == NULL )
+	{
+		EMBARC_PRINTF("Malloc Net Buff Fail!\r\nstop!\r\n");
+		while(1);
+	}
+	else
+	{
+		memset( net_buff, 0, sizeof(char) * 10 * 1024 * 1024 );
+		EMBARC_PRINTF("Malloc Net Buff Pass!\r\n");
+	}
+
+
     esp8266_init(ESP8266_A, UART_BAUDRATE_115200);
     at_test(ESP8266_A->p_at);
     //vTaskDelay( 1 );
