@@ -162,7 +162,7 @@ int socket_request(unsigned char option)
     	// http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,REC_FIFO_SIZE - 1, 10000);
     	// esp8266_nread(ESP8266_A, rec_buf, 1);
     	at_read(ESP8266_A->p_at, rec_buf, 1);
-    	EMBARC_PRINTF("%s",rec_buf);
+    	//EMBARC_PRINTF("%s",rec_buf);
   //   	if ( http_cnt <= 0 )
 		// {
 		// 	// free(rec_buf);
@@ -199,13 +199,14 @@ int socket_request(unsigned char option)
 	do 
 	{
 		// http_cnt = socket.recv(rec_buf, 1);
-		esp8266_nread(ESP8266_A, rec_buf, 1);
+		// esp8266_nread(ESP8266_A, rec_buf, 1);
+		at_read(ESP8266_A->p_at, rec_buf, 1);
 	}
 	while(*rec_buf != '{' /*&& 8266 protect*/ );
 
 	strcat(response,"{\0");
 
-
+	EMBARC_PRINTF("============================ Jump over top of response ============================\r\n");
 	while(1)
 	{		
     	memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
