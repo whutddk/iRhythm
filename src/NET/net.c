@@ -134,7 +134,8 @@ int socket_request(unsigned char option)
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
     // http_cnt = socket.send(http_cmd, strlen(http_cmd));
 	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-    //free(http_cmd);
+	flag_netpoll = 1;//start to poll
+    free(http_cmd);
 
     
     // EMBARC_PRINTF("OSP_GET_CUR_MS()= =======%d====================\r\n",OSP_GET_CUR_MS());
@@ -144,37 +145,18 @@ int socket_request(unsigned char option)
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
 	clear_recbuf(ESP8266_A);
     
-// EMBARC_PRINTF("============================ TEST ============================\r\n");
-// memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
-// while(1)
-// {
-// if ( rb_isempty(&(ESP8266_A->p_at->psio->rcv_rb) ))
-// {
-// 	EMBARC_PRINTF("============================ EMPTY ============================\r\n");
-// }
-// else
-// {
-// 	EMBARC_PRINTF("============================ NOT EMPTY ============================\r\n");
-// }
-// esp8266_nread( ESP8266_A, rec_buf, 1);
-// EMBARC_PRINTF("============================ PASS =======%s====================\r\n",rec_buf);
-// }
-
 	/************NEED Protect Here***********************/
-	while(rec_sum < 1000)
+	do
 	{
-		// EMBARC_PRINTF("OSP_GET_CUR_MS()= =======%d====================\r\n",OSP_GET_CUR_MS());
-    	memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
-    	// http_cnt = socket.recv(rec_buf, 1);
-    	// http_cnt = esp8266_read_timeout( ESP8266_A, rec_buf ,REC_FIFO_SIZE - 1, 10000);
-    	// esp8266_nread(ESP8266_A, rec_buf, 1);
-		rec_sum += at_read(ESP8266_A->p_at, rec_buf, 99);
-    	
-    	EMBARC_PRINTF("%d\r",rec_sum);
+    	// memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
 
-    	strcat(response,rec_buf);
+    	EMBARC_PRINTF("%s",net_buff);
+
+    	// strcat(response,rec_buf);
 
 	}
+	while( strlen(net_buff) < 1000 );
+	flag_netpoll = 0;//end to poll
 	/*******************Fail to Get Header*********************************/
 
 

@@ -36,6 +36,7 @@
  * @{
  */
 #ifndef _EMSK_EASY_SIO_H_
+#define _EMSK_EASY_SIO_H_
 #define BOARD_EMSK_DRV_EASY_SIO
 
 #include "stdint.h"

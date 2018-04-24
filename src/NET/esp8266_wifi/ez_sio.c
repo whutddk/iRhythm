@@ -50,6 +50,8 @@
 #include "arc_exception.h"
 #include "ez_sio.h"
 
+#include "include.h"
+
 #define BUFSZ_LOCAL	32
 
 const uint32_t ez_disabled = DEV_DISABLED;
@@ -97,7 +99,7 @@ static void sio_rx_callback(void *ptr)
 	DEV_UART_INFO *uart_info;
 	EZ_SIO *sio;
 	uint32_t cpu_status;
-	uint16_t bypass_cnt = 0
+	uint16_t bypass_cnt = 0;
 
 	if (ptr == NULL) return;
 
