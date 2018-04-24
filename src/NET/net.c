@@ -146,20 +146,17 @@ int socket_request(unsigned char option)
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
 	clear_recbuf(ESP8266_A);
     
-	/************NEED Protect Here***********************/
-	// cur_time = OSP_GET_CUR_MS();
-	// while( OSP_GET_CUR_MS() - cur_time < 100000 );
+	/************NEED USE un-Block delay here Here***********************/
+	cur_time = OSP_GET_CUR_MS();
+	while( OSP_GET_CUR_MS() - cur_time < 5000 );
 
 	// do
-	while(1)
-	{
+
     	// memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
 
-    	EMBARC_PRINTF("%s\r\n",(net_buff));
+    EMBARC_PRINTF("%s\r\n",(net_buff));
 
-    	// strcat(response,rec_buf);
 
-	}
 	
 	flag_netpoll = 0;//end to poll
 	/*******************Fail to Get Header*********************************/
