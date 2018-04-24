@@ -33,6 +33,8 @@
 #include "string.h"
 #include "stdarg.h"
 
+#include "include.h"
+
 #define DBG_MORE
 #include "embARC_debug.h"
 

@@ -25,6 +25,7 @@
 
 uint8_t flag_netpoll = 0;
 char *net_buff;
+uint16_t bypass_cnt = 0;
 ESP8266_DEF __ESP8266_A;
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
@@ -100,7 +101,7 @@ int socket_request(unsigned char option)
 	int flag = 0;
 	int i;
 	uint16_t rec_sum = 0;
-
+	uint32_t cur_time ;
     // socket.connect("180.76.141.217", 80);
 
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
@@ -146,16 +147,20 @@ int socket_request(unsigned char option)
 	clear_recbuf(ESP8266_A);
     
 	/************NEED Protect Here***********************/
-	do
+	// cur_time = OSP_GET_CUR_MS();
+	// while( OSP_GET_CUR_MS() - cur_time < 100000 );
+
+	// do
+	while(1)
 	{
     	// memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
 
-    	EMBARC_PRINTF("%s",net_buff);
+    	EMBARC_PRINTF("%s\r\n",(net_buff));
 
     	// strcat(response,rec_buf);
 
 	}
-	while( strlen(net_buff) < 1000 );
+	
 	flag_netpoll = 0;//end to poll
 	/*******************Fail to Get Header*********************************/
 

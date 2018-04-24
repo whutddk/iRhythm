@@ -99,7 +99,7 @@ static void sio_rx_callback(void *ptr)
 	DEV_UART_INFO *uart_info;
 	EZ_SIO *sio;
 	uint32_t cpu_status;
-	uint16_t bypass_cnt = 0;
+
 
 	if (ptr == NULL) return;
 
@@ -118,8 +118,10 @@ static void sio_rx_callback(void *ptr)
 		/***************Add a Capacitance When Receive Data*************************/
 		if ( flag_netpoll == 1 ) 
 		{
-			uart_obj->uart_read((void *)net_buff + bypass_cnt, rd_cnt);
+			cpu_status = cpu_lock_save();
+			uart_obj->uart_read((void *)(net_buff + bypass_cnt), rd_cnt);
 			bypass_cnt += rd_cnt;
+			cpu_unlock_restore(cpu_status);
 		}
 		else
 		{
