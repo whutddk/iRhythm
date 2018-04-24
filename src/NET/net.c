@@ -122,6 +122,7 @@ int socket_request(unsigned char option)
     
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
 
+	
     // http_cnt = socket.send(http_cmd, strlen(http_cmd));
 	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
     free(http_cmd);
@@ -132,8 +133,8 @@ int socket_request(unsigned char option)
 	rec_buf = (char *)malloc(sizeof(char) * REC_FIFO_SIZE);
 	response = (char *)malloc(sizeof(char) * REC_BUFF_SIZE);
 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
-
-    clear_recbuf(ESP8266_A);
+	clear_recbuf(ESP8266_A);
+    
 // EMBARC_PRINTF("============================ TEST ============================\r\n");
 // memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
 // while(1)
@@ -152,7 +153,9 @@ int socket_request(unsigned char option)
 
 // while(1);
 	//vTaskDelay( 500 );
-	while( 1 /* && not time out (read too fast) */ )
+
+	/************NEED Protect Here***********************/
+	while(1)
 	{
     	memset(rec_buf, 0, sizeof(char) * REC_FIFO_SIZE);
     	// http_cnt = socket.recv(rec_buf, 1);
