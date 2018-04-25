@@ -215,8 +215,6 @@ int socket_request(unsigned char option)
 	char id_char[10] = {0};
 	int idlen_int;
 	char idlen_char[3] = "";
-	char *rec_buf;
-	char *response;
 	int flag = 0;
 	int i;
 	uint16_t rec_sum = 0;
@@ -233,21 +231,21 @@ int socket_request(unsigned char option)
     EMBARC_PRINTF("============================ create http command ============================\r\n");
     switch (option)
     {
-    	case 0:
+    	case SONG_ID:
 			strcat (http_cmd,"GET http://fm.baidu.com/dev/api/?tn=playlist&id=public_tuijian_rege&hashcode=&_=1519727783752 HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\n\r\n");
 			break;
-    	case 1:
-			// strcat (http_cmd,"POST http://fm.baidu.com/data/music/songlink HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\nContent-Length: ");
+    	case SONG_INFO:
+			strcat (http_cmd,"POST http://fm.baidu.com/data/music/songlink HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\nContent-Length: ");
 			
-			// idlen_int = strlen(Songid_HEAD->data);
-			// idlen_int += 8;
+			idlen_int = strlen(Songid_HEAD->data);
+			idlen_int += 8;
 			
-			// itoa(idlen_int,idlen_char,10);
-			// strcat(http_cmd,idlen_char);
-			// strcat(http_cmd,"\r\n\r\nsongIds=");
+			itoa(idlen_int,idlen_char,10);
+			strcat(http_cmd,idlen_char);
+			strcat(http_cmd,"\r\n\r\nsongIds=");
 
-			// strcat (http_cmd,Songid_HEAD->data);
-			// list_delete(0);
+			strcat (http_cmd,Songid_HEAD->data);
+			filelist_delete(NET_LIST);
 			break;
     }
     
@@ -260,9 +258,7 @@ int socket_request(unsigned char option)
     
     // EMBARC_PRINTF("OSP_GET_CUR_MS()= =======%d====================\r\n",OSP_GET_CUR_MS());
 	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
-	rec_buf = (char *)malloc(sizeof(char) * REC_FIFO_SIZE);
-	response = (char *)malloc(sizeof(char) * REC_BUFF_SIZE);
-	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
+
 	clear_recbuf(ESP8266_A);
     
 	/************NEED USE un-Block delay here Here***********************/
@@ -274,12 +270,6 @@ int socket_request(unsigned char option)
 	/*********end to poll.reset***************/
 	flag_netpoll = 0;
 	bypass_cnt = 0;
-
-	EMBARC_PRINTF("============================ Get Response ============================\r\n");
-
-	strcat(response,"{\0");
-
-	EMBARC_PRINTF("============================ Extract Information ============================\r\n");
 
 	switch(option)
 	{
@@ -298,8 +288,7 @@ int socket_request(unsigned char option)
 	}
 
 	while(1);
-	free(rec_buf);
-	free(response);
+
 	EMBARC_PRINTF("Recv Done.\r\n");
 	// socket.close();
 	esp8266_CIPCLOSE(ESP8266_A, "\0");
