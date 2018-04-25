@@ -378,10 +378,10 @@ uint32_t esp8266_nread(ESP8266_DEF_PTR obj, char *buf, uint32_t n){
 
 
 //at_httpserver
-int32_t esp8266_CIPCLOSE(ESP8266_DEF_PTR obj, char * conn_buf)
+int32_t esp8266_CIPCLOSE(ESP8266_DEF_PTR obj)
 {
 	char rcv_buf[64];
-	at_send_cmd(obj->p_at, AT_WRITE, "CIPCLOSE", conn_buf, NULL);
+	at_send_cmd(obj->p_at, AT_EXECUTE, "CIPCLOSE", NULL);
 	return at_get_reply(obj->p_at, rcv_buf, AT_EXTRA_TIMEOUT);
 }
 

@@ -58,7 +58,7 @@ uint32_t esp8266_connect_write(ESP8266_DEF_PTR obj, char *buf, char* connect, ui
 int32_t esp8266_read(ESP8266_DEF_PTR obj, char *buf, uint32_t timeout);
 uint32_t esp8266_nread(ESP8266_DEF_PTR obj, char *buf, uint32_t n);
 
-int32_t esp8266_CIPCLOSE(ESP8266_DEF_PTR obj, char * conn_buf);
+int32_t esp8266_CIPCLOSE(ESP8266_DEF_PTR obj);
 
 
 extern void clear_recbuf(ESP8266_DEF_PTR obj);

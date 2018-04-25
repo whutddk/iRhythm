@@ -287,11 +287,11 @@ int socket_request(unsigned char option)
 			break;
 	}
 
-	while(1);
+	
 
 	EMBARC_PRINTF("Recv Done.\r\n");
 	// socket.close();
-	esp8266_CIPCLOSE(ESP8266_A, "\0");
+	esp8266_CIPCLOSE(ESP8266_A);
 
 	return 0;
 }
