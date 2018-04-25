@@ -124,44 +124,15 @@ static int get_songinfo(char *jsonstr)
 	strncpy(lrcLink,string_p1,(uint8_t)(string_p2 - string_p1));
 	EMBARC_PRINTF("\r\n%s\r\n",lrcLink);
 
-	/***********songLink************/
+	/***********songLink****Need proterct********/
 	string_p2 = strstr(string,"\"songLink\":");
 	string_p1 = string_p2 + 12;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(dllink,string_p1,(uint8_t)(string_p2 - string_p1));
 	EMBARC_PRINTF("\r\n%s\r\n",dllink);
 
-
-	while(1);
-	// const char* songid = json_object_get_string (json_music->value.object, "queryId");
-	// const char* SongName = json_object_get_string (json_music->value.object, "songName");
-	// const char* ArtistName = json_object_get_string (json_music->value.object, "artistName");
-	// const char* AlbumName = json_object_get_string (json_music->value.object, "albumName");
-	// const char* LrcLink = json_object_get_string (json_music->value.object, "lrcLink");
-	// const char* SongLink = json_object_get_string (json_music->value.object, "songLink");
-
-	// uartpc.printf("cnt：\n\r%d\n\r",music_cnt);//歌曲数组里有多少项
-	// // uartpc.printf("SongId:%s\n\r",((*(json_music->value.object->values))->value.string));//第1个歌曲id
-	// uartpc.printf("SongId:%s\n\r",songid);//第1个歌曲id
-
-	// uartpc.printf("SongName:%s\n\r",SongName);//第1个歌曲id
-	// uartpc.printf("ArtistName:%s\n\r",ArtistName);//第1个歌曲id
-	// uartpc.printf("AlbumName:%s\n\r",AlbumName);//第1个歌曲id
-	// uartpc.printf("LrcLink:%s\n\r",LrcLink);//第1个歌曲id
-	// uartpc.printf("SongLink:%s\n\r",SongLink);//第1个歌曲id
-
-
-	// strcat(dllink,SongLink);
-	// strcat(songpoint,SongName);
-	// uartpc.printf("\n\rdownlink:%s\n\r" ,dllink);
-	
-
 	return 0;
 }
-
-
-
-
 
 
 void net_init()
