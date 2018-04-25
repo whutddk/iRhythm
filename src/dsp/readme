@@ -1,0 +1,23 @@
+
+Library source is organized as follows:
+
+    readme              file containing general information
+    inc or include      directory containing include files
+    *_g			directories containing sources, by functional group
+
+    archive             build directory
+	makefile        makefile for standard "make" tool
+
+Library builds may be customized by changing various settings at the
+beginning of the makefile.
+
+You may need to edit the makefiles to explicitly refer to the tools in
+your distribution.
+
+The "archive" directory may have a more complex directory structure than
+shown above to facilitate building different configurations of the library.
+
+If you wish to replace the distributed libraries with the libraries you build,
+in some cases you may need to rename them.  For example, libraries
+compiled to be non-thread-safe for use with the -Hnothread option should
+not have the "t" suffix.

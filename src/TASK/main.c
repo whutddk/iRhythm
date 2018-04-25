@@ -52,8 +52,14 @@ static TaskHandle_t NET_task_handle = NULL;
 /**
  * \brief	Test hardware board without any peripheral
  */
+
+
+int32_t error_num = 0;
+
 int main(void)
 {
+	board_init();
+	
 	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
 	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
 	
