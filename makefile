@@ -1,13 +1,13 @@
 TOOLCHAIN=gnu
 BOARD=emsk
-BD_VER=22
+BD_VER=23
 CUR_CORE=arcem7d
 
 # Application name
 APPL ?= blinky
 
 
-
+HEAPSZ ?= 83886080
 #
 # root dir of embARC
 #
@@ -15,7 +15,7 @@ EMBARC_ROOT = ..
 MID_SEL = common fatfs 
 OS_SEL = freertos
 # application source dirs
-APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/NET ./src/TASK 
+APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/NET ./src/NET/esp8266_wifi ./src/TASK 
 APPL_ASMSRC_DIR = .
 
 # application include dirs

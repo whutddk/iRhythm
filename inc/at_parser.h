@@ -1,5 +1,5 @@
 /* ------------------------------------------
- * Copyright (c) 2017, Synopsys, Inc. All rights reserved.
+ * Copyright (c) 2018, Synopsys, Inc. All rights reserved.
 
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -28,63 +28,53 @@
  *
 --------------------------------------------- */
 
+#ifndef _AT_PARSER_H_
+#define _AT_PARSER_H_
 
+#include "ez_sio.h"
+#include "embARC_error.h"
 
-/**
- * \file
- * \ingroup	EMBARC_APP_BAREMETAL_BLINKY
- * \brief	main source file for blinky example
- */
+#define AT_OK 			0
+#define AT_ERROR 		-1
+#define AT_OK_STR		"OK"
+#define AT_ERROR_STR	"ERROR"
 
-/**
- * \addtogroup	EMBARC_APP_BAREMETAL_BLINKY
- * @{
- */
-/* embARC HAL */
-#include "embARC.h"
-#include "embARC_debug.h"
-#include "include.h"
-#include "inc_task.h"
+#define AT_RX_BUFSIZE	2048
+#define AT_TX_BUFSIZE	500
 
-static TaskHandle_t MUSIC_task_handle = NULL;
-static TaskHandle_t GUI_task_handle = NULL;
-static TaskHandle_t NET_task_handle = NULL;
-/**
- * \brief	Test hardware board without any peripheral
- */
-int main(void)
-{
-	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
-	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
-	board_init();
-	vTaskSuspendAll();
+#define AT_NORMAL_TIMEOUT 	1000
+#define AT_LONG_TIMEOUT 	5000
+#define AT_EXTRA_TIMEOUT 	20000
 
+typedef enum {
+	AT_LIST,
+	AT_READ,
+	AT_WRITE,
+	AT_EXECUTE
+}AT_MODE;
 
-// Create Tasks
-	if (xTaskCreate(net_task, "net_task", 128, (void *)NULL, configMAX_PRIORITIES-1, &NET_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create NET_task error\r\n");
-		return -1;
-	}
-	if (xTaskCreate(music_task, "music_task", 128, (void *)NULL, configMAX_PRIORITIES-2, &MUSIC_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create music_task error\r\n");
-		return -1;
-	}
-	if (xTaskCreate(gui_task, "gui_task", 128, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create GUI_task error\r\n");
-		return -1;
-	}
+typedef char * AT_STRING;
 
-	//other task
+/** HM1X object type */
+typedef struct {
+	uint32_t uart_id;
+	EZ_SIO *psio;
+} AT_PARSER_DEF, *AT_PARSER_DEF_PTR;
 
+#define AT_PARSER_DEFINE(NAME, UART_ID) \
+	AT_PARSER_DEF __ ## NAME = { \
+			.uart_id = UART_ID, \
+			.psio = NULL, \
+	}; \
+	AT_PARSER_DEF_PTR NAME = &__ ## NAME
 
-	//other task end//
+int32_t at_parser_init(AT_PARSER_DEF_PTR obj, uint32_t baudrate);
+void	at_parser_deinit(AT_PARSER_DEF_PTR obj);
+int32_t at_read(AT_PARSER_DEF_PTR obj, char *buf, uint32_t cnt);
+int32_t at_write(AT_PARSER_DEF_PTR obj, char *buf, uint32_t cnt);
+int32_t at_send_cmd(AT_PARSER_DEF_PTR obj, AT_MODE mode, AT_STRING command, ...);
+int32_t at_get_reply(AT_PARSER_DEF_PTR obj, char *buf, uint32_t timeout);
 
-	xTaskResumeAll();
-	while(1);
-	return E_SYS;
-}
+int32_t at_test(AT_PARSER_DEF_PTR obj);
 
-/** @} */
+#endif /*_AT_PARSER_H_*/

@@ -3,6 +3,7 @@
 
 void music_task()
 {
+	
 	while(1)
 	{
 		EMBARC_PRINTF("MUSIC_TASK START\r\n");
