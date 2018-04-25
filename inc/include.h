@@ -44,6 +44,6 @@ extern uint16_t bypass_cnt;
 extern ESP8266_DEF_PTR ESP8266_A;
 extern void net_init();
 extern int socket_request(unsigned char option);
-
+extern void download_mp3();
 
 #endif

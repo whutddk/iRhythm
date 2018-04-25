@@ -282,90 +282,68 @@ int socket_request(unsigned char option)
 	return 0;
 }
 
-// void download_mp3()
-// {
-// 	TCPSocket socket;
-// 	int rcount;
+void download_mp3()
+{
+	uint8_t http_cnt = 0;
+	uint32_t http_sum = 0;
+	uint32_t cur_time;
+	char *http_cmd;
+	// socket.connect("211.91.125.36", 80);
+	EMBARC_PRINTF("============================ connect socket ============================\n\r");
+	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
 
-// 	socket.open(&net);
-//     socket.connect("211.91.125.36", 80);
+		/************NEED USE un-Block delay here Here***********************/		
+		cur_time = OSP_GET_CUR_MS();
+		while( OSP_GET_CUR_MS() - cur_time < 5000 );
 
-//     char *http_cmd = (char *)malloc(sizeof(char) * 500);
-//     memset(http_cmd, 0, sizeof(char) * 500);
+    http_cmd = (char *)malloc(sizeof(char) * 500);
+    memset(http_cmd, 0, sizeof(char) * 500);
+	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
 
-//     strcat (http_cmd,"GET ");
-//     strcat (http_cmd,dllink);
-//     strcat (http_cmd," HTTP/1.1\r\nHost: zhangmenshiting.qianqian.com\r\nConnection: keep-alive\r\n\r\n");
+    strcat (http_cmd,"GET ");
+    strcat (http_cmd,dllink);
+    strcat (http_cmd," HTTP/1.1\r\nHost: zhangmenshiting.qianqian.com\r\nConnection: keep-alive\r\n\r\n");
 
-//     int scount = socket.send(http_cmd, strlen(http_cmd));
-//     free(http_cmd);
+    EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
+	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+	bypass_cnt = 0;//start to poll
+	flag_netpoll = 1;
+    free(http_cmd);
 
-//     char *rec_buf = (char *)malloc(sizeof(char) * 8);
-// 	char *response = (char *)malloc(sizeof(char) * REC_BUFF_SIZE);
-// 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
-// 	while(1)
-// 	{
-//     	memset(rec_buf, 0, sizeof(char) * 8);
-//     	rcount = socket.recv(rec_buf, 1);
-//     	if ( rcount <= 0 )
-// 		{
-// 			// free(rec_buf);
-// 			uartpc.printf("error in header");
-// 			break;
-//     	}
-//     	rec_buf[1]='\0';
-//     	strcat(response,rec_buf);
+	while(1)
+	{
+	/************NEED USE un-Block delay here Here***********************/		
+		cur_time = OSP_GET_CUR_MS();
+		while( OSP_GET_CUR_MS() - cur_time < 10000 );
 
-// 		//找到响应头的头部信息, 两个"\n\r"为分割点
-// 		int flag = 0;
-// 		for (int i = strlen(response) - 1; response[i] == '\n' || response[i] == '\r'; i--, flag++);
-// 		if (flag == 4)
-// 		{
-// 			uartpc.printf("final header is:\n\r %s\r\n",response);
-			
-// 			break;
-// 		}	
-// 	}
+    	// rcount = socket.recv(response, 1000);
+    	if ( http_sum != bypass_cnt  )
+    	{
+    		EMBARC_PRINTF("received : %d B\r",bypass_cnt);
+			EMBARC_PRINTF("received : %d B/s\r",(bypass_cnt - http_sum)/5);
+			http_sum = bypass_cnt;
+    	}
+    	else
+    	{
+    		EMBARC_PRINTF("\r\nreceive end \r\n");
+    		break;
+    	}
+	
 
-// 	memset(response, 0, sizeof(char) * REC_BUFF_SIZE);
-// 	char filename[50] = "/fs/";
-// 	strcat(filename,songpoint); 
-// 	strcat(filename,".mp3");
-// 	FILE* fd = fopen(filename, "w");
-// 	if (fd == NULL)
-// 	{
-// 		uartpc.printf(" Failure. %d \r\n", errno);
-// 		return;
-// 	}
-// 	else
-// 	{
-// 		uartpc.printf(" done.\r\n");
-// 	}
 
-// 	int rec_cnt = 0;
-// 	while(1)
-// 	{
-//     	memset(response, 0, sizeof(char) * 8);
-//     	rcount = socket.recv(response, 1000);
-//     	if ( rcount <= 0 )
-// 		{			
-// 			uartpc.printf("download end\n\r");
-// 			break;
-//     	}
-//     	fwrite(response,1,rcount,fd); 
-//     	rec_cnt +=  rcount ;	
-//     	uartpc.printf("received : %d KB\r",rec_cnt/1024);
-// 	}
-// 	uartpc.printf("\r\nreceive end \r\n");
-// 	fclose(fd);
-// 	strcat(songpoint,".mp3");
-// 	list_add(1,songpoint);
+	}
+	
 
-// 	free(rec_buf);
-// 	free(response);
-// 	uartpc.printf("recv done.\r\n");
-// 	socket.close();
-// }
+	filelist_add(FILE_LIST,songpoint,http_sum);
+
+	/*********end to poll.reset***************/
+	flag_netpoll = 0;
+	bypass_cnt = 0;
+
+	EMBARC_PRINTF("Socket Close.\r\n");
+	// socket.close();
+	esp8266_CIPCLOSE(ESP8266_A);
+}
 
 
 
