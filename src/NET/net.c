@@ -292,10 +292,6 @@ void download_mp3()
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
 
-		/************NEED USE un-Block delay here Here***********************/		
-		cur_time = OSP_GET_CUR_MS();
-		while( OSP_GET_CUR_MS() - cur_time < 5000 );
-
     http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
 	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
@@ -305,8 +301,8 @@ void download_mp3()
     strcat (http_cmd," HTTP/1.1\r\nHost: zhangmenshiting.qianqian.com\r\nConnection: keep-alive\r\n\r\n");
 
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
+    bypass_cnt = 0;//start to poll
 	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-	bypass_cnt = 0;//start to poll
 	flag_netpoll = 1;
     free(http_cmd);
 
