@@ -33,6 +33,20 @@ char songpoint[50] = { 0 };
 ESP8266_DEF __ESP8266_A;
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
+inline static void START_REC()
+{	
+	bypass_cnt = 0;
+	flag_netpoll = 1;
+}
+
+inline static void END_REC()
+{
+
+	bypass_cnt = 0;
+	flag_netpoll = 0;
+}
+
+
 static int get_songid(char *jsonstr)
 {
 	char *string = (char*)jsonstr;
@@ -176,16 +190,6 @@ void net_init()
     //Connect WiFi
     EMBARC_PRINTF("============================ Connect WiFi ============================\n");
 
-    // do
-    // {
-    //     esp8266_wifi_scan(esp8266, scan_result);
-    //     EMBARC_PRINTF("Searching for WIFI %s ......\n", WIFI_SSID);
-    //     vTaskDelay( 1 );
-    //     // board_delay_ms(100, 1);
-    // }
-    // while (strstr(scan_result, WIFI_SSID)==NULL);
-
-    //EMBARC_PRINTF("WIFI %s found! Try to connect\n", WIFI_SSID);
     while(esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false)!=AT_OK)
     {
         EMBARC_PRINTF("WIFI %s connect failed\n", WIFI_SSID);
@@ -205,16 +209,10 @@ void net_init()
 
 int socket_request(unsigned char option)
 {
-	int http_cnt;
 	char *http_cmd;
-	char id_char[10] = {0};
-	int idlen_int;
+	uint32_t idlen_int;
 	char idlen_char[3] = "";
-	int flag = 0;
-	int i;
-	uint16_t rec_sum = 0;
 	uint32_t cur_time ;
-    // socket.connect("180.76.141.217", 80);
 
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
@@ -245,13 +243,12 @@ int socket_request(unsigned char option)
     }
     
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-    // http_cnt = socket.send(http_cmd, strlen(http_cmd));
 	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-	flag_netpoll = 1;//start to poll
+
+	START_REC();
+
     free(http_cmd);
 
-    
-    // EMBARC_PRINTF("OSP_GET_CUR_MS()= =======%d====================\r\n",OSP_GET_CUR_MS());
 	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
 
 	clear_recbuf(ESP8266_A);
@@ -263,9 +260,7 @@ int socket_request(unsigned char option)
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
 	/*********end to poll.reset***************/
-	flag_netpoll = 0;
-	bypass_cnt = 0;
-
+	END_REC();
 
 	switch(option)
 	{
@@ -281,9 +276,7 @@ int socket_request(unsigned char option)
 				return -1;
 			}
 			break;
-	}
-
-	
+	}	
 
 	EMBARC_PRINTF("Recv Done.\r\n");
 	// socket.close();
@@ -312,9 +305,10 @@ void download_mp3()
     strcat (http_cmd," HTTP/1.1\r\nHost: zhangmenshiting.qianqian.com\r\nConnection: keep-alive\r\n\r\n");
 
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-    bypass_cnt = 0;//start to poll
 	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-	flag_netpoll = 1;
+
+	START_REC();
+
     free(http_cmd);
 
 	while(1)
@@ -351,8 +345,7 @@ void download_mp3()
 	filelist_add(FILE_LIST,songpoint,http_sum);
 
 	/*********end to poll.reset***************/
-	flag_netpoll = 0;
-	bypass_cnt = 0;
+	END_REC();
 
 	EMBARC_PRINTF("Socket Close.\r\n");
 	// socket.close();
