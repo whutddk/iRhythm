@@ -35,6 +35,9 @@ extern void filelist_delete(uint8_t list_id);
 
 #define SONG_ID 0
 #define SONG_INFO 1
+
+extern char dllink[500];
+extern char songpoint[50];
 extern uint8_t flag_netpoll ;
 extern char *net_buff;
 extern uint16_t bypass_cnt;

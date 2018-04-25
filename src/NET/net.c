@@ -26,10 +26,14 @@
 uint8_t flag_netpoll = 0;
 char *net_buff;
 uint16_t bypass_cnt = 0;
+
+char dllink[500] = { 0 };
+char songpoint[50] = { 0 };
+
 ESP8266_DEF __ESP8266_A;
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
-static int get_songid(const char *jsonstr)
+static int get_songid(char *jsonstr)
 {
 	char *string = (char*)jsonstr;
 	char songid[12] = "";
@@ -67,81 +71,56 @@ static int get_songid(const char *jsonstr)
 
 
 
-// int get_songinfo(const char *jsonstr)
-// {
-// 	JSON_Value *json_1 ;
-// 	JSON_Value *json_2 ;
-// 	JSON_Value *json_3 ;
-// 	JSON_Value *json_music ;
-// 	json_1 = json_parse_string(jsonstr);
+static int get_songinfo(char *jsonstr)
+{
+	char *string = (char*)jsonstr;
+	char *string_p1; 
+	char *string_p2 ;
+
+	char queryId[20] = { 0 };
+	// char songName[50] = {0};
+	char artistName[50] = { 0 };
+	char albumName[50] = { 0 };
+	char lrcLink[500] = { 0 };
+	char songLink[500] = { 0 };
 
 
-// 	if ( json_1 == NULL )
-// 	{
-// 		return -1;
-// 	}
-// 	// if( json->type != 4 || (*(json->value.object->values))->type != 3)
-// 	// {
-// 	// 	printf("It's not a vaild id");
-// 	// 	return -1;
-// 	// }
+	memset(dllink, 0, sizeof(char) * 500);
+	memset(songpoint, 0, sizeof(char) * 50);
 
-// 	// music_data.dl_url = (*(json->value.object->values+1))->value.string;
-// 	// music_data.album_title = (*(json->value.object->values+19))->value.string;
-// 	// music_data.title = (*(json->value.object->values+5))->value.string;
+	string_p2 = strstr(string,"\"queryId\":");
+	string_p1 = string_p2 + 11;
+	string_p2 = strstr(string_p1,"\",\"");
 
-// 	// printf ("download_url:%s\n",music_data.dl_url);
-// 	// printf ("album:%s\n",music_data.album_title);
-// 	// printf ("title:%s\n",music_data.title);
+	strncpy(queryId,string_p1,(uint8_t)(string_p2 - string_p1));
+	EMBARC_PRINTF("\r\n%s\r\n",queryId);
 
-// 	uartpc.printf("%d\n\r",json_1->type); //type == 4 是json类型
+	while(1);
+	// const char* songid = json_object_get_string (json_music->value.object, "queryId");
+	// const char* SongName = json_object_get_string (json_music->value.object, "songName");
+	// const char* ArtistName = json_object_get_string (json_music->value.object, "artistName");
+	// const char* AlbumName = json_object_get_string (json_music->value.object, "albumName");
+	// const char* LrcLink = json_object_get_string (json_music->value.object, "lrcLink");
+	// const char* SongLink = json_object_get_string (json_music->value.object, "songLink");
 
-// 	uartpc.printf("%d\n\r",(*(json_1->value.object->values+1))->type);//第1个josn里的第二项的类型
+	// uartpc.printf("cnt：\n\r%d\n\r",music_cnt);//歌曲数组里有多少项
+	// // uartpc.printf("SongId:%s\n\r",((*(json_music->value.object->values))->value.string));//第1个歌曲id
+	// uartpc.printf("SongId:%s\n\r",songid);//第1个歌曲id
 
-// 	uartpc.printf("%s\n\r",(*(json_1->value.object->names+1)));//第1个josn里的第二项名称
-
-
-// 	json_2 = *(json_1->value.object->values+1); //json ->data(json)
-// 	json_3 = *(json_2->value.object->values+2); //json ->data(json) -> songlist(json)
-
-// 	//uartpc.printf("%s\n\r",(*(json_3->value.object->names+1)));//第3个josn（songlist）里的第二项名称（2）
-
-// //此处需要一个遍历(所有的歌)
-
-// 	char i = 0;
-
-// 	char music_cnt = json_3->value.array->count;
-// 	//for (i)
-// 	{
-// 		json_music = *(json_3->value.array->items + i);
+	// uartpc.printf("SongName:%s\n\r",SongName);//第1个歌曲id
+	// uartpc.printf("ArtistName:%s\n\r",ArtistName);//第1个歌曲id
+	// uartpc.printf("AlbumName:%s\n\r",AlbumName);//第1个歌曲id
+	// uartpc.printf("LrcLink:%s\n\r",LrcLink);//第1个歌曲id
+	// uartpc.printf("SongLink:%s\n\r",SongLink);//第1个歌曲id
 
 
-// 		const char* songid = json_object_get_string (json_music->value.object, "queryId");
-// 		const char* SongName = json_object_get_string (json_music->value.object, "songName");
-// 		const char* ArtistName = json_object_get_string (json_music->value.object, "artistName");
-// 		const char* AlbumName = json_object_get_string (json_music->value.object, "albumName");
-// 		const char* LrcLink = json_object_get_string (json_music->value.object, "lrcLink");
-// 		const char* SongLink = json_object_get_string (json_music->value.object, "songLink");
+	// strcat(dllink,SongLink);
+	// strcat(songpoint,SongName);
+	// uartpc.printf("\n\rdownlink:%s\n\r" ,dllink);
+	
 
-// 		uartpc.printf("cnt：\n\r%d\n\r",music_cnt);//歌曲数组里有多少项
-// 		// uartpc.printf("SongId:%s\n\r",((*(json_music->value.object->values))->value.string));//第1个歌曲id
-// 		uartpc.printf("SongId:%s\n\r",songid);//第1个歌曲id
-
-// 		uartpc.printf("SongName:%s\n\r",SongName);//第1个歌曲id
-// 		uartpc.printf("ArtistName:%s\n\r",ArtistName);//第1个歌曲id
-// 		uartpc.printf("AlbumName:%s\n\r",AlbumName);//第1个歌曲id
-// 		uartpc.printf("LrcLink:%s\n\r",LrcLink);//第1个歌曲id
-// 		uartpc.printf("SongLink:%s\n\r",SongLink);//第1个歌曲id
-
-// 		memset(dllink, 0, sizeof(char) * 500);
-// 		memset(songpoint, 0, sizeof(char) * 50);
-// 		strcat(dllink,SongLink);
-// 		strcat(songpoint,SongName);
-// 		uartpc.printf("\n\rdownlink:%s\n\r" ,dllink);
-// 	}
-
-// 	return 0;
-// }
+	return 0;
+}
 
 
 
@@ -206,8 +185,6 @@ void net_init()
 
 /*************获取下载地址*******/
 
-#define REC_BUFF_SIZE (4096)
-#define REC_FIFO_SIZE (100)
 int socket_request(unsigned char option)
 {
 	int http_cnt;
@@ -226,7 +203,7 @@ int socket_request(unsigned char option)
 
     http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
-
+	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
 
     EMBARC_PRINTF("============================ create http command ============================\r\n");
     switch (option)
@@ -271,6 +248,7 @@ int socket_request(unsigned char option)
 	flag_netpoll = 0;
 	bypass_cnt = 0;
 
+
 	switch(option)
 	{
 		case SONG_ID :
@@ -280,10 +258,10 @@ int socket_request(unsigned char option)
 			}
 			break;
 		case SONG_INFO:
-			// if (-1 == get_songinfo(response))
-			// {
-			// 	return -1;
-			// }
+			if (-1 == get_songinfo(net_buff))
+			{
+				return -1;
+			}
 			break;
 	}
 

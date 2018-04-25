@@ -25,8 +25,8 @@ void net_task()
 
     net_init();
 
-    socket_request(SONG_ID);
-    // socket_request(SONG_INFO);
+    // socket_request(SONG_ID);
+    socket_request(SONG_INFO);
 
     EMBARC_PRINTF("============================ while ============================\n");
 
