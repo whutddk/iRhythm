@@ -25,7 +25,7 @@
 
 uint8_t flag_netpoll = 0;
 char *net_buff;
-uint16_t bypass_cnt = 0;
+uint32_t bypass_cnt = 0;
 
 char dllink[500] = { 0 };
 char songpoint[50] = { 0 };
@@ -298,6 +298,7 @@ void download_mp3()
 	uint32_t http_sum = 0;
 	uint32_t cur_time;
 	char *http_cmd;
+	uint8_t timeout_cnt = 0;
 	// socket.connect("211.91.125.36", 80);
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
@@ -325,15 +326,21 @@ void download_mp3()
     	// rcount = socket.recv(response, 1000);
     	if ( http_sum != bypass_cnt  )
     	{
-    		EMBARC_PRINTF("received : %d B\r",bypass_cnt);
-			EMBARC_PRINTF("received : %d B/s\r",(bypass_cnt - http_sum)/5);
+    		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
+			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( 10 * (timeout_cnt+1) ) );
 			http_sum = bypass_cnt;
+			timeout_cnt = 0;
     	}
     	else
     	{
-    		EMBARC_PRINTF("\r\nreceive end \r\n");
-    		EMBARC_PRINTF("\r\n%s \r\n",net_buff);
-    		break;
+    		timeout_cnt ++;
+    		EMBARC_PRINTF("\r\nTime out\r\n");
+    		if ( timeout_cnt > 3 )
+    		{
+				EMBARC_PRINTF("\r\nreceive end , %d KB\r\n",bypass_cnt / 1024 );
+				EMBARC_PRINTF("\r\n%s \r\n",net_buff);
+	    		break;
+    		}
     	}
 	
 
