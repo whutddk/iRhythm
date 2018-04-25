@@ -84,6 +84,7 @@ static int get_songinfo(char *jsonstr)
 	char lrcLink[500] = { 0 };
 	char songLink[500] = { 0 };
 
+	uint16_t i = 0,j = 0;;
 
 	memset(dllink, 0, sizeof(char) * 500);
 	memset(songpoint, 0, sizeof(char) * 50);
@@ -117,7 +118,7 @@ static int get_songinfo(char *jsonstr)
 	strncpy(albumName,string_p1,(uint8_t)(string_p2 - string_p1));
 	EMBARC_PRINTF("\r\n%s\r\n",albumName);
 
-	/***********lrcLink************/
+	/***********lrcLink*****unformat*******/
 	string_p2 = strstr(string,"\"lrcLink\":");
 	string_p1 = string_p2 + 11;
 	string_p2 = strstr(string_p1,"\",\"");
@@ -128,7 +129,16 @@ static int get_songinfo(char *jsonstr)
 	string_p2 = strstr(string,"\"songLink\":");
 	string_p1 = string_p2 + 12;
 	string_p2 = strstr(string_p1,"\",\"");
-	strncpy(dllink,string_p1,(uint8_t)(string_p2 - string_p1));
+	strncpy(songLink,string_p1,(uint8_t)(string_p2 - string_p1));
+
+	for ( i = 0 , j = 0; songLink[i] != '\0'; i++ )
+	{
+		if ( songLink[i] != '\\' )
+		{
+			dllink[j] = songLink[i];
+			j++;
+		}
+	}
 	EMBARC_PRINTF("\r\n%s\r\n",dllink);
 
 	return 0;
@@ -322,6 +332,7 @@ void download_mp3()
     	else
     	{
     		EMBARC_PRINTF("\r\nreceive end \r\n");
+    		EMBARC_PRINTF("\r\n%s \r\n",net_buff);
     		break;
     	}
 	
