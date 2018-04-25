@@ -299,9 +299,7 @@ uint32_t esp8266_normal_write(ESP8266_DEF_PTR obj, char *buf, uint32_t cnt){
 		sprintf(cnt_str, "%d", cnt);
 		at_send_cmd(obj->p_at, AT_WRITE, "CIPSEND", cnt_str, NULL);
 		if(at_get_reply(obj->p_at, rcv_buf, AT_NORMAL_TIMEOUT)==AT_OK){
-			flag_netpoll = 1;
 			at_write(obj->p_at, buf, cnt);
-
 			return at_get_reply(obj->p_at, rcv_buf, AT_NORMAL_TIMEOUT);
 		}
 	}

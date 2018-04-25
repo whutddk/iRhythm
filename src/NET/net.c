@@ -321,13 +321,13 @@ void download_mp3()
 	{
 	/************NEED USE un-Block delay here Here***********************/		
 		cur_time = OSP_GET_CUR_MS();
-		while( OSP_GET_CUR_MS() - cur_time < 10000 );
+		while( OSP_GET_CUR_MS() - cur_time < 5000 );
 
     	// rcount = socket.recv(response, 1000);
     	if ( http_sum != bypass_cnt  )
     	{
     		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( 10 * (timeout_cnt+1) ) );
+			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( 5 * ( timeout_cnt+1 ) ) );
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
     	}
@@ -356,6 +356,7 @@ void download_mp3()
 
 	EMBARC_PRINTF("Socket Close.\r\n");
 	// socket.close();
+	/**********Connect will Close Automatic*********************/
 	esp8266_CIPCLOSE(ESP8266_A);
 }
 
