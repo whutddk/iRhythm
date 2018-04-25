@@ -88,12 +88,49 @@ static int get_songinfo(char *jsonstr)
 	memset(dllink, 0, sizeof(char) * 500);
 	memset(songpoint, 0, sizeof(char) * 50);
 
+	/***********queryId************/
 	string_p2 = strstr(string,"\"queryId\":");
 	string_p1 = string_p2 + 11;
 	string_p2 = strstr(string_p1,"\",\"");
-
 	strncpy(queryId,string_p1,(uint8_t)(string_p2 - string_p1));
 	EMBARC_PRINTF("\r\n%s\r\n",queryId);
+
+	/***********songName****Need Protect********/
+	string_p2 = strstr(string,"\"songName\":");
+	string_p1 = string_p2 + 12;
+	string_p2 = strstr(string_p1,"\",\"");
+	strncpy(songpoint,string_p1,(uint8_t)(string_p2 - string_p1));
+	EMBARC_PRINTF("\r\n%s\r\n",songpoint);
+
+	/***********artistName************/
+	string_p2 = strstr(string,"\"artistName\":");
+	string_p1 = string_p2 + 14;
+	string_p2 = strstr(string_p1,"\",\"");
+	strncpy(artistName,string_p1,(uint8_t)(string_p2 - string_p1));
+	EMBARC_PRINTF("\r\n%s\r\n",artistName);
+
+
+	/***********albumName************/
+	string_p2 = strstr(string,"\"albumName\":");
+	string_p1 = string_p2 + 13;
+	string_p2 = strstr(string_p1,"\",\"");
+	strncpy(albumName,string_p1,(uint8_t)(string_p2 - string_p1));
+	EMBARC_PRINTF("\r\n%s\r\n",albumName);
+
+	/***********lrcLink************/
+	string_p2 = strstr(string,"\"lrcLink\":");
+	string_p1 = string_p2 + 11;
+	string_p2 = strstr(string_p1,"\",\"");
+	strncpy(lrcLink,string_p1,(uint8_t)(string_p2 - string_p1));
+	EMBARC_PRINTF("\r\n%s\r\n",lrcLink);
+
+	/***********songLink************/
+	string_p2 = strstr(string,"\"songLink\":");
+	string_p1 = string_p2 + 12;
+	string_p2 = strstr(string_p1,"\",\"");
+	strncpy(dllink,string_p1,(uint8_t)(string_p2 - string_p1));
+	EMBARC_PRINTF("\r\n%s\r\n",dllink);
+
 
 	while(1);
 	// const char* songid = json_object_get_string (json_music->value.object, "queryId");
