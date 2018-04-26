@@ -85,7 +85,7 @@ void spi_xfer_callback(void *param)
 	// 	evt1_cb,	// The event group being updated.
 	// 	BIT_0 ,   // The bits being set.
 	// 	&xHigherPriorityTaskWoken );
-	xEventGroupSetBits( evt1_cb, BIT_0 );
+	// xEventGroupSetBits( evt1_cb, BIT_0 );
 }
 
 
