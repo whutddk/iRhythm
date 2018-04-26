@@ -123,7 +123,7 @@ typedef struct _MP3FrameInfo {
 /* public API */
 HMP3Decoder MP3InitDecoder(void);
 void MP3FreeDecoder(HMP3Decoder hMP3Decoder);
-int MP3Decode(HMP3Decoder hMP3Decoder, unsigned char **inbuf, int *bytesLeft, short *outbuf, int useSize);
+int MP3Decode(HMP3Decoder hMP3Decoder, unsigned char **inbuf, int *bytesLeft, char *outbuf, int useSize);
 
 void MP3GetLastFrameInfo(HMP3Decoder hMP3Decoder, MP3FrameInfo *mp3FrameInfo);
 int MP3GetNextFrameInfo(HMP3Decoder hMP3Decoder, MP3FrameInfo *mp3FrameInfo, unsigned char *buf);
