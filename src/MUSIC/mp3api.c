@@ -64,7 +64,6 @@ void play_mp3(int filelenth)
 	xEventGroupSetBits( evt1_cb, 0x03 );
 	while(1)
 	{
-		EMBARC_PRINTF("Come here!\r\n");
 		offset = MP3FindSyncWord(read_ptr, byte_left);
  
 		if ( offset >= 0 )
@@ -112,14 +111,12 @@ void play_mp3(int filelenth)
 			}
 
 /********************Shedule Here*****************************/
-			EMBARC_PRINTF("May Shedule!\r\n");
 			uxBits = xEventGroupWaitBits( 
 				evt1_cb, 
 				BIT_0 | BIT_1, 	//regard BIT0 as dma finish,regard BIT1 as buff full
 				pdFALSE, 		//BIT_0 and BIT_1 should Not be cleared before returning.
 				pdTRUE, 		// Wait for both bits
 				portMAX_DELAY );
-			EMBARC_PRINTF(" Shedule! PASS\r\n");
 			xEventGroupClearBits( evt1_cb, BIT_0 );
 			// while(flag_dma_finish==0);
 			// flag_dma_finish = 0;

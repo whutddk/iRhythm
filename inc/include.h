@@ -36,7 +36,7 @@ extern void filelist_delete(uint8_t list_id);
 /***********define in main.c ************/
 
 // Events
-static EventGroupHandle_t evt1_cb;
+extern EventGroupHandle_t evt1_cb;
 
 #define BIT_0	( 1 << 0 )
 #define BIT_1	( 1 << 1 )

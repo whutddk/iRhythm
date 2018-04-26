@@ -51,7 +51,7 @@ static TaskHandle_t GUI_task_handle = NULL;
 static TaskHandle_t NET_task_handle = NULL;
 
 // Events
-static EventGroupHandle_t evt1_cb;
+EventGroupHandle_t evt1_cb;
 
 
 /**
