@@ -49,6 +49,11 @@
 static TaskHandle_t MUSIC_task_handle = NULL;
 static TaskHandle_t GUI_task_handle = NULL;
 static TaskHandle_t NET_task_handle = NULL;
+
+// Events
+static EventGroupHandle_t evt1_cb;
+
+
 /**
  * \brief	Test hardware board without any peripheral
  */
@@ -73,11 +78,11 @@ int main(void)
 		EMBARC_PRINTF("create music_task error\r\n");
 		return -1;
 	}	
-	if (xTaskCreate(net_task, "net_task", 128, (void *)NULL, configMAX_PRIORITIES-2, &NET_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create NET_task error\r\n");
-		return -1;
-	}
+	// if (xTaskCreate(net_task, "net_task", 128, (void *)NULL, configMAX_PRIORITIES-2, &NET_task_handle)
+	//     != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+	// 	EMBARC_PRINTF("create NET_task error\r\n");
+	// 	return -1;
+	// }
 	if (xTaskCreate(gui_task, "gui_task", 128, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
 	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create GUI_task error\r\n");

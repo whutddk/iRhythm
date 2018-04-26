@@ -1,6 +1,9 @@
 #ifndef _INCLUDE_H_
 #define _INCLUDE_H_
 
+#include "embARC.h"
+#include "embARC_debug.h"
+
 #include "esp8266.h"
 
 #include <string.h>
@@ -31,6 +34,15 @@ extern void filelist_delete(uint8_t list_id);
 
 
 /***********define in main.c ************/
+
+// Events
+static EventGroupHandle_t evt1_cb;
+
+#define BIT_0	( 1 << 0 )
+#define BIT_1	( 1 << 1 )
+#define BIT_2	( 1 << 2 )
+#define BIT_3	( 1 << 3 )
+
 extern int32_t error_num ;
 
 
