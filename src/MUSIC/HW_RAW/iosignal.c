@@ -9,15 +9,38 @@
 
 static DEV_GPIO *io_signal;
 
+void empty_isr()
+{
+	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
+}
+
+
 void iosignal_init()
 {
+	DEV_GPIO_INT_CFG gpio_int_cfg;
+	DEV_GPIO_BIT_ISR gpio_bit_isr;
+
+	gpio_int_cfg.int_bit_mask = BOARD_SIGNIN_MASK;
+	gpio_int_cfg.int_bit_type = 0xffffffff;
+	gpio_int_cfg.int_bit_polarity = GPIO_INT_FALLING_EDGE_ALL;
+	gpio_int_cfg.int_bit_debounce = 0xffffffff;
+
+	gpio_bit_isr.int_bit_ofs = 30;
+	gpio_bit_isr.int_bit_handler = empty_isr;
+
 	io_signal = gpio_get_dev(DEV_GPIO_PORT_A);
 
-	if (io_signal->gpio_open(0xf0000000) == E_OPNED) {
+	if (io_signal->gpio_open(0xf0000000) == E_OPNED) 
+	{
 		io_signal->gpio_control(GPIO_CMD_SET_BIT_DIR_OUTPUT, (void *)(BOARD_SIGNOUT_MASK));
 		io_signal->gpio_control(GPIO_CMD_SET_BIT_DIR_INPUT, (void *)(BOARD_SIGNIN_MASK));
 		io_signal->gpio_control(GPIO_CMD_DIS_BIT_INT, (void *)(BOARD_SIGNOUT_MASK));
+
+		/*************Interrupt enable********************/
 		io_signal->gpio_control(GPIO_CMD_DIS_BIT_INT, (void *)(BOARD_SIGNIN_MASK));
+		io_signal->gpio_control(GPIO_CMD_SET_BIT_ISR, (void *)(&gpio_bit_isr));
+		io_signal->gpio_control(GPIO_CMD_SET_BIT_INT_CFG, (void *)(&gpio_int_cfg));
+		io_signal->gpio_control(GPIO_CMD_ENA_BIT_INT, (void *)(BOARD_SIGNIN_MASK));
 	}
 
 	iosignal_ctrl(0,0);
