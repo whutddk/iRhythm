@@ -111,7 +111,7 @@ void play_mp3(int filelenth)
 			}
 
 /********************Shedule Here*****************************/
-			uxBits = xEventGroupWaitBits( 
+			xEventGroupWaitBits( 
 				evt1_cb, 
 				BIT_0 | BIT_1, 	//regard BIT0 as dma finish,regard BIT1 as buff full
 				pdFALSE, 		//BIT_0 and BIT_1 should Not be cleared before returning.
@@ -120,8 +120,20 @@ void play_mp3(int filelenth)
 			xEventGroupClearBits( evt1_cb, BIT_0 );
 			// while(flag_dma_finish==0);
 			// flag_dma_finish = 0;
-
-			while(iosignal_read(0));
+			if ( !iosignal_read(0) )
+			{
+				uxBits = 0;
+			}
+			else if (( uxBits & BIT_1 ) != 0 )
+			{
+				;
+			}
+			else
+			{
+				EMBARC_PRINTF("GPIO Clear BIT1\r\n");
+				uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
+			}
+			// while(iosignal_read(0));
 
 /********************Shedule End Here*****************************/
 

@@ -12,6 +12,8 @@ static DEV_GPIO *io_signal;
 void empty_isr()
 {
 	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
+	xEventGroupSetBits( evt1_cb, BIT_1 );
+	EMBARC_PRINTF("GPIO Set BIT_1\r\n");
 }
 
 
