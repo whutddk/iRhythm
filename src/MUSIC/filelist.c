@@ -75,12 +75,12 @@ void filelist_delete(uint8_t list_id)
 	struct filelist *lists = NULL;
 	switch (list_id)
 	{
-		case (0):
+		case (NET_LIST):
 			lists = Songid_HEAD;
 			Songid_HEAD = Songid_HEAD -> next;
 			free (lists);
 			break;
-		case (1):
+		case (FILE_LIST):
 			lists = Playlist_HEAD;
 			Playlist_HEAD = Playlist_HEAD -> next;
 			free (lists);

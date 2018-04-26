@@ -1,20 +1,15 @@
 /* ------------------------------------------
- * Copyright (c) 2017, Synopsys, Inc. All rights reserved.
-
+ * Copyright (c) 2016, Synopsys, Inc. All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
-
  * 1) Redistributions of source code must retain the above copyright notice, this
  * list of conditions and the following disclaimer.
-
  * 2) Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation and/or
  * other materials provided with the distribution.
-
  * 3) Neither the name of the Synopsys, Inc., nor the names of its contributors may
  * be used to endorse or promote products derived from this software without
  * specific prior written permission.
-
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,71 +21,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * \version 2016.01
+ * \date 2015-07-28
+ * \author Huaqi Fang(Huaqi.Fang@synopsys.com)
 --------------------------------------------- */
-
-
-
 /**
  * \file
- * \ingroup	EMBARC_APP_BAREMETAL_BLINKY
- * \brief	main source file for blinky example
+ * \ingroup	BOARD_EMSK_DRV_EASY_SIO
+ * \brief	header file for easy serial io
  */
 
 /**
- * \addtogroup	EMBARC_APP_BAREMETAL_BLINKY
+ * \addtogroup	BOARD_EMSK_DRV_EASY_SIO
  * @{
  */
-/* embARC HAL */
-#include "embARC.h"
-#include "embARC_debug.h"
-#include "include.h"
-#include "inc_task.h"
+#ifndef _EMSK_EASY_SIO_H_
+#define _EMSK_EASY_SIO_H_
+#define BOARD_EMSK_DRV_EASY_SIO
 
-static TaskHandle_t MUSIC_task_handle = NULL;
-static TaskHandle_t GUI_task_handle = NULL;
-static TaskHandle_t NET_task_handle = NULL;
-/**
- * \brief	Test hardware board without any peripheral
- */
+#include "stdint.h"
+#include "ringbuffer.h"
+#include "dev_uart.h"
 
+/** easy serial io structure */
+typedef struct ez_sio {
+	DEV_UART *sio_uart_obj;
+	RINGBUFFER snd_rb;
+	RINGBUFFER rcv_rb;
+} EZ_SIO;
 
-int32_t error_num = 0;
+extern EZ_SIO *ez_sio_open(uint32_t uart_id, uint32_t baudrate, uint32_t tx_bufsz, uint32_t rx_bufsz);
+extern void ez_sio_close(EZ_SIO *sio);
+extern int32_t ez_sio_read(EZ_SIO *sio, char *buf, uint32_t cnt);
+extern int32_t ez_sio_write(EZ_SIO *sio, char *buf, uint32_t cnt);
 
-int main(void)
-{
-	board_init();
-	
-	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
-	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
-	board_init();
-	vTaskSuspendAll();
-
-
-// Create Tasks
-	if (xTaskCreate(net_task, "net_task", 128, (void *)NULL, configMAX_PRIORITIES-1, &NET_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create NET_task error\r\n");
-		return -1;
-	}
-	if (xTaskCreate(music_task, "music_task", 128, (void *)NULL, configMAX_PRIORITIES-2, &MUSIC_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create music_task error\r\n");
-		return -1;
-	}
-	if (xTaskCreate(gui_task, "gui_task", 128, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create GUI_task error\r\n");
-		return -1;
-	}
-
-	//other task
-
-
-	//other task end//
-
-	xTaskResumeAll();
-	while(1);
-	return E_SYS;
-}
-
-/** @} */
+#endif /* BOARD_EMSK_DRV_EASY_SIO */

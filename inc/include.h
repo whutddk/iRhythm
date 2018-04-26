@@ -1,12 +1,19 @@
 #ifndef _INCLUDE_H_
 #define _INCLUDE_H_
 
+#include "esp8266.h"
+
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+
 /********define in playlist.c******/
 struct filelist
 {
 	char data[50];
 	int lenth;
-	struct list* next;
+	struct filelist* next;
 };
 
 #define NET_LIST 0
@@ -56,8 +63,20 @@ extern void iosignal_ctrl(uint8_t val,uint8_t num);
 extern uint8_t iosignal_read(uint8_t num);
 
 
+/*************define in net.c****************/
 
+#define SONG_ID 0
+#define SONG_INFO 1
 
+extern char dllink[500];
+extern char songpoint[50];
+extern uint8_t flag_netpoll ;
+extern char *net_buff;
+extern uint32_t bypass_cnt;
+extern ESP8266_DEF_PTR ESP8266_A;
+extern void net_init();
+extern int socket_request(unsigned char option);
+extern void download_mp3();
 
 #endif
 
