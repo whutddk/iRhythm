@@ -48,12 +48,6 @@ void music_task()
 	music_filename = malloc(sizeof(char) * 50);
 	spi =  spi_get_dev(DW_SPI_0_ID);
 	
-
-
-
-	// spi_dma_test();
-	// play_mp3();
-	
 	while(1)
 	{
 		file_lenth = Playlist_HEAD -> lenth;
