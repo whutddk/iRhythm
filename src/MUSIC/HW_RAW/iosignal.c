@@ -116,12 +116,14 @@ uint8_t iosignal_read(uint8_t num)
 	return (value?0:1);
 }
 
-inline void net_rst()
+void net_rst()
 {
-	/***************RST = 0;*****************/
+		/***************RST = 0;*****************/
 	io_signal->gpio_write(0x00000000, 0x00000100);
 
 	/***************RST = 1;*****************/
 	io_signal->gpio_write(0x00000100, 0x00000100);
+
+
 } 
 
