@@ -262,10 +262,7 @@ int socket_request(unsigned char option)
 
 	// clear_recbuf(ESP8266_A);
     
-
-
-	xLastWakeTime = xTaskGetTickCount ();
-	vTaskDelayUntil( &xLastWakeTime, 100 );
+	_Rtos_Delay(5000);
 
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
