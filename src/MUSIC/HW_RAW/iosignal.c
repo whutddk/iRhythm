@@ -11,9 +11,14 @@ static DEV_GPIO *io_signal;
 
 void empty_isr()
 {
+	// BaseType_t xHigherPriorityTaskWoken = pdFALSE;;
 	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
 	xEventGroupSetBits( evt1_cb, BIT_1 );
-	EMBARC_PRINTF("GPIO Set BIT_1\r\n");
+
+	// xEventGroupSetBitsFromISR(
+	// 	evt1_cb,	// The event group being updated.
+	// 	BIT_1,   // The bits being set.
+	// 	&xHigherPriorityTaskWoken );
 }
 
 
