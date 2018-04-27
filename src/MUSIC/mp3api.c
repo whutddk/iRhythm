@@ -57,7 +57,7 @@ void play_mp3(int filelenth)
 				file_ptr += NUM_BYTE_READ;
 				file_left -= NUM_BYTE_READ;
 
-	EMBARC_PRINTF("start to trace\r\n");
+	EMBARC_PRINTF("Start to Trace\r\n");
 	
 	flag_start = 0;
 	// flag_dma_finish = 1;
@@ -113,28 +113,33 @@ void play_mp3(int filelenth)
 /********************Shedule Here*****************************/
 			xEventGroupWaitBits( 
 				evt1_cb, 
-				BIT_0 | BIT_1, 	//regard BIT0 as dma finish,regard BIT1 as buff full
+				BIT_0 , 	//regard BIT0 as dma finish,regard BIT1 as buff full
 				pdFALSE, 		//BIT_0 and BIT_1 should Not be cleared before returning.
 				pdTRUE, 		// Wait for both bits
 				portMAX_DELAY );
 			xEventGroupClearBits( evt1_cb, BIT_0 );
 			// while(flag_dma_finish==0);
 			// flag_dma_finish = 0;
-			if ( !iosignal_read(0) )
-			{
-				uxBits = 0;
-			}
-			else if (( uxBits & BIT_1 ) != 0 )
-			{
-				;
-			}
-			else
-			{
-				EMBARC_PRINTF("GPIO Clear BIT1\r\n");
-				uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
-			}
-			// while(iosignal_read(0));
 
+			EMBARC_PRINTF("GPIO BIT1 %d\r\n",iosignal_read(0));
+			// if ( iosignal_read(0) )
+			// {
+			// 	uxBits = 0;
+			// }
+			// else if (( uxBits & BIT_1 ) != 0 )
+			// {
+			// 	EMBARC_PRINTF("uxBits & BIT_1  != 0\r\n");
+			// }
+			// else
+			// {
+			// 	EMBARC_PRINTF("GPIO Clear BIT1\r\n");
+			// 	uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
+			// }
+			while(!iosignal_read(0))
+				{
+					EMBARC_PRINTF("!GPIO BIT1 %d\r\n",!iosignal_read(0));
+				}
+				EMBARC_PRINTF("!GPIO BIT1 %d\r\n",!iosignal_read(0));
 /********************Shedule End Here*****************************/
 
 			if ( flag_sw == 0 )

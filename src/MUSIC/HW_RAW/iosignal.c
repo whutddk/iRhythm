@@ -23,9 +23,9 @@ void iosignal_init()
 	DEV_GPIO_BIT_ISR gpio_bit_isr;
 
 	gpio_int_cfg.int_bit_mask = BOARD_SIGNIN_MASK;
-	gpio_int_cfg.int_bit_type = 0xffffffff;
+	gpio_int_cfg.int_bit_type = BOARD_SIGNIN_MASK;
 	gpio_int_cfg.int_bit_polarity = GPIO_INT_FALLING_EDGE_ALL;
-	gpio_int_cfg.int_bit_debounce = 0xffffffff;
+	gpio_int_cfg.int_bit_debounce = BOARD_SIGNIN_MASK;
 
 	gpio_bit_isr.int_bit_ofs = 30;
 	gpio_bit_isr.int_bit_handler = empty_isr;
@@ -104,7 +104,7 @@ uint8_t iosignal_read(uint8_t num)
 		value = (~value) & mask;
 	}
 
-	return (value?1:0);
+	return (value?0:1);
 }
 
 
