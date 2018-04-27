@@ -74,14 +74,19 @@ int main(void)
 
 	iosignal_init();
 
+	net_rst();
+    /***init songid list*****/
+    filelist_init();
+
+    net_init();
 
 // Create Tasks
 
-	// if (xTaskCreate(music_task, "music_task", 128, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
-	//     != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-	// 	EMBARC_PRINTF("create music_task error\r\n");
-	// 	return -1;
-	// }	
+	if (xTaskCreate(music_task, "music_task", 256, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create music_task error\r\n");
+		return -1;
+	}	
 	if (xTaskCreate(net_task, "net_task", 256, (void *)NULL, configMAX_PRIORITIES-2, &NET_task_handle)
 	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create NET_task error\r\n");
