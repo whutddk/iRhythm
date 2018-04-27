@@ -200,7 +200,7 @@ void net_init()
     while(esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false)!=AT_OK)
     {
         EMBARC_PRINTF("WIFI %s connect failed\n", WIFI_SSID);
-        _Rtos_Delay(100);
+        _Rtos_Delay(1000);
     }
     EMBARC_PRINTF("WIFI %s connect succeed\n", WIFI_SSID);
 
@@ -208,7 +208,7 @@ void net_init()
     EMBARC_PRINTF("============================ Show IP ============================\n");
     esp8266_address_get(ESP8266_A);
     
-    _Rtos_Delay(100);
+    // _Rtos_Delay(100);
 	
 }
 
@@ -260,9 +260,7 @@ int socket_request(unsigned char option)
 
 	clear_recbuf(ESP8266_A);
     
-	/************NEED USE un-Block delay here Here***********************/
-	cur_time = OSP_GET_CUR_MS();
-	while( OSP_GET_CUR_MS() - cur_time < 5000 );
+	_Rtos_Delay(5000);
 
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
@@ -286,7 +284,6 @@ int socket_request(unsigned char option)
 	}	
 
 	EMBARC_PRINTF("Recv Done.\r\n");
-	// socket.close();
 	esp8266_CIPCLOSE(ESP8266_A);
 
 	return 0;
@@ -299,7 +296,7 @@ void download_mp3()
 	uint32_t cur_time;
 	char *http_cmd;
 	uint8_t timeout_cnt = 0;
-	// socket.connect("211.91.125.36", 80);
+
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
 
@@ -320,11 +317,8 @@ void download_mp3()
 
 	while(1)
 	{
-	/************NEED USE un-Block delay here Here***********************/		
-		cur_time = OSP_GET_CUR_MS();
-		while( OSP_GET_CUR_MS() - cur_time < 5000 );
+		_Rtos_Delay(5000);
 
-    	// rcount = socket.recv(response, 1000);
     	if ( http_sum != bypass_cnt  )
     	{
     		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
@@ -355,7 +349,7 @@ void download_mp3()
 	END_REC();
 
 	EMBARC_PRINTF("Socket Close.\r\n");
-	// socket.close();
+
 	/**********Connect will Close Automatic*********************/
 	esp8266_CIPCLOSE(ESP8266_A);
 }

@@ -63,8 +63,10 @@ int32_t error_num = 0;
 
 int main(void)
 {
-	board_init();
-	
+	// board_init();
+	io_mux_init();
+	emsk_gpio_init();
+
 	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
 	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
 
