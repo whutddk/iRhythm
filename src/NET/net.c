@@ -161,8 +161,6 @@ static int get_songinfo(char *jsonstr)
 
 void net_init()
 {
-
-
 	EMBARC_PRINTF("============================ Init ============================\n");
 	
 	net_buff = malloc(sizeof(char) * 10 * 1024 * 1024);
@@ -295,7 +293,7 @@ void download_mp3()
 {
 	uint8_t http_cnt = 0;
 	uint32_t http_sum = 0;
-	uint32_t cur_time;
+	// uint32_t cur_time;
 	char *http_cmd;
 	uint8_t timeout_cnt = 0;
 
@@ -339,9 +337,6 @@ void download_mp3()
 	    		break;
     		}
     	}
-	
-
-
 	}
 	
 
