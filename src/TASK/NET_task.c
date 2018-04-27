@@ -9,12 +9,10 @@
 
 void net_task()
 {
-	
-
 
 	EMBARC_PRINTF("NET_TASK START\r\n");
     // //ESP8266 Init
-   
+    net_rst();
 
     //Creat Server
     // EMBARC_PRINTF("============================ Connect Server ============================\n");

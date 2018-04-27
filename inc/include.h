@@ -73,7 +73,7 @@ extern void playlist_init();
 extern void iosignal_init();
 extern void iosignal_ctrl(uint8_t val,uint8_t num);
 extern uint8_t iosignal_read(uint8_t num);
-
+extern void net_rst();
 
 /*************define in net.c****************/
 

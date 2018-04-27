@@ -4,7 +4,7 @@
 #include "include.h"
 
 /*****A[31:28]****PMOD6[10:7]*************/
-#define BOARD_SIGNOUT_MASK 0x30000000
+#define BOARD_SIGNOUT_MASK 0x30000100
 #define BOARD_SIGNIN_MASK 0xC0000000
 
 static DEV_GPIO *io_signal;
@@ -13,6 +13,8 @@ void empty_isr()
 {
 	// BaseType_t xHigherPriorityTaskWoken = pdFALSE;;
 	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
+
+	/*******No a Suggestion Used Here**************************/
 	xEventGroupSetBits( evt1_cb, BIT_1 );
 
 	// xEventGroupSetBitsFromISR(
@@ -52,6 +54,8 @@ void iosignal_init()
 
 	iosignal_ctrl(0,0);
 	iosignal_ctrl(0,1);
+
+	io_signal->gpio_write(0x00000100, 0x00000100);
 	// iosignal_ctrl(0,2);
 	// iosignal_ctrl(0,3);
 error_exit:
@@ -112,5 +116,12 @@ uint8_t iosignal_read(uint8_t num)
 	return (value?0:1);
 }
 
+inline void net_rst()
+{
+	/***************RST = 0;*****************/
+	io_signal->gpio_write(0x00000000, 0x00000100);
 
+	/***************RST = 1;*****************/
+	io_signal->gpio_write(0x00000100, 0x00000100);
+} 
 
