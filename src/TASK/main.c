@@ -51,7 +51,7 @@ static TaskHandle_t GUI_task_handle = NULL;
 static TaskHandle_t NET_task_handle = NULL;
 
 // Events
-static EventGroupHandle_t evt1_cb;
+EventGroupHandle_t evt1_cb;
 
 
 /**
@@ -67,26 +67,24 @@ int main(void)
 	
 	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
 	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
-	//board_init();
 
-
-
-	
 	vTaskSuspendAll();
+
+	iosignal_init();
 
 
 // Create Tasks
 
-	if (xTaskCreate(music_task, "music_task", 128, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create music_task error\r\n");
-		return -1;
-	}	
-	// if (xTaskCreate(net_task, "net_task", 128, (void *)NULL, configMAX_PRIORITIES-2, &NET_task_handle)
+	// if (xTaskCreate(music_task, "music_task", 128, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
 	//     != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-	// 	EMBARC_PRINTF("create NET_task error\r\n");
+	// 	EMBARC_PRINTF("create music_task error\r\n");
 	// 	return -1;
-	// }
+	// }	
+	if (xTaskCreate(net_task, "net_task", 128, (void *)NULL, configMAX_PRIORITIES-2, &NET_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create NET_task error\r\n");
+		return -1;
+	}
 	if (xTaskCreate(gui_task, "gui_task", 128, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
 	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create GUI_task error\r\n");
@@ -107,5 +105,9 @@ int main(void)
 	while(1);
 	return E_SYS;
 }
+
+
+
+
 
 /** @} */

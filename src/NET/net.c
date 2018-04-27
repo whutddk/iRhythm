@@ -161,6 +161,8 @@ static int get_songinfo(char *jsonstr)
 
 void net_init()
 {
+
+
 	EMBARC_PRINTF("============================ Init ============================\n");
 	
 	net_buff = malloc(sizeof(char) * 10 * 1024 * 1024);
@@ -178,14 +180,19 @@ void net_init()
 
     esp8266_init(ESP8266_A, UART_BAUDRATE_115200);
     at_test(ESP8266_A->p_at);
-    //vTaskDelay( 1 );
+
+
+	_Rtos_Delay(100);
 
     // //Set Mode
     EMBARC_PRINTF("============================ Set Mode ============================\n");
     esp8266_wifi_mode_get(ESP8266_A, false);
-    //vTaskDelay( 1 );
+
+    _Rtos_Delay(100);
+
     esp8266_wifi_mode_set(ESP8266_A, 3, false);
-    //vTaskDelay( 1 );
+
+	_Rtos_Delay(100);
 
     //Connect WiFi
     EMBARC_PRINTF("============================ Connect WiFi ============================\n");
@@ -193,7 +200,7 @@ void net_init()
     while(esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false)!=AT_OK)
     {
         EMBARC_PRINTF("WIFI %s connect failed\n", WIFI_SSID);
-        //vTaskDelay( 1 );
+        _Rtos_Delay(100);
     }
     EMBARC_PRINTF("WIFI %s connect succeed\n", WIFI_SSID);
 
@@ -201,7 +208,7 @@ void net_init()
     EMBARC_PRINTF("============================ Show IP ============================\n");
     esp8266_address_get(ESP8266_A);
     
-    // vTaskDelay( 1 );
+    _Rtos_Delay(100);
 	
 }
 

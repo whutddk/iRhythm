@@ -4,6 +4,8 @@
 #include "embARC.h"
 #include "embARC_debug.h"
 
+#include "inc_task.h"
+
 #include "esp8266.h"
 
 #include <string.h>
@@ -36,7 +38,7 @@ extern void filelist_delete(uint8_t list_id);
 /***********define in main.c ************/
 
 // Events
-static EventGroupHandle_t evt1_cb;
+extern EventGroupHandle_t evt1_cb;
 
 #define BIT_0	( 1 << 0 )
 #define BIT_1	( 1 << 1 )
@@ -73,7 +75,7 @@ extern void playlist_init();
 extern void iosignal_init();
 extern void iosignal_ctrl(uint8_t val,uint8_t num);
 extern uint8_t iosignal_read(uint8_t num);
-
+extern void net_rst();
 
 /*************define in net.c****************/
 
