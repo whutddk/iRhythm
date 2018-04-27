@@ -219,7 +219,9 @@ int socket_request(unsigned char option)
 	char *http_cmd;
 	uint32_t idlen_int;
 	char idlen_char[3] = "";
-	uint32_t cur_time ;
+	// uint32_t cur_time ;
+
+	TickType_t xLastWakeTime;
 
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
@@ -258,9 +260,12 @@ int socket_request(unsigned char option)
 
 	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
 
-	clear_recbuf(ESP8266_A);
+	// clear_recbuf(ESP8266_A);
     
-	_Rtos_Delay(5000);
+
+
+	xLastWakeTime = xTaskGetTickCount ();
+	vTaskDelayUntil( &xLastWakeTime, 100 );
 
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
