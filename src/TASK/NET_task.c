@@ -14,7 +14,7 @@ void net_task()
     //ESP8266 Init
     
 
-    // socket_request(SONG_ID);
+    socket_request(SONG_ID);
     socket_request(SONG_INFO);
     // socket_request(SONG_INFO);
     download_mp3();

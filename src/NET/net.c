@@ -158,6 +158,57 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
+static uint32_t fix_netbuff(char *net_buff,uint32_t length)
+{
+	char *buff_p1;
+	char *buff_p2;
+
+	uint32_t i = 0;
+	uint8_t j = 0;
+	uint32_t len = length;
+
+	for ( i = 0;i < len; i++ )
+	{
+		if ( ( *(net_buff + i ) == '+' ) 
+			&& ( *(net_buff + i + 1 ) == 'I' )
+			&& ( *(net_buff + i + 2 ) == 'P' )
+			&& ( *(net_buff + i + 3 ) == 'D' ) )
+		{
+		/*********Record Start Point***************/
+			buff_p1 = net_buff + i;	
+
+			j = 4;
+
+			/*****Just a Protection*************/
+			while( ( i+j ) < len )
+			{
+				/****':' only one*****/
+				if ( *(net_buff + i + j ) != ':' )
+				{
+					j++;
+				}
+				/*************(net_buff + i + j ) == ':'**********************/
+				else
+				{
+					/*****next char***********/
+					j++;
+					buff_p2 = net_buff + i + j;
+
+					/***********i is correct length***********************/
+					memmove(buff_p1 ,buff_p2,len - i - j);
+					/***********j is cut lenth******************************/
+					len -= j;
+					EMBARC_PRINTF("\r\ncut %d \r\n",j);
+					break;
+				}
+			}
+
+		}
+	}
+
+	return len;
+}
+
 
 void net_init()
 {
@@ -260,10 +311,10 @@ int socket_request(unsigned char option)
     // START_REC();
 
     vTaskSuspendAll();
-
-	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+    esp8266_passthr_start(ESP8266_A);
+	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+	// esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 	START_REC();
-
 	xTaskResumeAll();
 
     free(http_cmd);
@@ -273,10 +324,15 @@ int socket_request(unsigned char option)
     
 	_Rtos_Delay(1000);
 
+	EMBARC_PRINTF("%s\r\n",(net_buff));
+	fix_netbuff(net_buff,bypass_cnt);
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
 	/*********end to poll.reset***************/
 	END_REC();
+	esp8266_passthr_end(ESP8266_A);
+	_Rtos_Delay(100);
+	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 
 	switch(option)
 	{
@@ -320,9 +376,12 @@ void download_mp3()
     strcat (http_cmd," HTTP/1.1\r\nHost: zhangmenshiting.qianqian.com\r\nConnection: keep-alive\r\n\r\n");
 
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 
+	vTaskSuspendAll();
+    esp8266_passthr_start(ESP8266_A);
+	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );	
 	START_REC();
+	xTaskResumeAll();
 
     free(http_cmd);
 
@@ -349,17 +408,21 @@ void download_mp3()
     		}
     	}
 	}
-	
+
+	/*********end to poll.reset***************/	
+	esp8266_passthr_end(ESP8266_A);
+	_Rtos_Delay(100);
+	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
+	END_REC();
 
 	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
-
-	/*********end to poll.reset***************/
-	END_REC();
 
 	EMBARC_PRINTF("Socket Close.\r\n");
 
 	/**********Connect will Close Automatic*********************/
 	esp8266_CIPCLOSE(ESP8266_A);
+	
+	
 }
 
 

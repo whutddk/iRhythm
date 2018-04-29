@@ -119,10 +119,13 @@ uint8_t iosignal_read(uint8_t num)
 
 void net_rst()
 {
+	uint32_t cur_time;
 	/***************RST = 0;*****************/
 	io_signal->gpio_write(0x00000000, 0x00000100);
 
-	_Rtos_Delay(100);
+	// _Rtos_Delay(100);
+	cur_time = OSP_GET_CUR_MS();
+	while((OSP_GET_CUR_MS()-cur_time) < 1000);
 
 	/***************RST = 1;*****************/
 	io_signal->gpio_write(0x00000100, 0x00000100);
