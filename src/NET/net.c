@@ -158,56 +158,56 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
-static uint32_t fix_netbuff(char *net_buff,uint32_t length)
-{
-	char *buff_p1;
-	char *buff_p2;
+// static uint32_t fix_netbuff(char *net_buff,uint32_t length)
+// {
+// 	char *buff_p1;
+// 	char *buff_p2;
 
-	uint32_t i = 0;
-	uint8_t j = 0;
-	uint32_t len = length;
+// 	uint32_t i = 0;
+// 	uint8_t j = 0;
+// 	uint32_t len = length;
 
-	for ( i = 0;i < len; i++ )
-	{
-		if ( ( *(net_buff + i ) == '+' ) 
-			&& ( *(net_buff + i + 1 ) == 'I' )
-			&& ( *(net_buff + i + 2 ) == 'P' )
-			&& ( *(net_buff + i + 3 ) == 'D' ) )
-		{
-		/*********Record Start Point***************/
-			buff_p1 = net_buff + i;	
+// 	for ( i = 0;i < len; i++ )
+// 	{
+// 		if ( ( *(net_buff + i ) == '+' ) 
+// 			&& ( *(net_buff + i + 1 ) == 'I' )
+// 			&& ( *(net_buff + i + 2 ) == 'P' )
+// 			&& ( *(net_buff + i + 3 ) == 'D' ) )
+// 		{
+// 		/*********Record Start Point***************/
+// 			buff_p1 = net_buff + i;	
 
-			j = 4;
+// 			j = 4;
 
-			/*****Just a Protection*************/
-			while( ( i+j ) < len )
-			{
-				/****':' only one*****/
-				if ( *(net_buff + i + j ) != ':' )
-				{
-					j++;
-				}
-				/*************(net_buff + i + j ) == ':'**********************/
-				else
-				{
-					/*****next char***********/
-					j++;
-					buff_p2 = net_buff + i + j;
+// 			/*****Just a Protection*************/
+// 			while( ( i+j ) < len )
+// 			{
+// 				***':' only one****
+// 				if ( *(net_buff + i + j ) != ':' )
+// 				{
+// 					j++;
+// 				}
+// 				/*************(net_buff + i + j ) == ':'**********************/
+// 				else
+// 				{
+// 					/*****next char***********/
+// 					j++;
+// 					buff_p2 = net_buff + i + j;
 
-					/***********i is correct length***********************/
-					memmove(buff_p1 ,buff_p2,len - i - j);
-					/***********j is cut lenth******************************/
-					len -= j;
-					EMBARC_PRINTF("\r\ncut %d \r\n",j);
-					break;
-				}
-			}
+// 					/***********i is correct length***********************/
+// 					memmove(buff_p1 ,buff_p2,len - i - j);
+// 					/***********j is cut lenth******************************/
+// 					len -= j;
+// 					EMBARC_PRINTF("\r\ncut %d \r\n",j);
+// 					break;
+// 				}
+// 			}
 
-		}
-	}
+// 		}
+// 	}
 
-	return len;
-}
+// 	return len;
+// }
 
 
 void net_init()
@@ -268,7 +268,6 @@ int socket_request(unsigned char option)
 	char *http_cmd;
 	uint32_t idlen_int;
 	char idlen_char[3] = "";
-	// uint32_t cur_time ;
 
 	TickType_t xLastWakeTime;
 
@@ -308,7 +307,6 @@ int socket_request(unsigned char option)
     }
     
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-    // START_REC();
 
     vTaskSuspendAll();
     esp8266_passthr_start(ESP8266_A);
@@ -318,14 +316,11 @@ int socket_request(unsigned char option)
 	xTaskResumeAll();
 
     free(http_cmd);
-	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
 
-	// clear_recbuf(ESP8266_A);
-    
+
+	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
 	_Rtos_Delay(1000);
 
-	EMBARC_PRINTF("%s\r\n",(net_buff));
-	fix_netbuff(net_buff,bypass_cnt);
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
 	/*********end to poll.reset***************/
@@ -387,12 +382,12 @@ void download_mp3()
 
 	while(1)
 	{
-		_Rtos_Delay(5000);
+		_Rtos_Delay(1000);
 
     	if ( http_sum != bypass_cnt  )
     	{
     		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( 5 * ( timeout_cnt+1 ) ) );
+			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
     	}

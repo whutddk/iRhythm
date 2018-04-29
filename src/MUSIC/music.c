@@ -64,7 +64,7 @@ static void playlist_init()
 */
 void play_init()
 {
-	spi_dma_prepare();
+	
 
 	spi =  spi_get_dev(DW_SPI_0_ID);
 /** malloc 10MB space from DDR2 for reading mp3 file from SD card **/

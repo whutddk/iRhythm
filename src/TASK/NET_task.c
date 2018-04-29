@@ -9,10 +9,7 @@
 
 void net_task()
 {
-
 	EMBARC_PRINTF("NET_TASK START\r\n");
-    //ESP8266 Init
-    
 
     socket_request(SONG_ID);
     socket_request(SONG_INFO);
@@ -22,7 +19,7 @@ void net_task()
 
     while (1)
     {
-        // socket_request(SONG_INFO);
+        ;
     }
 
     return ;

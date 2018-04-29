@@ -79,7 +79,7 @@ int main(void)
     filelist_init();
 
     net_init();
-
+    spi_dma_prepare();
 // Create Tasks
 
 	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
