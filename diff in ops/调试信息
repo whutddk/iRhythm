@@ -1,0 +1,107 @@
+_start () at arc_startup.s:65
+65      arc_startup.s: No such file or directory.
+Loading section .init, size 0x1b0 lma 0x0
+Loading section .vector, size 0x400 lma 0x400
+Loading section .text, size 0x2fcfc lma 0x800
+Loading section .rodata, size 0x14684 lma 0x80000000
+Loading section .data, size 0x2db8 lma 0x80014684
+Start address 0x4, load size 292584
+Transfer rate: 438 KB/sec, 13299 bytes/write.
+(gdb) b flag_start = 0
+Function "flag_start = 0" not defined.
+Make breakpoint pending on future shared library load? (y or [n]) n
+(gdb) xEventGroupSetBits
+Undefined command: "xEventGroupSetBits".  Try "help".
+(gdb) b xEventGroupSetBits
+Breakpoint 1 at 0x1da2a: xEventGroupSetBits. (3 locations)
+(gdb) c
+Continuing.
+
+Breakpoint 1, xEventGroupSetBits (xEventGroup=xEventGroup@entry=0x0 <_f_init>, uxBitsToSet=uxBitsToSet@entry=3)
+    at ../os/freertos/event_groups.c:531
+531     {
+(gdb) s
+546             vTaskSuspendAll();
+(gdb) n
+553                     pxEventBits->uxEventBits |= uxBitsToSet;
+(gdb)
+550                     pxListItem = listGET_HEAD_ENTRY( pxList );
+(gdb)
+553                     pxEventBits->uxEventBits |= uxBitsToSet;
+(gdb)
+545             pxListEnd = listGET_END_MARKER( pxList ); /*lint !e826 !e740 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
+(gdb)
+556                     while( pxListItem != pxListEnd )
+(gdb)
+535     EventBits_t uxBitsToClear = 0, uxBitsWaitedFor, uxControlBits;
+(gdb)
+559                             uxBitsWaitedFor = listGET_LIST_ITEM_VALUE( pxListItem );
+(gdb)
+605                                     ( void ) xTaskRemoveFromUnorderedEventList( pxListItem, pxEventBits->uxEventBits | eventUNBLOCKED_DUE_TO_BIT_SET );
+(gdb) s
+564                             uxBitsWaitedFor &= ~eventEVENT_BITS_CONTROL_BYTES;
+(gdb) n
+558                             pxNext = listGET_NEXT( pxListItem );
+(gdb)
+566                             if( ( uxControlBits & eventWAIT_FOR_ALL_BITS ) == ( EventBits_t ) 0 )
+(gdb)
+569                                     if( ( uxBitsWaitedFor & pxEventBits->uxEventBits ) != ( EventBits_t ) 0 )
+(gdb)
+591                                     if( ( uxControlBits & eventCLEAR_EVENTS_ON_EXIT_BIT ) != ( EventBits_t ) 0 )
+(gdb)
+605                                     ( void ) xTaskRemoveFromUnorderedEventList( pxListItem, pxEventBits->uxEventBits | eventUNBLOCKED_DUE_TO_BIT_SET );
+(gdb) s
+xTaskRemoveFromUnorderedEventList (pxEventListItem=0xf8c20e0, xItemValue=33554439) at ../os/freertos/tasks.c:2972
+2972            listSET_LIST_ITEM_VALUE( pxEventListItem, xItemValue | taskEVENT_LIST_ITEM_VALUE_IN_USE );
+(gdb) n
+2976            pxUnblockedTCB = ( TCB_t * ) listGET_LIST_ITEM_OWNER( pxEventListItem );
+(gdb)
+2978            ( void ) uxListRemove( pxEventListItem );
+(gdb) s
+uxListRemove (pxItemToRemove=0xf8c20e0) at ../os/freertos/list.c:218
+218             pxItemToRemove->pxNext->pxPrevious = pxItemToRemove->pxPrevious;
+(gdb) n
+216     List_t * const pxList = ( List_t * ) pxItemToRemove->pvContainer;
+(gdb)
+218             pxItemToRemove->pxNext->pxPrevious = pxItemToRemove->pxPrevious;
+(gdb)
+exc_entry_cpu () at ../os/freertos/portable/Synopsys/ARC/arc_support.s:170
+170             EXCEPTION_PROLOGUE
+(gdb) n
+exc_entry_cpu () at ../os/freertos/portable/Synopsys/ARC/arc_support.s:172
+172             mov     blink,  sp
+(gdb)
+173             mov     r3, sp          /* as exception handler's para(p_excinfo) */
+(gdb)
+175             ld      r0, [exc_nest_count]
+(gdb)
+176             add     r1, r0, 1
+(gdb)
+177             st      r1, [exc_nest_count]
+(gdb)
+178             cmp     r0, 0
+(gdb)
+179             bne     exc_handler_1
+(gdb)
+181             mov     sp, _e_stack
+(gdb)
+exc_handler_1 () at ../os/freertos/portable/Synopsys/ARC/arc_support.s:183
+183             PUSH    blink
+(gdb)
+185             lr      r0, [AUX_ECR]
+(gdb)
+186             lsr     r0, r0, 16
+(gdb)
+187             mov     r1, exc_int_handler_table
+(gdb)
+188             ld.as   r2, [r1, r0]
+(gdb)
+190             mov     r0, r3
+(gdb)
+191             jl      [r2]            /* !!!!jump to exception handler where interrupts are not allowed! */
+(gdb)
+
+Program stopped.
+exc_handler_default (p_excinf=0x10004494 <ucHeap+3188>) at ../arc/arc_exception.c:83
+83      }
+(gdb)
