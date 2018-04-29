@@ -312,7 +312,11 @@ int socket_request(unsigned char option)
 
     vTaskSuspendAll();
 
-	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+
+    esp8266_passthr_start(ESP8266_A);
+	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+
+	// esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 	START_REC();
 
 	xTaskResumeAll();
@@ -330,7 +334,9 @@ int socket_request(unsigned char option)
 
 	/*********end to poll.reset***************/
 	END_REC();
-
+	esp8266_passthr_end(ESP8266_A);
+	_Rtos_Delay(100);
+	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 	switch(option)
 	{
 		case SONG_ID :
@@ -404,22 +410,24 @@ void download_mp3()
     		}
     	}
 	}
+	
 	esp8266_passthr_end(ESP8266_A);
-	
-	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
+	_Rtos_Delay(100);
+	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 
-	
+	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
 
 	EMBARC_PRINTF("Socket Close.\r\n");
 
 	/**********Connect will Close Automatic*********************/
 	esp8266_CIPCLOSE(ESP8266_A);
-
+	
 	spi_dma_prepare();
-	spi =  spi_get_dev(DW_SPI_0_ID);
+	spi = spi_get_dev(DW_SPI_0_ID);
 	play_mp3(bypass_cnt,IN_BUFF);
-	/*********end to poll.reset***************/
 	END_REC();
+	/*********end to poll.reset***************/
+	
 }
 
 
