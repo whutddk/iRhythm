@@ -111,13 +111,13 @@ void play_mp3(int filelenth)
 			}
 
 /********************Shedule Here*****************************/
-			xEventGroupWaitBits( 
-				evt1_cb, 
-				BIT_0 | BIT_1 , 	//regard BIT0 as dma finish,regard BIT1 as buff full
-				pdFALSE, 		//BIT_0 and BIT_1 should Not be cleared before returning.
-				pdTRUE, 		// Wait for both bits
-				portMAX_DELAY );
-			xEventGroupClearBits( evt1_cb, BIT_0 );
+			// xEventGroupWaitBits( 
+			// 	evt1_cb, 
+			// 	BIT_0 | BIT_1 , 	//regard BIT0 as dma finish,regard BIT1 as buff full
+			// 	pdFALSE, 		//BIT_0 and BIT_1 should Not be cleared before returning.
+			// 	pdTRUE, 		// Wait for both bits
+			// 	portMAX_DELAY );
+			// xEventGroupClearBits( evt1_cb, BIT_0 );
 			// while(flag_dma_finish==0);
 			// flag_dma_finish = 0;
 
@@ -134,23 +134,23 @@ void play_mp3(int filelenth)
 			// 	EMBARC_PRINTF("GPIO Clear BIT1\r\n");
 			// 	uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
 			// }
-			while(!iosignal_read(0))
-			{
+			// while(!iosignal_read(0))
+			// {
 				_Rtos_Delay(100);
-			}
+			// }
 				
 /********************Shedule End Here*****************************/
 
-			if ( flag_sw == 0 )
-			{
-				spi_writeraw((uint8_t*)buf_rec1);
-				flag_sw = 1;
-			}
-			else
-			{
-				spi_writeraw((uint8_t*)buf_rec2);
-		 		flag_sw = 0;
-		    }
+			// if ( flag_sw == 0 )
+			// {
+			// 	spi_writeraw((uint8_t*)buf_rec1);
+			// 	flag_sw = 1;
+			// }
+			// else
+			// {
+			// 	spi_writeraw((uint8_t*)buf_rec2);
+		 // 		flag_sw = 0;
+		 //    }
 
 
 			if (byte_left < NUM_BYTE_READ) 
