@@ -158,7 +158,7 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
-uint32_t fix_netbuff(char *net_buff,uint32_t length)
+static uint32_t fix_netbuff(char *net_buff,uint32_t length)
 {
 	char *buff_p1;
 	char *buff_p2;
@@ -311,14 +311,10 @@ int socket_request(unsigned char option)
     // START_REC();
 
     vTaskSuspendAll();
-
-
     esp8266_passthr_start(ESP8266_A);
 	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-
 	// esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 	START_REC();
-
 	xTaskResumeAll();
 
     free(http_cmd);
@@ -337,6 +333,7 @@ int socket_request(unsigned char option)
 	esp8266_passthr_end(ESP8266_A);
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
+
 	switch(option)
 	{
 		case SONG_ID :
@@ -380,10 +377,11 @@ void download_mp3()
 
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
 
+	vTaskSuspendAll();
     esp8266_passthr_start(ESP8266_A);
-	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-	
+	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );	
 	START_REC();
+	xTaskResumeAll();
 
     free(http_cmd);
 
@@ -410,10 +408,12 @@ void download_mp3()
     		}
     	}
 	}
-	
+
+	/*********end to poll.reset***************/	
 	esp8266_passthr_end(ESP8266_A);
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
+	END_REC();
 
 	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
 
@@ -422,11 +422,6 @@ void download_mp3()
 	/**********Connect will Close Automatic*********************/
 	esp8266_CIPCLOSE(ESP8266_A);
 	
-	spi_dma_prepare();
-	spi = spi_get_dev(DW_SPI_0_ID);
-	play_mp3(bypass_cnt,IN_BUFF);
-	END_REC();
-	/*********end to poll.reset***************/
 	
 }
 
