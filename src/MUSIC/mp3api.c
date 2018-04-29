@@ -75,6 +75,7 @@ void play_mp3(int filelenth,uint8_t location)
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
 	while(1)
 	{
+		//byte_left = fix_netbuff(read_ptr,byte_left);
 		offset = MP3FindSyncWord(read_ptr, byte_left);
  
 		if ( offset >= 0 )

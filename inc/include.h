@@ -92,6 +92,7 @@ extern uint8_t flag_netpoll ;
 extern char *net_buff;
 extern uint32_t bypass_cnt;
 extern ESP8266_DEF_PTR ESP8266_A;
+extern uint32_t fix_netbuff(char *net_buff,uint32_t length);
 extern void net_init();
 extern int socket_request(unsigned char option);
 extern void download_mp3();

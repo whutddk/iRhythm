@@ -158,7 +158,7 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
-static uint32_t fix_netbuff(char *net_buff,uint32_t length)
+uint32_t fix_netbuff(char *net_buff,uint32_t length)
 {
 	char *buff_p1;
 	char *buff_p2;
@@ -373,8 +373,10 @@ void download_mp3()
     strcat (http_cmd," HTTP/1.1\r\nHost: zhangmenshiting.qianqian.com\r\nConnection: keep-alive\r\n\r\n");
 
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 
+    esp8266_passthr_start(ESP8266_A);
+	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+	
 	START_REC();
 
     free(http_cmd);
@@ -402,17 +404,22 @@ void download_mp3()
     		}
     	}
 	}
+	esp8266_passthr_end(ESP8266_A);
 	
-	fix_netbuff(net_buff,bypass_cnt);
 	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
 
-	/*********end to poll.reset***************/
-	END_REC();
+	
 
 	EMBARC_PRINTF("Socket Close.\r\n");
 
 	/**********Connect will Close Automatic*********************/
 	esp8266_CIPCLOSE(ESP8266_A);
+
+	spi_dma_prepare();
+	spi =  spi_get_dev(DW_SPI_0_ID);
+	play_mp3(bypass_cnt,IN_BUFF);
+	/*********end to poll.reset***************/
+	END_REC();
 }
 
 
