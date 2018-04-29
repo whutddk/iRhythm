@@ -11,6 +11,7 @@ FATFS fs_p;
 
 uint8_t *file_buff;
 int file_lenth;
+uint8_t file_location;
 void music_task()
 {
 	char * music_filename = NULL;
@@ -51,6 +52,7 @@ void music_task()
 	while(1)
 	{
 		file_lenth = Playlist_HEAD -> lenth;
+		file_location = Playlist_HEAD -> location;
 		memset( music_filename, 0, sizeof(char) * 50 );
 		strcat(music_filename,Playlist_HEAD -> data); 
 		//file_lenth = Playlist_HEAD -> lenth;
@@ -74,17 +76,24 @@ void music_task()
 		EMBARC_PRINTF("\r\nfile lenth = %d \r\n",file_lenth);
 
 /**read out file to DDR2 from SD card ,can product by another task**/
-		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(1000000));
-		iosignal_ctrl(1,0);
-		readout_file(music_filename);
-		iosignal_ctrl(0,0);	
 
+		if ( file_location == IN_FILE )
+		{
+			spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(1000000));
+			iosignal_ctrl(1,0);
+			readout_file(music_filename);
+			iosignal_ctrl(0,0);	
+		}
+		else
+		{
+			;
+		}
 		
 		spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
 		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(3000000));
 		EMBARC_PRINTF("\r\nfile lenth %d \r\n",file_lenth);
 			
-		play_mp3(file_lenth);
+		play_mp3(file_lenth,file_location);
 
 		EMBARC_PRINTF("\r\nplay complete!!!\r\n");
 	}

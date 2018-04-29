@@ -73,7 +73,7 @@ static int get_songid(char *jsonstr)
 		EMBARC_PRINTF("\r\n%s\r\n",songid);
 
 		/***建议两张表分开写******/
-		filelist_add(NET_LIST,songid,0);
+		filelist_add(NET_LIST,songid,0,0);
 
 	}
 	if ( Songid_HEAD == Songid_END )
@@ -351,7 +351,7 @@ void download_mp3()
 	}
 	
 
-	filelist_add(FILE_LIST,songpoint,http_sum);
+	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
 
 	/*********end to poll.reset***************/
 	END_REC();

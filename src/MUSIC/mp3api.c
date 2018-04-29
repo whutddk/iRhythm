@@ -20,7 +20,7 @@ char buf_rec2[2304]={1};
 
 uint8_t dec_buff[NUM_BYTE_READ] = {1};
 
-void play_mp3(int filelenth)
+void play_mp3(int filelenth,uint8_t location)
 {
 
 	uint32_t temp = 0;
@@ -28,7 +28,8 @@ void play_mp3(int filelenth)
 	int32_t offset;
 	uint8_t *read_ptr = dec_buff;
 	uint8_t *raw_ptr = raw_buff;
-	uint8_t *file_ptr = file_buff;
+	uint8_t *file_ptr;
+	// uint8_t *file_ptr = file_buff;
 	/*这里改文件大小*/
 	int file_left = filelenth;
 	int byte_left = NUM_BYTE_READ;
@@ -41,6 +42,16 @@ void play_mp3(int filelenth)
 	EventBits_t uxBits;
 
 	/*code*/
+
+	if ( location == IN_FILE )
+	{
+		file_ptr = file_buff;
+	}
+	else
+	{
+		file_ptr = net_buff;
+	}
+	
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
 	if ( mp3_dec == NULL )
 	{
@@ -232,7 +243,7 @@ void playlist_init()
 		}
 		if ( fileinfo.fattrib == 32 )
 		{
-			filelist_add(FILE_LIST,&(fileinfo.fname[0]),fileinfo.fsize);
+			filelist_add(FILE_LIST,&(fileinfo.fname[0]),fileinfo.fsize,IN_FILE);
 			EMBARC_PRINTF("File name: %s  File size:%d   \r\n",fileinfo.fname,fileinfo.fsize);
 		}
 	}
