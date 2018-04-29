@@ -53,8 +53,8 @@ extern int32_t error_num ;
 
 
 /***********define in MUSIC_task.c ************/
-extern uint8_t *file_buff; 
-extern uint8_t *raw_buff;
+
+
 
 /***********define in mem.c ************/
 extern void readout_file(char* music_name);
@@ -62,18 +62,18 @@ extern void readout_file(char* music_name);
 
 /***********define in music.c ************/
 extern DEV_SPI_PTR spi;
+extern uint8_t *file_buff; 
 extern volatile uint8_t flag_dma_finish;
-extern void spi_dma_test();
 
+extern void play_init();
 /***********define in dma2spi.c*********/
 extern void spi_dma_prepare(void);
 extern int32_t spi_writeraw(const void *data);
-
+extern int32_t Start_playing();
 
 /**************define in mp3api.c************/
 extern void play_mp3(int filelenth,uint8_t location);
-// extern void send2spi();
-extern void playlist_init();
+
 /**************define in iosignal.c**********/
 
 extern void iosignal_init();

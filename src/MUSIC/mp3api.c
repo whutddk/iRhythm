@@ -27,9 +27,10 @@ void play_mp3(int filelenth,uint8_t location)
 
 	int32_t offset;
 	uint8_t *read_ptr = dec_buff;
-	uint8_t *raw_ptr = raw_buff;
+	//uint8_t *raw_ptr = raw_buff;
 	uint8_t *file_ptr;
 	// uint8_t *file_ptr = file_buff;
+	
 	/*这里改文件大小*/
 	int file_left = filelenth;
 	int byte_left = NUM_BYTE_READ;
@@ -51,7 +52,11 @@ void play_mp3(int filelenth,uint8_t location)
 	{
 		file_ptr = net_buff;
 	}
-	
+
+	/***Prepare to transfer by SPI DMA *****/
+	spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
+	spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(3000000));
+
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
 	if ( mp3_dec == NULL )
 	{
@@ -63,10 +68,10 @@ void play_mp3(int filelenth,uint8_t location)
 		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\n");
 	}
 
-				// fread(buf_read,1,NUM_BYTE_READ,fd);
-				memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-				file_ptr += NUM_BYTE_READ;
-				file_left -= NUM_BYTE_READ;
+	// fread(buf_read,1,NUM_BYTE_READ,fd);
+	memmove(dec_buff,file_ptr,NUM_BYTE_READ);
+	file_ptr += NUM_BYTE_READ;
+	file_left -= NUM_BYTE_READ;
 
 	EMBARC_PRINTF("Start to Trace\r\n");
 	
@@ -169,14 +174,14 @@ void play_mp3(int filelenth,uint8_t location)
 				memmove(dec_buff,read_ptr,byte_left);
 
 							//num_read = fread(buf_read + byte_left,1,NUM_BYTE_READ - byte_left,fd);
-							memmove(dec_buff + byte_left,file_ptr,NUM_BYTE_READ - byte_left);
-								file_ptr += NUM_BYTE_READ - byte_left;
-								file_left -= NUM_BYTE_READ - byte_left;
-						if ( file_left <= 0 )
-						{
-							//这里可能越界，需要保护
-							break;
-						}
+				memmove(dec_buff + byte_left,file_ptr,NUM_BYTE_READ - byte_left);
+				file_ptr += NUM_BYTE_READ - byte_left;
+				file_left -= NUM_BYTE_READ - byte_left;
+				if ( file_left <= 0 )
+				{
+					//这里可能越界，需要保护
+					break;
+				}
 				
 				byte_left = NUM_BYTE_READ;
 				read_ptr = dec_buff;
@@ -212,61 +217,5 @@ void play_mp3(int filelenth,uint8_t location)
 	EMBARC_PRINTF("MP3 file: decorder is over!\n\r" );
 }
 
-void playlist_init()
-{
-	DIR dir;
-	FILINFO fileinfo;
 
-	EMBARC_PRINTF("\r\nCreate Play List\r\n");
-
-	struct filelist *lists = NULL;
-	lists = (struct filelist *)malloc(sizeof(struct filelist));
-	if ( NULL == lists )
-	{
-		EMBARC_PRINTF("\r\nPlay List Init Error!\r\n");
-	}
-
-/*open and checkout the directory*/
-	// DIR* dir = opendir("/fs");
-	error_num = f_opendir (&dir, "0:/");
-	if ( error_num != FR_OK )
-	{
-		;
-	}
-
-	do
-	{
-		error_num = f_readdir (&dir, &fileinfo);
-		if ( dir.sect == 0 ) //end of directory
-		{
-			break;
-		}
-		if ( fileinfo.fattrib == 32 )
-		{
-			filelist_add(FILE_LIST,&(fileinfo.fname[0]),fileinfo.fsize,IN_FILE);
-			EMBARC_PRINTF("File name: %s  File size:%d   \r\n",fileinfo.fname,fileinfo.fsize);
-		}
-	}
-	while( 1 );
-
-
-
-	// struct dirent* de;
-
-	// while((de = readdir(dir)) != NULL)
-	// {
-		
-	// 	//uartpc.printf("Format %d \r\n", de->d_type);
-	// 	if ( de->d_type == 5 )
-	// 	{
-	// 		list_add(1,&(de->d_name)[0]);
-	// 		EMBARC_PRINTF("Add %s into Play List\r\n", &(de->d_name)[0]);
-	// 	}
-	// }
-
-	EMBARC_PRINTF("\r\nCloseing root directory. \r\n");
-	f_closedir(&dir);
-	// return_error(error);
-
-}
 
