@@ -110,9 +110,9 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelay                      1
 #define INCLUDE_xTaskGetCurrentTaskHandle       1
 
-// #define configTIMER_TASK_PRIORITY               configMAX_PRIORITIES-1
-// #define configTIMER_QUEUE_LENGTH                32
-// #define configTIMER_TASK_STACK_DEPTH            128
+#define configTIMER_TASK_PRIORITY               configMAX_PRIORITIES-1
+#define configTIMER_QUEUE_LENGTH                64
+#define configTIMER_TASK_STACK_DEPTH            256
 
 
 #endif /* FREERTOS_CONFIG_H */

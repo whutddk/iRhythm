@@ -67,7 +67,7 @@ static void invalidate_xfer_data(SPI_XFER *xfer)
 
 void spi_xfer_callback(void *param)
 {
-	// BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	// dmac_wait_channel(&dma_chn_tx);
 	// dmac_wait_channel(&dma_chn_rx);
 	spi_reg->SSIENR = DW_SPI_SSI_DISABLE;
@@ -81,12 +81,12 @@ void spi_xfer_callback(void *param)
 	// EMBARC_PRINTF("dma finish\r\n");
 	// flag_dma_finish = 1;
 
-	// xEventGroupSetBitsFromISR(
-	// 	evt1_cb,	// The event group being updated.
-	// 	BIT_0 ,   // The bits being set.
-	// 	&xHigherPriorityTaskWoken );
-	/************Not a Suggestion Used Here*********************/
-	xEventGroupSetBits( evt1_cb, BIT_0 );
+	xEventGroupSetBitsFromISR(
+		evt1_cb,	// The event group being updated.
+		BIT_0 ,   // The bits being set.
+		&xHigherPriorityTaskWoken );
+	// /***********Not a Suggestion Used Here********************
+	// xEventGroupSetBits( evt1_cb, BIT_0 );
 }
 
 
