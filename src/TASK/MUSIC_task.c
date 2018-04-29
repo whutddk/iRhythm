@@ -19,7 +19,7 @@ void music_task()
 	EMBARC_PRINTF("MUSIC_TASK START\r\n");
 
 	spi_dma_prepare();
-	iosignal_init();
+
 
 /** malloc 10MB space from DDR2 for reading mp3 file from SD card **/
 	file_buff = malloc(sizeof(uint8_t) * 10 * 1024 * 1024);
@@ -83,6 +83,7 @@ void music_task()
 		spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
 		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(3000000));
 		EMBARC_PRINTF("\r\nfile lenth %d \r\n",file_lenth);
+			
 		play_mp3(file_lenth);
 
 		EMBARC_PRINTF("\r\nplay complete!!!\r\n");
