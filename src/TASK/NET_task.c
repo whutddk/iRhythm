@@ -17,12 +17,12 @@ void net_task()
     // socket_request(SONG_ID);
     socket_request(SONG_INFO);
     // socket_request(SONG_INFO);
-    //download_mp3();
+    download_mp3();
     EMBARC_PRINTF("============================ while ============================\n");
 
     while (1)
     {
-        socket_request(SONG_INFO);
+        // socket_request(SONG_INFO);
     }
 
     return ;
