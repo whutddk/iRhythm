@@ -121,25 +121,24 @@ void play_mp3(int filelenth)
 			// while(flag_dma_finish==0);
 			// flag_dma_finish = 0;
 
-			// EMBARC_PRINTF("GPIO BIT1 %d\r\n",iosignal_read(0));
-			if ( iosignal_read(0) )
+			// if ( iosignal_read(0) )
+			// {
+			// 	uxBits = 0;
+			// }
+			// else if (( uxBits & BIT_1 ) != 0 )
+			// {
+			// 	EMBARC_PRINTF("uxBits & BIT_1  != 0\r\n");
+			// }
+			// else
+			// {
+			// 	EMBARC_PRINTF("GPIO Clear BIT1\r\n");
+			// 	uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
+			// }
+			while(!iosignal_read(0))
 			{
-				uxBits = 0;
+				_Rtos_Delay(100);
 			}
-			else if (( uxBits & BIT_1 ) != 0 )
-			{
-				EMBARC_PRINTF("uxBits & BIT_1  != 0\r\n");
-			}
-			else
-			{
-				EMBARC_PRINTF("GPIO Clear BIT1\r\n");
-				uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
-			}
-			// while(!iosignal_read(0))
-			// 	{
-			// 		EMBARC_PRINTF("!GPIO BIT1 %d\r\n",!iosignal_read(0));
-			// 	}
-			// 	EMBARC_PRINTF("!GPIO BIT1 %d\r\n",!iosignal_read(0));
+				
 /********************Shedule End Here*****************************/
 
 			if ( flag_sw == 0 )

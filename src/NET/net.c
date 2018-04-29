@@ -257,6 +257,7 @@ int socket_request(unsigned char option)
     }
     
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
+    // START_REC();
 	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 
 	START_REC();
@@ -267,7 +268,7 @@ int socket_request(unsigned char option)
 
 	// clear_recbuf(ESP8266_A);
     
-	_Rtos_Delay(5000);
+	_Rtos_Delay(1000);
 
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
