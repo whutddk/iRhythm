@@ -245,7 +245,14 @@ int socket_request(unsigned char option)
 			strcat(http_cmd,"\r\n\r\nsongIds=");
 
 			strcat (http_cmd,Songid_HEAD->data);
-			filelist_delete(NET_LIST);
+			if ( Songid_HEAD->next != NULL )
+			{
+				filelist_delete(NET_LIST);
+			}
+			else
+			{
+				EMBARC_PRINTF("Net List Empty\r\n");
+			}
 			break;
     }
     
