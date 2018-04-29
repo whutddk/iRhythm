@@ -258,12 +258,15 @@ int socket_request(unsigned char option)
     
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
     // START_REC();
-	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 
+    vTaskSuspendAll();
+
+	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 	START_REC();
 
-    free(http_cmd);
+	xTaskResumeAll();
 
+    free(http_cmd);
 	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
 
 	// clear_recbuf(ESP8266_A);
