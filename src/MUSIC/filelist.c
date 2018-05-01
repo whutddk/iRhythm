@@ -21,7 +21,7 @@ void filelist_init()
 		EMBARC_PRINTF("\r\nSong Id List Init Error!\r\n");
 	}
 
-	strcat(lists -> data,"1271193");//14950804//244200//1271193
+	strcat(lists -> data,"15368282");//14950804//244200//1271193
 	lists -> next = NULL;
 	Songid_HEAD = lists;
 	Songid_END = lists;
