@@ -246,7 +246,7 @@ int MP3GetNextFrameInfo(HMP3Decoder hMP3Decoder, MP3FrameInfo *mp3FrameInfo, uns
  *
  * Return:      none
  **************************************************************************************/
-static void MP3ClearBadFrame(MP3DecInfo *mp3DecInfo, short *outbuf)
+static void MP3ClearBadFrame(MP3DecInfo *mp3DecInfo, char *outbuf)
 {
 	int i;
 
@@ -278,7 +278,7 @@ static void MP3ClearBadFrame(MP3DecInfo *mp3DecInfo, short *outbuf)
  * Notes:       switching useSize on and off between frames in the same stream 
  *                is not supported (bit reservoir is not maintained if useSize on)
  **************************************************************************************/
-int MP3Decode(HMP3Decoder hMP3Decoder, unsigned char **inbuf, int *bytesLeft, short *outbuf, int useSize)
+int MP3Decode(HMP3Decoder hMP3Decoder, unsigned char **inbuf, int *bytesLeft, char *outbuf, int useSize)
 {
 	int offset, bitOffset, mainBits, gr, ch, fhBytes, siBytes, freeFrameBytes;
 	int prevBitOffset, sfBlockBits, huffBlockBits;
