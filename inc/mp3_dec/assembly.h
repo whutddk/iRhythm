@@ -96,7 +96,7 @@ static __inline int MULSHIFT32(int x, int y)
 
 	int  res;
 	// Asm("swape %0, %1" :"=r"(x): "r"(y));
-	Asm("MPYF %0, %1, %2" :"=r"(res): "r"(x), "r"(y));
+	Asm("MPYM %0, %1, %2" :"=r"(res): "r"(x), "r"(y));
 	return res;
 }
 
