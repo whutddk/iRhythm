@@ -29,7 +29,7 @@ void filelist_init()
 }
 
 //每获得一个歌曲id则后面加一个链
-void filelist_add(uint8_t list_id,char* id_data,int lenth)
+void filelist_add(uint8_t list_id,char* id_data,int lenth,uint8_t location)
 {
 	struct filelist *lists = NULL;
 
@@ -60,6 +60,7 @@ void filelist_add(uint8_t list_id,char* id_data,int lenth)
 
 			strcat(lists -> data,id_data);
 			lists->lenth = lenth;
+			lists->location = location;
 			lists -> next = Playlist_HEAD;
 
 			// struct filelist *temp = Playlist_HEAD;

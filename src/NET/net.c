@@ -73,7 +73,7 @@ static int get_songid(char *jsonstr)
 		EMBARC_PRINTF("\r\n%s\r\n",songid);
 
 		/***建议两张表分开写******/
-		filelist_add(NET_LIST,songid,0);
+		filelist_add(NET_LIST,songid,0,0);
 
 	}
 	if ( Songid_HEAD == Songid_END )
@@ -158,6 +158,57 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
+// static uint32_t fix_netbuff(char *net_buff,uint32_t length)
+// {
+// 	char *buff_p1;
+// 	char *buff_p2;
+
+// 	uint32_t i = 0;
+// 	uint8_t j = 0;
+// 	uint32_t len = length;
+
+// 	for ( i = 0;i < len; i++ )
+// 	{
+// 		if ( ( *(net_buff + i ) == '+' ) 
+// 			&& ( *(net_buff + i + 1 ) == 'I' )
+// 			&& ( *(net_buff + i + 2 ) == 'P' )
+// 			&& ( *(net_buff + i + 3 ) == 'D' ) )
+// 		{
+// 		/*********Record Start Point***************/
+// 			buff_p1 = net_buff + i;	
+
+// 			j = 4;
+
+// 			/*****Just a Protection*************/
+// 			while( ( i+j ) < len )
+// 			{
+// 				***':' only one****
+// 				if ( *(net_buff + i + j ) != ':' )
+// 				{
+// 					j++;
+// 				}
+// 				/*************(net_buff + i + j ) == ':'**********************/
+// 				else
+// 				{
+// 					/*****next char***********/
+// 					j++;
+// 					buff_p2 = net_buff + i + j;
+
+// 					/***********i is correct length***********************/
+// 					memmove(buff_p1 ,buff_p2,len - i - j);
+// 					/***********j is cut lenth******************************/
+// 					len -= j;
+// 					EMBARC_PRINTF("\r\ncut %d \r\n",j);
+// 					break;
+// 				}
+// 			}
+
+// 		}
+// 	}
+
+// 	return len;
+// }
+
 
 void net_init()
 {
@@ -178,14 +229,19 @@ void net_init()
 
     esp8266_init(ESP8266_A, UART_BAUDRATE_115200);
     at_test(ESP8266_A->p_at);
-    //vTaskDelay( 1 );
+
+
+	_Rtos_Delay(100);
 
     // //Set Mode
     EMBARC_PRINTF("============================ Set Mode ============================\n");
     esp8266_wifi_mode_get(ESP8266_A, false);
-    //vTaskDelay( 1 );
+
+    _Rtos_Delay(100);
+
     esp8266_wifi_mode_set(ESP8266_A, 3, false);
-    //vTaskDelay( 1 );
+
+	_Rtos_Delay(100);
 
     //Connect WiFi
     EMBARC_PRINTF("============================ Connect WiFi ============================\n");
@@ -193,7 +249,7 @@ void net_init()
     while(esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false)!=AT_OK)
     {
         EMBARC_PRINTF("WIFI %s connect failed\n", WIFI_SSID);
-        //vTaskDelay( 1 );
+        _Rtos_Delay(1000);
     }
     EMBARC_PRINTF("WIFI %s connect succeed\n", WIFI_SSID);
 
@@ -201,7 +257,7 @@ void net_init()
     EMBARC_PRINTF("============================ Show IP ============================\n");
     esp8266_address_get(ESP8266_A);
     
-    // vTaskDelay( 1 );
+    // _Rtos_Delay(100);
 	
 }
 
@@ -212,7 +268,8 @@ int socket_request(unsigned char option)
 	char *http_cmd;
 	uint32_t idlen_int;
 	char idlen_char[3] = "";
-	uint32_t cur_time ;
+
+	TickType_t xLastWakeTime;
 
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
@@ -238,29 +295,39 @@ int socket_request(unsigned char option)
 			strcat(http_cmd,"\r\n\r\nsongIds=");
 
 			strcat (http_cmd,Songid_HEAD->data);
-			filelist_delete(NET_LIST);
+			if ( Songid_HEAD->next != NULL )
+			{
+				filelist_delete(NET_LIST);
+			}
+			else
+			{
+				EMBARC_PRINTF("Net List Empty\r\n");
+			}
 			break;
     }
     
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 
+    vTaskSuspendAll();
+    esp8266_passthr_start(ESP8266_A);
+	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+	// esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 	START_REC();
+	xTaskResumeAll();
 
     free(http_cmd);
 
-	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
 
-	clear_recbuf(ESP8266_A);
-    
-	/************NEED USE un-Block delay here Here***********************/
-	cur_time = OSP_GET_CUR_MS();
-	while( OSP_GET_CUR_MS() - cur_time < 5000 );
+	EMBARC_PRINTF("======================== Pass header ,Get all Data Driectly===================\r\n");
+	_Rtos_Delay(1000);
 
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
 	/*********end to poll.reset***************/
 	END_REC();
+	esp8266_passthr_end(ESP8266_A);
+	_Rtos_Delay(100);
+	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 
 	switch(option)
 	{
@@ -279,7 +346,6 @@ int socket_request(unsigned char option)
 	}	
 
 	EMBARC_PRINTF("Recv Done.\r\n");
-	// socket.close();
 	esp8266_CIPCLOSE(ESP8266_A);
 
 	return 0;
@@ -289,10 +355,10 @@ void download_mp3()
 {
 	uint8_t http_cnt = 0;
 	uint32_t http_sum = 0;
-	uint32_t cur_time;
+	// uint32_t cur_time;
 	char *http_cmd;
 	uint8_t timeout_cnt = 0;
-	// socket.connect("211.91.125.36", 80);
+
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
 
@@ -305,23 +371,23 @@ void download_mp3()
     strcat (http_cmd," HTTP/1.1\r\nHost: zhangmenshiting.qianqian.com\r\nConnection: keep-alive\r\n\r\n");
 
     EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
-	esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 
+	vTaskSuspendAll();
+    esp8266_passthr_start(ESP8266_A);
+	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );	
 	START_REC();
+	xTaskResumeAll();
 
     free(http_cmd);
 
 	while(1)
 	{
-	/************NEED USE un-Block delay here Here***********************/		
-		cur_time = OSP_GET_CUR_MS();
-		while( OSP_GET_CUR_MS() - cur_time < 5000 );
+		_Rtos_Delay(1000);
 
-    	// rcount = socket.recv(response, 1000);
     	if ( http_sum != bypass_cnt  )
     	{
     		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( 5 * ( timeout_cnt+1 ) ) );
+			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
     	}
@@ -336,21 +402,22 @@ void download_mp3()
 	    		break;
     		}
     	}
-	
-
-
 	}
-	
 
-	filelist_add(FILE_LIST,songpoint,http_sum);
-
-	/*********end to poll.reset***************/
+	/*********end to poll.reset***************/	
+	esp8266_passthr_end(ESP8266_A);
+	_Rtos_Delay(100);
+	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 	END_REC();
 
+	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
+
 	EMBARC_PRINTF("Socket Close.\r\n");
-	// socket.close();
+
 	/**********Connect will Close Automatic*********************/
 	esp8266_CIPCLOSE(ESP8266_A);
+	
+	
 }
 
 
