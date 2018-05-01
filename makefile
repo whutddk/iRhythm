@@ -8,17 +8,19 @@ APPL ?= blinky
 
 OLEVEL ?= O3
 
+
 HEAPSZ ?= 83886080 
-# STACKSZ ?= 1048576
+STACKSZ ?= 1048576
 
 #
 # root dir of embARC
 #
 EMBARC_ROOT = ..
-MID_SEL = common fatfs 
+MID_SEL = common fatfs u8glib
 OS_SEL = freertos
 # application source dirs
-APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/MUSIC/mp3_dec ./src/MUSIC/HW_RAW ./src/NET ./src/TASK 
+APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/MUSIC/mp3_dec ./src/MUSIC/HW_RAW ./src/NET ./src/NET/esp8266_wifi ./src/TASK 
+
 APPL_ASMSRC_DIR = .
 
 # application include dirs

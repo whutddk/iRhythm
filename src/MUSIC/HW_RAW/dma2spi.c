@@ -67,6 +67,7 @@ static void invalidate_xfer_data(SPI_XFER *xfer)
 
 void spi_xfer_callback(void *param)
 {
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	// dmac_wait_channel(&dma_chn_tx);
 	// dmac_wait_channel(&dma_chn_rx);
 	spi_reg->SSIENR = DW_SPI_SSI_DISABLE;
@@ -78,7 +79,14 @@ void spi_xfer_callback(void *param)
 
 	// invalidate_xfer_data(&data_xfer);
 	// EMBARC_PRINTF("dma finish\r\n");
-	flag_dma_finish = 1;
+	// flag_dma_finish = 1;
+
+	xEventGroupSetBitsFromISR(
+		evt1_cb,	// The event group being updated.
+		BIT_0 ,   // The bits being set.
+		&xHigherPriorityTaskWoken );
+	// /***********Not a Suggestion Used Here********************
+	// xEventGroupSetBits( evt1_cb, BIT_0 );
 }
 
 
@@ -184,7 +192,7 @@ int32_t spi_writeraw(const void *data)
 	uint16_t *xfer_buf = (uint16_t *)data;
 
 	data_xfer.tx_buf = (uint16_t *)(xfer_buf);
-	data_xfer.len = 4608;
+	data_xfer.len = 2306;
 
 	/*ask dma to send here*/
 	if (spi_xfer(&data_xfer) != 0) 
