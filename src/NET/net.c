@@ -10,9 +10,10 @@
 #include "esp8266.h"
 
 
-#define WIFI_SSID   "\"Andrew_Sun\""
-#define WIFI_PWD    "\"smartcar\""
-
+// #define WIFI_SSID   "\"Andrew_Sun\""
+// #define WIFI_PWD    "\"smartcar\""
+#define WIFI_SSID   "\"WUT-test\""
+#define WIFI_PWD    "\"DDK123456\""
 
 // static char http_get[] = "GET /";
 // static char http_IDP[] = "+IPD,";
@@ -24,6 +25,7 @@
 
 
 uint8_t flag_netpoll = 0;
+uint8_t flag_302;
 char *net_buff;
 uint32_t bypass_cnt = 0;
 
@@ -158,6 +160,29 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
+// static int get_302(char *buff)
+// {
+// 	char *string_p1; 
+// 	char *string_p2 ;
+
+// 	string_p1 = strstr(buff,"http://");
+// 	if ( string_p1 == NULL )
+// 	{
+// 		EMBARC_PRINTF("No http\r\n");
+// 		while(1);
+// 		return -1;
+// 	}
+// 	string_p2 = strstr(string_p1,"\r\n");
+// 	if ( string_p1 == NULL )
+// 	{
+// 		EMBARC_PRINTF("No rn\r\n");
+// 		while(1);
+// 		return -1;
+// 	}
+// 	memset(dllink,0,sizeof(char) * 500);
+// 	strncpy(dllink,string_p1,(uint8_t)(string_p2 - string_p1));
+// 	return 0;
+// }
 // static uint32_t fix_netbuff(char *net_buff,uint32_t length)
 // {
 // 	char *buff_p1;
@@ -227,7 +252,7 @@ void net_init()
 	}
 
 
-    esp8266_init(ESP8266_A, UART_BAUDRATE_115200);
+    esp8266_init(ESP8266_A, UART_BAUDRATE_230400);
     at_test(ESP8266_A->p_at);
 
 
@@ -416,7 +441,19 @@ void download_mp3()
 
 	/**********Connect will Close Automatic*********************/
 	esp8266_CIPCLOSE(ESP8266_A);
-	
+
+
+	// 	if ( http_sum < 1024 )
+	// {
+	// 	if ( 0 == get_302(net_buff) )
+	// 	{
+	// 		download_mp3();
+	// 	}
+	// 	else
+	// 	{
+	// 		;
+	// 	}
+	// }
 	
 }
 
