@@ -25,7 +25,7 @@
 
 
 uint8_t flag_netpoll = 0;
-uint8_t flag_302;
+uint8_t flag_netbuff = BUFF_EMPTY;
 char *net_buff;
 uint32_t bypass_cnt = 0;
 
@@ -435,8 +435,11 @@ void download_mp3()
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 	END_REC();
 
-	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
-
+	if ( http_sum > 1024 )
+	{
+		filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
+		flag_netbuff = BUFF_FULL;
+	}
 	EMBARC_PRINTF("Socket Close.\r\n");
 
 	/**********Connect will Close Automatic*********************/

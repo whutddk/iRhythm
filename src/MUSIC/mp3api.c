@@ -211,6 +211,10 @@ void play_mp3(int filelenth,uint8_t location)
 			}
 		}
 	}
+	if ( location == IN_BUFF )
+	{
+		flag_netbuff = BUFF_EMPTY;
+	}
 	EMBARC_PRINTF("Free mp3_dec!\n\r" );
 	MP3FreeDecoder(mp3_dec);
 
