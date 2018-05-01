@@ -56,9 +56,7 @@
 #ifndef _ASSEMBLY_H
 #define _ASSEMBLY_H
 //#include "arc_dsp_mw.h"
-
-
-#if defined ARC_MW
+#include "embARC_toolchain.h"
 
 typedef long long Word64;
 
@@ -90,11 +88,16 @@ static __inline Word64 SAR64(Word64 x, int n)
 
 static __inline int MULSHIFT32(int x, int y)
 {
-	Word64  res;
-	res = (Word64)x*(Word64)y;
-	y = (int)(res>>32);
- 	return y;
+	// Word64  res;
+	// res = (Word64)x*(Word64)y;
+	// y = (int)(res>>32);
+ // 	return y;
 	// return _arc_mpym(x,y);
+
+	int  res;
+	// Asm("swape %0, %1" :"=r"(x): "r"(y));
+	Asm("MPYF %0, %1, %2" :"=r"(res): "r"(x), "r"(y));
+	return res;
 }
 
 static __inline int FASTABS(int x)
@@ -125,38 +128,5 @@ static __inline int CLZ(int x)
 	return numZeros;
 }
 
-// #elif defined(__GNUC__) && defined(ARM)
-
-// typedef long long Word64;
-
-// #define MULSHIFT32	xmp3_MULSHIFT32
-// extern int MULSHIFT32(int x, int y);
-
-
-// #define FASTABS	xmp3_FASTABS
-// int FASTABS(int x);
-
-
-// static __inline int CLZ(int x)
-// {
-// 	int numZeros;
-
-// 	if (!x)
-// 		return (sizeof(int) * 8);
-
-// 	numZeros = 0;
-// 	while (!(x & 0x80000000)) {
-// 		numZeros++;
-// 		x <<= 1;
-// 	} 
-
-// 	return numZeros;
-// }
-
-// #else
-
-// #error Unsupported platform in assembly.h
-
-#endif	/* platforms */
 
 #endif /* _ASSEMBLY_H */
