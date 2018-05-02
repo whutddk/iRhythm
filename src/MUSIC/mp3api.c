@@ -152,7 +152,7 @@ void play_mp3(int filelenth,uint8_t location)
 			// }
 			while(!iosignal_read(0))
 			{
-				_Rtos_Delay(100);
+				_Rtos_Delay(50);
 			}
 				
 /********************Shedule End Here*****************************/
