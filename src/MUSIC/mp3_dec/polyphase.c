@@ -194,11 +194,11 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));		vHi = *(vb1+(23-(x))); \
 	cal_temp0 = MULSHIFT32(vLo, c1); cal_temp1 = MULSHIFT32(vHi, c2);\
-	sum1L += cal_temp0 - cal_temp1;\
+	sum1L += FASSUB32(cal_temp0 , cal_temp1);\
 	\
 	vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
 	cal_temp0 = MULSHIFT32(vLo, c1); cal_temp1 = MULSHIFT32(vHi, c2);\
-	sum1R += cal_temp0 - cal_temp1;\
+	sum1R += FASSUB32(cal_temp0 , cal_temp1);\
 }
 
 #define MC1S(x)	{ \
@@ -221,16 +221,16 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 		cal_temp2 = MULSHIFT32(vLo, c2); \
 		cal_temp3 = MULSHIFT32(vHi, c1); \
 		\
-		sum1L += cal_temp0 - cal_temp1;\
-		sum2L += cal_temp2 + cal_temp3;\
+		sum1L += FASSUB32(cal_temp0 , cal_temp1);\
+		sum2L += FASADD32(cal_temp2 , cal_temp3);\
 		\
 		vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
 		cal_temp0 = MULSHIFT32(vLo, c1); \
 		cal_temp1 = MULSHIFT32(vHi, c2); \
 		cal_temp2 = MULSHIFT32(vLo, c2); \
 		cal_temp3 = MULSHIFT32(vHi, c1); \
-		sum1R += cal_temp0 - cal_temp1; \
-		sum2R += cal_temp2 + cal_temp3; \
+		sum1R += FASSUB32(cal_temp0 , cal_temp1) ; \
+		sum2R += FASADD32(cal_temp2 , cal_temp3); \
 }
 
 /**************************************************************************************

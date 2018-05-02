@@ -140,6 +140,27 @@ static __inline int FASTABS(int x)
 
 }
 
+static __inline int FASSUB32(int x,int y)
+{
+	int z;
+
+	Asm("SUBS %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
+
+	return z;
+
+}
+
+static __inline int FASADD32(int x,int y)
+{
+	int z;
+
+	Asm("ADDS %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
+
+	return z;
+
+}
+
+
 static __inline int CLZ(int x)
 {
 	int numZeros;
