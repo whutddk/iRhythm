@@ -56,8 +56,8 @@
  */
 #define DEF_NFRACBITS	(DQ_FRACBITS_OUT - 2 - 2 - 15)
 #define CSHIFT	12	/* coefficients have 12 leading sign bits for early-terminating mulitplies */
-#define MOVE_BIT 13 
-#define CHECK_BIT 8
+#define MOVE_BIT 16 
+#define CHECK_BIT 2
 // static __inline short ClipToShort(int x, int fracBits)
 // {
 // 	int sign;
@@ -193,22 +193,22 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 #define MC0S(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));		vHi = *(vb1+(23-(x))); \
-	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT));\
+	cal_temp0 = MULSHIFT32(vLo, c1); cal_temp1 = MULSHIFT32(vHi, c2);\
 	sum1L += cal_temp0 - cal_temp1;\
 	\
 	vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
-	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT));\
+	cal_temp0 = MULSHIFT32(vLo, c1); cal_temp1 = MULSHIFT32(vHi, c2);\
 	sum1R += cal_temp0 - cal_temp1;\
 }
 
 #define MC1S(x)	{ \
 	c1 = *coef;		coef++; \
 	vLo = *(vb1+(x)); \
-	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
+	cal_temp0 = MULSHIFT32(vLo, c1); \
 	sum1L += cal_temp0;\
 	\
 	vLo = *(vb1+32+(x)); \
-	cal_temp1 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT));\
+	cal_temp1 = MULSHIFT32(vLo, c1);\
 	sum1R += cal_temp1;\
 }
 
@@ -216,19 +216,19 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
 		\
-		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
-		cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
-		cal_temp2 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
-		cal_temp3 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
+		cal_temp0 = MULSHIFT32(vLo, c1); \
+		cal_temp1 = MULSHIFT32(vHi, c2); \
+		cal_temp2 = MULSHIFT32(vLo, c2); \
+		cal_temp3 = MULSHIFT32(vHi, c1); \
 		\
 		sum1L += cal_temp0 - cal_temp1;\
 		sum2L += cal_temp2 + cal_temp3;\
 		\
 		vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
-		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
-		cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
-		cal_temp2 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
-		cal_temp3 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
+		cal_temp0 = MULSHIFT32(vLo, c1); \
+		cal_temp1 = MULSHIFT32(vHi, c2); \
+		cal_temp2 = MULSHIFT32(vLo, c2); \
+		cal_temp3 = MULSHIFT32(vHi, c1); \
 		sum1R += cal_temp0 - cal_temp1; \
 		sum2R += cal_temp2 + cal_temp3; \
 }
