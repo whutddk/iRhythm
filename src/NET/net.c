@@ -376,6 +376,7 @@ int socket_request(unsigned char option)
 	return 0;
 }
 
+DEV_UART_PTR uart_obj;
 void download_mp3()
 {
 	uint8_t http_cnt = 0;
@@ -383,6 +384,14 @@ void download_mp3()
 	// uint32_t cur_time;
 	char *http_cmd;
 	uint8_t timeout_cnt = 0;
+
+	
+
+
+	DEV_BUFFER Rxintbuf;
+
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char)*10*1024*1024);
+	uart_obj = uart_get_dev(ESP8266_UART_ID);
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
@@ -400,6 +409,9 @@ void download_mp3()
 	vTaskSuspendAll();
     esp8266_passthr_start(ESP8266_A);
 	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );	
+
+	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
+
 	START_REC();
 	xTaskResumeAll();
 
@@ -407,7 +419,7 @@ void download_mp3()
 
 	while(1)
 	{
-		_Rtos_Delay(1000);
+		_Rtos_Delay(30000);
 
     	if ( http_sum != bypass_cnt  )
     	{
@@ -434,6 +446,8 @@ void download_mp3()
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 	END_REC();
+
+	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
 
 	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
 
