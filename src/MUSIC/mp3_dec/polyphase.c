@@ -193,22 +193,22 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 #define MC0S(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));		vHi = *(vb1+(23-(x))); \
-	cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT);\
+	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT));\
 	sum1L += cal_temp0 - cal_temp1;\
 	\
 	vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
-	cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT);\
+	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT));\
 	sum1R += cal_temp0 - cal_temp1;\
 }
 
 #define MC1S(x)	{ \
 	c1 = *coef;		coef++; \
 	vLo = *(vb1+(x)); \
-	cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
+	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
 	sum1L += cal_temp0;\
 	\
 	vLo = *(vb1+32+(x)); \
-	cal_temp1 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT);\
+	cal_temp1 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT));\
 	sum1R += cal_temp1;\
 }
 
@@ -216,19 +216,19 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
 		\
-		cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
-		cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
-		cal_temp2 = (short)(vLo>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
-		cal_temp3 = (short)(vHi>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
+		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
+		cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
+		cal_temp2 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
+		cal_temp3 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
 		\
 		sum1L += cal_temp0 - cal_temp1;\
 		sum2L += cal_temp2 + cal_temp3;\
 		\
 		vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
-		cal_temp0 = (short)(vLo>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
-		cal_temp1 = (short)(vHi>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
-		cal_temp2 = (short)(vLo>>MOVE_BIT)*(short)(c2>>MOVE_BIT); \
-		cal_temp3 = (short)(vHi>>MOVE_BIT)*(short)(c1>>MOVE_BIT); \
+		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
+		cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
+		cal_temp2 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
+		cal_temp3 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
 		sum1R += cal_temp0 - cal_temp1; \
 		sum2R += cal_temp2 + cal_temp3; \
 }
