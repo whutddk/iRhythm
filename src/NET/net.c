@@ -390,7 +390,7 @@ void download_mp3()
 
 	DEV_BUFFER Rxintbuf;
 
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char)*10*1024);
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 10 * 1024 * 1024);
 	uart_obj = uart_get_dev(ESP8266_UART_ID);
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
@@ -417,31 +417,31 @@ void download_mp3()
 
     free(http_cmd);
 
-	while(1)
-	{
-		_Rtos_Delay(10000);
+	// while(1)
+	// {
+		_Rtos_Delay(5 * 60000);
 
-		uart_obj->uart_control(UART_CMD_GET_RXAVAIL, (void *)(&bypass_cnt));
+
 		
-    	if ( http_sum != bypass_cnt  )
-    	{
-    		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
-			http_sum = bypass_cnt;
-			timeout_cnt = 0;
-    	}
-    	else
-    	{
-    		timeout_cnt ++;
-    		EMBARC_PRINTF("\r\nTime out\r\n");
-    		if ( timeout_cnt > 3 )
-    		{
+   //  	if ( http_sum != bypass_cnt  )
+   //  	{
+   //  		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
+			// EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
+			// http_sum = bypass_cnt;
+			// timeout_cnt = 0;
+   //  	}
+   //  	else
+   //  	{
+   //  		timeout_cnt ++;
+   //  		EMBARC_PRINTF("\r\nTime out\r\n");
+   //  		if ( timeout_cnt > 3 )
+   //  		{
 				EMBARC_PRINTF("\r\nreceive end , %d B\r\n",bypass_cnt  );
 				EMBARC_PRINTF("\r\n%s \r\n",net_buff);
-	    		break;
-    		}
-    	}
-	}
+	    // 		break;
+    	// 	}
+    	// }
+	// }
 
 	/*********end to poll.reset***************/	
 	esp8266_passthr_end(ESP8266_A);
