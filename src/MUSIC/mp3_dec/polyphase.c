@@ -281,8 +281,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	MC0S(6)
 	MC0S(7)
 
-	*(pcm + 0) = (char)(sum1L>>CHECK_BIT);
-	*(pcm + 1) = (char)(sum1R>>CHECK_BIT);
+	*(pcm + 0) = (char)(SAR32(sum1L,CHECK_BIT));
+	*(pcm + 1) = (char)(SAR32(sum1R,CHECK_BIT));
 
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
@@ -298,8 +298,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	MC1S(6)
 	MC1S(7)
 
-	*(pcm + 2*16 + 0) = (char)(sum1L>>CHECK_BIT);
-	*(pcm + 2*16 + 1) = (char)(sum1R>>CHECK_BIT);
+	*(pcm + 2*16 + 0) = (char)(SAR32(sum1L,CHECK_BIT));
+	*(pcm + 2*16 + 1) = (char)(SAR32(sum1R,CHECK_BIT));
 
 	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
 	coef = coefBase + 16;
@@ -321,10 +321,10 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 		MC2S(7)
 
 		vb1 += 64;
-		*(pcm + 0)         = (char)(sum1L>>CHECK_BIT);
-		*(pcm + 1)         = (char)(sum1R>>CHECK_BIT);
-		*(pcm + 2*2*i + 0) = (char)(sum2L>>CHECK_BIT);
-		*(pcm + 2*2*i + 1) = (char)(sum2R>>CHECK_BIT);
+		*(pcm + 0)         = (char)(SAR32(sum1L,CHECK_BIT));
+		*(pcm + 1)         = (char)(SAR32(sum1R,CHECK_BIT));
+		*(pcm + 2*2*i + 0) = (char)(SAR32(sum2L,CHECK_BIT));
+		*(pcm + 2*2*i + 1) = (char)(SAR32(sum2R,CHECK_BIT));
 		pcm += 2;
 	}
 }
