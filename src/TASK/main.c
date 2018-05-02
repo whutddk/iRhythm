@@ -72,12 +72,14 @@ int main(void)
 
 	vTaskSuspendAll();
 
+/**********MP3 Decord Assist IO Init***************************/
 	iosignal_init();
 
+/********IO reset ESP8266************************/
 	net_rst();
-    /***init songid list*****/
+/*********init Songid List*****/
     filelist_init();
-
+/*******Init Esp8266 and Connect to Wifi***************/
     net_init();
     spi_dma_prepare();
 /********************** Create Tasks**************************/

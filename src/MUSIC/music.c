@@ -87,7 +87,7 @@ void play_init()
 		while(1);
 	}
 
-	/*checkout directory and init song list to play*/
+/********checkout directory and init song list to play****************/
 	playlist_init();
 }
 
