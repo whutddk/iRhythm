@@ -390,7 +390,7 @@ void download_mp3()
 
 	DEV_BUFFER Rxintbuf;
 
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char)*10*1024*1024);
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char)*10*1024);
 	uart_obj = uart_get_dev(ESP8266_UART_ID);
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
@@ -419,8 +419,10 @@ void download_mp3()
 
 	while(1)
 	{
-		_Rtos_Delay(30000);
+		_Rtos_Delay(10000);
 
+		uart_obj->uart_control(UART_CMD_GET_RXAVAIL, (void *)(&bypass_cnt));
+		
     	if ( http_sum != bypass_cnt  )
     	{
     		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
@@ -434,7 +436,7 @@ void download_mp3()
     		EMBARC_PRINTF("\r\nTime out\r\n");
     		if ( timeout_cnt > 3 )
     		{
-				EMBARC_PRINTF("\r\nreceive end , %d KB\r\n",bypass_cnt / 1024 );
+				EMBARC_PRINTF("\r\nreceive end , %d B\r\n",bypass_cnt  );
 				EMBARC_PRINTF("\r\n%s \r\n",net_buff);
 	    		break;
     		}
@@ -448,7 +450,7 @@ void download_mp3()
 	END_REC();
 
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
-
+	_Rtos_Delay(100);
 	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
 
 	EMBARC_PRINTF("Socket Close.\r\n");
