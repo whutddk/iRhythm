@@ -448,7 +448,7 @@ void download_mp3()
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 	END_REC();
-
+	http_sum = 10*1024*1024;
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
 	_Rtos_Delay(100);
 	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
