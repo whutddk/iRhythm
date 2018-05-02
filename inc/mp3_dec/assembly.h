@@ -68,6 +68,10 @@ static __inline Word64 MADD64(Word64 sum, int x, int y)
 	// res = (Word64)x*(Word64)y;
 	// sum = res + sum;
 	// return sum;
+	// int res1;
+	// Asm("MACDF %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
+	// return (Word64) res1;
+	
 }
 
 static __inline Word64 SHL64(Word64 x, int n)
@@ -86,6 +90,22 @@ static __inline Word64 SAR64(Word64 x, int n)
 	return (x >> n);
 }
 
+static __inline int SAR32(int x, int n)
+{
+	// Word64 res;
+	// res = x >> n;
+	// return res;
+
+	// return (x >> n);
+
+	int y;
+
+	Asm("ASRS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
+
+	return y;
+	
+}
+
 static __inline int MULSHIFT32(int x, int y)
 {
 	// Word64  res;
@@ -94,11 +114,13 @@ static __inline int MULSHIFT32(int x, int y)
  // 	return y;
 	// return _arc_mpym(x,y);
 
-	int  res;
+	int  res1,res2;
 	// Asm("swape %0, %1" :"=r"(x): "r"(y));
-	Asm("MPYM %0, %1, %2" :"=r"(res): "r"(x), "r"(y));
-	// Asm("MPYD %0, %1, %2" :"=r"(res): "r"(x), "r"(y));
-	return res;
+	Asm("MPYM %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
+	// Asm("MPYD %0, %2, %3\n\t"
+	// 	"MOV %1,r1"
+	// 	:"=r"(res1),"=r"(res2): "r"(x), "r"(y));
+	return res1;
 }
 
 static __inline int FASTABS(int x)
