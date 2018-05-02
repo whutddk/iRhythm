@@ -97,19 +97,25 @@ static __inline int MULSHIFT32(int x, int y)
 	int  res;
 	// Asm("swape %0, %1" :"=r"(x): "r"(y));
 	Asm("MPYM %0, %1, %2" :"=r"(res): "r"(x), "r"(y));
+	// Asm("MPYD %0, %1, %2" :"=r"(res): "r"(x), "r"(y));
 	return res;
 }
 
 static __inline int FASTABS(int x)
 {
 	// return _arc_abss(x);
-	int sign;
+	// int sign;
 
-	sign = x >> (sizeof(int) * 8 - 1);
-	x ^= sign;
-	x -= sign;
+	// sign = x >> (sizeof(int) * 8 - 1);
+	// x ^= sign;
+	// x -= sign;
 
-	return x;
+	// return x;
+
+	int y;
+	Asm("ABSS %0, %1" :"=r"(x):  "r"(y));
+	return y;
+
 }
 
 static __inline int CLZ(int x)

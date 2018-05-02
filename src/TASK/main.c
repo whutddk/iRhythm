@@ -78,9 +78,9 @@ int main(void)
     /***init songid list*****/
     filelist_init();
 
-    net_init();
+    //net_init();
     spi_dma_prepare();
-// Create Tasks
+/********************** Create Tasks**************************/
 
 	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
 	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
