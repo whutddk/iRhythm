@@ -10,10 +10,10 @@
 #include "esp8266.h"
 
 
-// #define WIFI_SSID   "\"Andrew_Sun\""
-// #define WIFI_PWD    "\"smartcar\""
-#define WIFI_SSID   "\"WUT-test\""
-#define WIFI_PWD    "\"DDK123456\""
+#define WIFI_SSID   "\"Andrew_Sun\""
+#define WIFI_PWD    "\"smartcar\""
+// #define WIFI_SSID   "\"WUT-test\""
+// #define WIFI_PWD    "\"DDK123456\""
 
 // static char http_get[] = "GET /";
 // static char http_IDP[] = "+IPD,";
