@@ -253,15 +253,15 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 #define MC2S1R(x)	{ \
 		vLo[(x)] = *(vb1+(32+(x)));	vHi[(x)] = *(vb1+(55-(x))); \
 		\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(n_c2));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi[(x)]), "r"(n_c2[(x)]));	\
 }
 
 /***4th*********/
 #define MC2S2R(x)	{ \
 		\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c2));	\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c1));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c2[(x)]));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi[(x)]), "r"(c1[(x)]));	\
 }
 
 /**************************************************************************************
