@@ -45,6 +45,7 @@
 #define _CODER_H
 
 #include "mp3common.h"
+#include "assembly.h"
 
 #if defined(ASSERT)
 #undef ASSERT
@@ -56,11 +57,11 @@
 #endif
 
 #ifndef MAX
-#define MAX(a,b)	((a) > (b) ? (a) : (b))
+#define MAX(a,b)	FASMAX(a,b)
 #endif
 
 #ifndef MIN
-#define MIN(a,b)	((a) < (b) ? (a) : (b))
+#define MIN(a,b)	FASMIN(a,b)
 #endif
 
 /* clip to range [-2^n, 2^n - 1] */

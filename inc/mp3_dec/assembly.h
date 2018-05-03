@@ -198,5 +198,17 @@ static __inline int CLZ(int x)
 	return numZeros;
 }
 
+static __inline int FASMAX( int x,int y )
+{
+	int z;
+	Asm("MAX %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
+	return z;
+}
 
+static __inline int FASMIN( int x,int y )
+{
+	int z;
+	Asm("MIN %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
+	return z;
+}
 #endif /* _ASSEMBLY_H */
