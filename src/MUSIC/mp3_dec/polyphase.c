@@ -205,9 +205,6 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 }
 
 #define MC0SR(x)	{  \
-	c1[(x)] = *coef;		coef++;		\
-	Asm("NEGS %0, %1" :"=r"(n_c2[(x)]):"r"(*coef));\
-	coef++; \
 	vLo[(x)] = *(vb1+(32+(x)));	vHi[(x)] = *(vb1+(55-(x))); \
 	\
 	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
@@ -223,7 +220,6 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 }
 
 #define MC1SR(x)	{ \
-	c1[(x)] = *coef;		coef++; \
 	vLo[(x)] = *(vb1+(32+(x))); \
 	\
 	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
@@ -361,9 +357,6 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	sum1L = _arc_aux_read(ACC0_HI);
 
-	coef = coefBase + 256;
-	// vb1 = vbuf + 64*16;
-	// sum1R = 0;
 
 	//Reset ACC
 	// _arc_aux_write(ACC0_LO, 0);
