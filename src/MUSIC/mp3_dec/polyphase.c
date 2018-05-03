@@ -289,7 +289,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	int vLo, vHi, c1, c2;
 	// Word64 sum1L, sum2L, sum1R, sum2R, rndVal;
 	int sum1L, sum2L, sum1R, sum2R, rndVal;
-	int cal_temp0,cal_temp1,cal_temp2,cal_temp3;
+	int cal_temp0;
 
 	// rndVal = (Word64)( 1 << (DEF_NFRACBITS - 1 + (32 - CSHIFT)) );
 	rndVal = 0 ;
