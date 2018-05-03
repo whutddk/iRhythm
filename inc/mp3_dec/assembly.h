@@ -78,13 +78,14 @@ static __inline Word64 MADD64(Word64 sum, int x, int y)
 
 	zero = 0;
 	addr = ACC0_LO;
-	Asm("SR %0, %1" : "r"(zero), "r"(addr));
+	// Asm("SR %0, %1" : "r"(zero), "r"(addr));
 
 	addr = ACC0_HI;
-	Asm("SR %0, %1" : "r"(zero), "r"(addr));
-	Asm("MACDF %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
+	write_aux_reg(ACC0_LO, 0);
+	write_aux_reg(ACC0_HI, 0);
+	// Asm("SR %0, %1" : "r"(zero), "r"(addr));
+	Asm("MAC %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
 
-	EMBARC_PRINTF("RES = %d !\r\n",res1);
 
 	return res1;
 	
