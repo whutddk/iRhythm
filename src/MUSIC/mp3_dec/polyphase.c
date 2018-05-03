@@ -309,7 +309,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	// sum1L =  0;
 
 //Reset ACC
-	_arc_aux_write(ACC0_LO, 0);
+	// _arc_aux_write(ACC0_LO, 0);
 	_arc_aux_write(ACC0_HI, 0);
 
 	MC0SL(0)
@@ -328,7 +328,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	// sum1R = 0;
 
 //Reset ACC
-	_arc_aux_write(ACC0_LO, 0);
+	// _arc_aux_write(ACC0_LO, 0);
 	_arc_aux_write(ACC0_HI, 0);
 
 	MC0SR(0)
@@ -352,7 +352,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	// sum1L = 0;
 
 //Reset ACC
-	_arc_aux_write(ACC0_LO, 0);
+	// _arc_aux_write(ACC0_LO, 0);
 	_arc_aux_write(ACC0_HI, 0);
 
 	MC1SL(0)
@@ -371,7 +371,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	// sum1R = 0;
 
 	//Reset ACC
-	_arc_aux_write(ACC0_LO, 0);
+	// _arc_aux_write(ACC0_LO, 0);
 	_arc_aux_write(ACC0_HI, 0);
 
 	MC1SR(0)
@@ -404,7 +404,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 
 //Reset ACC
-_arc_aux_write(ACC0_LO, 0);
+// _arc_aux_write(ACC0_LO, 0);
 _arc_aux_write(ACC0_HI, 0);
 
 		MC2S1L(0)
@@ -421,7 +421,7 @@ sum1L = _arc_aux_read(ACC0_HI);
 		coef = coef_save;	//Load
 
 //Reset ACC
-_arc_aux_write(ACC0_LO, 0);
+// _arc_aux_write(ACC0_LO, 0);
 _arc_aux_write(ACC0_HI, 0);
 
 		MC2S2L(0)
@@ -438,7 +438,7 @@ sum2L = _arc_aux_read(ACC0_HI);
 		coef = coef_save;	//RELoad
 
 //Reset ACC
-_arc_aux_write(ACC0_LO, 0);
+// _arc_aux_write(ACC0_LO, 0);
 _arc_aux_write(ACC0_HI, 0);
 
 		MC2S1R(0)
@@ -455,7 +455,7 @@ sum1R = _arc_aux_read(ACC0_HI);
 		coef = coef_save;	//RELoad
 
 //Reset ACC
-_arc_aux_write(ACC0_LO, 0);
+// _arc_aux_write(ACC0_LO, 0);
 _arc_aux_write(ACC0_HI, 0);
 
 		MC2S2R(0)
