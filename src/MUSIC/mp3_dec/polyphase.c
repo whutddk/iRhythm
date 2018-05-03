@@ -218,24 +218,43 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	sum1R += cal_temp1;\
 }
 
-#define MC2S(x)	{ \
+
+
+
+
+#define MC2S1L(x)	{ \
 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
 		\
 		cal_temp0 = MULSHIFT32(vLo, c1); \
 		cal_temp1 = MULSHIFT32(vHi, c2); \
+		sum1L += (cal_temp0 - cal_temp1);\
+}
+
+#define MC2S2L(x)	{ \
+		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
+		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
+		\
 		cal_temp2 = MULSHIFT32(vLo, c2); \
 		cal_temp3 = MULSHIFT32(vHi, c1); \
-		\
-		sum1L += (cal_temp0 - cal_temp1);\
 		sum2L += (cal_temp2 + cal_temp3);\
-		\
+}
+
+#define MC2S1R(x)	{ \
+		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 		vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
+		\
 		cal_temp0 = MULSHIFT32(vLo, c1); \
 		cal_temp1 = MULSHIFT32(vHi, c2); \
+		sum1R += (cal_temp0 - cal_temp1); \
+}
+
+#define MC2S2R(x)	{ \
+		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
+		vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
+		\
 		cal_temp2 = MULSHIFT32(vLo, c2); \
 		cal_temp3 = MULSHIFT32(vHi, c1); \
-		sum1R += (cal_temp0 - cal_temp1) ; \
 		sum2R += (cal_temp2 + cal_temp3); \
 }
 
@@ -262,7 +281,7 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 {
 	int i;
-	const int *coef;
+	const int *coef,*coef_save;
 	int *vb1;
 	int vLo, vHi, c1, c2;
 	// Word64 sum1L, sum2L, sum1R, sum2R, rndVal;
@@ -343,14 +362,49 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 		sum1L = sum2L = rndVal;
 		sum1R = sum2R = rndVal;
 
-		MC2S(0)
-		MC2S(1)
-		MC2S(2)
-		MC2S(3)
-		MC2S(4)
-		MC2S(5)
-		MC2S(6)
-		MC2S(7)
+		coef_save = coef;	//SAVE
+
+		MC2S1L(0)
+		MC2S1L(1)
+		MC2S1L(2)
+		MC2S1L(3)
+		MC2S1L(4)
+		MC2S1L(5)
+		MC2S1L(6)
+		MC2S1L(7)
+
+		coef = coef_save;	//Load
+
+		MC2S2L(0)
+		MC2S2L(1)
+		MC2S2L(2)
+		MC2S2L(3)
+		MC2S2L(4)
+		MC2S2L(5)
+		MC2S2L(6)
+		MC2S2L(7)
+
+		coef = coef_save;	//RELoad
+
+		MC2S1R(0)
+		MC2S1R(1)
+		MC2S1R(2)
+		MC2S1R(3)
+		MC2S1R(4)
+		MC2S1R(5)
+		MC2S1R(6)
+		MC2S1R(7)
+
+		coef = coef_save;	//RELoad
+
+		MC2S2R(0)
+		MC2S2R(1)
+		MC2S2R(2)
+		MC2S2R(3)
+		MC2S2R(4)
+		MC2S2R(5)
+		MC2S2R(6)
+		MC2S2R(7)
 
 		vb1 += 64;
 		*(pcm + 0)         = (char)(SAR32(sum1L,CHECK_BIT));
