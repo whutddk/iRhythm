@@ -295,7 +295,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	/* special case, output sample 0 */
 	coef = coefBase;
 	vb1 = vbuf;
-	sum1L =  rndVal;
+	sum1L =  0;
 
 	MC0SL(0)
 	MC0SL(1)
@@ -307,8 +307,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	MC0SL(7)
 
 	coef = coefBase;
-	vb1 = vbuf;
-	sum1R = rndVal;
+	// vb1 = vbuf;
+	sum1R = 0;
 
 	MC0SR(0)
 	MC0SR(1)
@@ -325,7 +325,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
 	vb1 = vbuf + 64*16;
-	sum1L = rndVal;
+	sum1L = 0;
 
 	MC1SL(0)
 	MC1SL(1)
@@ -337,8 +337,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	MC1SL(7)
 
 	coef = coefBase + 256;
-	vb1 = vbuf + 64*16;
-	sum1R = rndVal;
+	// vb1 = vbuf + 64*16;
+	sum1R = 0;
 
 	MC1SR(0)
 	MC1SR(1)
@@ -359,8 +359,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	/* right now, the compiler creates bad asm from this... */
 	for (i = 15; i > 0; i--) {
-		sum1L = sum2L = rndVal;
-		sum1R = sum2R = rndVal;
+		sum1L = sum2L = 0;
+		sum1R = sum2R = 0;
 
 		coef_save = coef;	//SAVE
 
