@@ -190,23 +190,29 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	}
 }
 
-#define MC0S(x)	{ \
+#define MC0SL(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));		vHi = *(vb1+(23-(x))); \
 	cal_temp0 = MULSHIFT32(vLo, c1); cal_temp1 = MULSHIFT32(vHi, c2);\
 	sum1L += (cal_temp0 - cal_temp1);\
-	\
+}
+
+#define MC0SR(x)	{  \
+	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
 	cal_temp0 = MULSHIFT32(vLo, c1); cal_temp1 = MULSHIFT32(vHi, c2);\
 	sum1R += (cal_temp0 - cal_temp1);\
 }
 
-#define MC1S(x)	{ \
+#define MC1SL(x)	{ \
 	c1 = *coef;		coef++; \
 	vLo = *(vb1+(x)); \
 	cal_temp0 = MULSHIFT32(vLo, c1); \
 	sum1L += cal_temp0;\
-	\
+}
+
+#define MC1SR(x)	{ \
+	c1 = *coef;		coef++; \
 	vLo = *(vb1+32+(x)); \
 	cal_temp1 = MULSHIFT32(vLo, c1);\
 	sum1R += cal_temp1;\
@@ -270,16 +276,29 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	/* special case, output sample 0 */
 	coef = coefBase;
 	vb1 = vbuf;
-	sum1L = sum1R = rndVal;
+	sum1L =  rndVal;
 
-	MC0S(0)
-	MC0S(1)
-	MC0S(2)
-	MC0S(3)
-	MC0S(4)
-	MC0S(5)
-	MC0S(6)
-	MC0S(7)
+	MC0SL(0)
+	MC0SL(1)
+	MC0SL(2)
+	MC0SL(3)
+	MC0SL(4)
+	MC0SL(5)
+	MC0SL(6)
+	MC0SL(7)
+
+	coef = coefBase;
+	vb1 = vbuf;
+	sum1R = rndVal;
+
+	MC0SR(0)
+	MC0SR(1)
+	MC0SR(2)
+	MC0SR(3)
+	MC0SR(4)
+	MC0SR(5)
+	MC0SR(6)
+	MC0SR(7)
 
 	*(pcm + 0) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 1) = (char)(SAR32(sum1R,CHECK_BIT));
@@ -287,16 +306,29 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
 	vb1 = vbuf + 64*16;
-	sum1L = sum1R = rndVal;
+	sum1L = rndVal;
 
-	MC1S(0)
-	MC1S(1)
-	MC1S(2)
-	MC1S(3)
-	MC1S(4)
-	MC1S(5)
-	MC1S(6)
-	MC1S(7)
+	MC1SL(0)
+	MC1SL(1)
+	MC1SL(2)
+	MC1SL(3)
+	MC1SL(4)
+	MC1SL(5)
+	MC1SL(6)
+	MC1SL(7)
+
+	coef = coefBase + 256;
+	vb1 = vbuf + 64*16;
+	sum1R = rndVal;
+
+	MC1SR(0)
+	MC1SR(1)
+	MC1SR(2)
+	MC1SR(3)
+	MC1SR(4)
+	MC1SR(5)
+	MC1SR(6)
+	MC1SR(7)
 
 	*(pcm + 2*16 + 0) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 2*16 + 1) = (char)(SAR32(sum1R,CHECK_BIT));
