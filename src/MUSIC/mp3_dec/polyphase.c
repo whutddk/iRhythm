@@ -348,7 +348,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 /*****************Part 2****************************************/
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
-	vb1 = vbuf + 64*16;
+	vb1 = vbuf + 1024;
 	// sum1L = 0;
 
 //Reset ACC
@@ -385,8 +385,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	sum1R = _arc_aux_read(ACC0_HI);
 
-	*(pcm + 2*16 + 0) = (char)(SAR32(sum1L,CHECK_BIT));
-	*(pcm + 2*16 + 1) = (char)(SAR32(sum1R,CHECK_BIT));
+	*(pcm + 32) = (char)(SAR32(sum1L,CHECK_BIT));
+	*(pcm + 33) = (char)(SAR32(sum1R,CHECK_BIT));
 
 /*****************Part 3****************************************/
 
@@ -470,10 +470,10 @@ _arc_aux_write(ACC0_HI, 0);
 sum2R = _arc_aux_read(ACC0_HI);
 
 		vb1 += 64;
-		*(pcm + 0)         = (char)(SAR32(sum1L,CHECK_BIT));
+		*(pcm )         = (char)(SAR32(sum1L,CHECK_BIT));
 		*(pcm + 1)         = (char)(SAR32(sum1R,CHECK_BIT));
-		*(pcm + 2*2*i + 0) = (char)(SAR32(sum2L,CHECK_BIT));
-		*(pcm + 2*2*i + 1) = (char)(SAR32(sum2R,CHECK_BIT));
+		*(pcm + 4*i) = (char)(SAR32(sum2L,CHECK_BIT));
+		*(pcm + 4*i + 1) = (char)(SAR32(sum2R,CHECK_BIT));
 		pcm += 2;
 	}
 }
