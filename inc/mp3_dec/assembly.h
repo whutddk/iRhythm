@@ -108,12 +108,6 @@ static __inline Word64 SAR64(Word64 x, int n)
 
 static __inline int SAR32(int x, int n)
 {
-	// Word64 res;
-	// res = x >> n;
-	// return res;
-
-	// return (x >> n);
-
 	int y;
 
 	Asm("ASRS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
@@ -121,6 +115,17 @@ static __inline int SAR32(int x, int n)
 	return y;
 	
 }
+
+static __inline int SAL32(int x, int n)
+{
+	int y;
+
+	Asm("ASLS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
+
+	return y;
+	
+}
+
 
 static __inline int MULSHIFT32(int x, int y)
 {
