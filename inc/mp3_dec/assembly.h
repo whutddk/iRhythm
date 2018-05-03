@@ -58,19 +58,35 @@
 //#include "arc_dsp_mw.h"
 #include "embARC_toolchain.h"
 
+#define ACC0_LO 0x580
+#define ACC0_HI 0X582
+
+
 typedef long long Word64;
 
 
 static __inline Word64 MADD64(Word64 sum, int x, int y)
 {
-	return (Word64)x*y + sum;
+	// return (Word64)x*y + sum;
 	// Word64 res;
 	// res = (Word64)x*(Word64)y;
 	// sum = res + sum;
 	// return sum;
-	// int res1;
-	// Asm("MACDF %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
-	// return (Word64) res1;
+
+	Word64 res1;
+	int addr,zero;
+
+	zero = 0;
+	addr = ACC0_LO;
+	Asm("SR %0, %1" : "r"(zero), "r"(addr));
+
+	addr = ACC0_HI;
+	Asm("SR %0, %1" : "r"(zero), "r"(addr));
+	Asm("MACDF %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
+
+	EMBARC_PRINTF("RES = %d !\r\n",res1);
+
+	return res1;
 	
 }
 
