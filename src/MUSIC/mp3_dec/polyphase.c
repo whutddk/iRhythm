@@ -192,6 +192,8 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	}
 }
 
+
+/*****************Part 1****************************************/
 #define MC0SL(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));		vHi = *(vb1+(23-(x))); \
@@ -203,27 +205,29 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 #define MC0SR(x)	{  \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+32+(x));	vHi = *(vb1+32+(23-(x))); \
-	cal_temp0 = MULSHIFT32(vLo, c1); cal_temp1 = MULSHIFT32(vHi, c2);\
-	sum1R += (cal_temp0 - cal_temp1);\
+	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(-c2));	\
 }
 
+/*****************Part 2****************************************/
 #define MC1SL(x)	{ \
 	c1 = *coef;		coef++; \
 	vLo = *(vb1+(x)); \
-	cal_temp0 = MULSHIFT32(vLo, c1); \
-	sum1L += cal_temp0;\
+	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
 }
 
 #define MC1SR(x)	{ \
 	c1 = *coef;		coef++; \
 	vLo = *(vb1+32+(x)); \
-	cal_temp1 = MULSHIFT32(vLo, c1);\
-	sum1R += cal_temp1;\
+	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
 }
 
 
 
-
+/*****************Part 3****************************************/
 
 #define MC2S1L(x)	{ \
 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
@@ -294,7 +298,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	// rndVal = (Word64)( 1 << (DEF_NFRACBITS - 1 + (32 - CSHIFT)) );
 	rndVal = 0 ;
 
-
+/*****************Part 1****************************************/
 	/* special case, output sample 0 */
 	coef = coefBase;
 	vb1 = vbuf;
@@ -317,7 +321,11 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	coef = coefBase;
 	// vb1 = vbuf;
-	sum1R = 0;
+	// sum1R = 0;
+
+//Reset ACC
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
 
 	MC0SR(0)
 	MC0SR(1)
@@ -328,13 +336,20 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	MC0SR(6)
 	MC0SR(7)
 
+	sum1R = _arc_aux_read(ACC0_HI);
+
 	*(pcm + 0) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 1) = (char)(SAR32(sum1R,CHECK_BIT));
 
+/*****************Part 2****************************************/
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
 	vb1 = vbuf + 64*16;
-	sum1L = 0;
+	// sum1L = 0;
+
+//Reset ACC
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
 
 	MC1SL(0)
 	MC1SL(1)
@@ -344,6 +359,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	MC1SL(5)
 	MC1SL(6)
 	MC1SL(7)
+
+	sum1L = _arc_aux_read(ACC0_HI);
 
 	coef = coefBase + 256;
 	// vb1 = vbuf + 64*16;
@@ -360,6 +377,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	*(pcm + 2*16 + 0) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 2*16 + 1) = (char)(SAR32(sum1R,CHECK_BIT));
+
+/*****************Part 3****************************************/
 
 	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
 	coef = coefBase + 16;
