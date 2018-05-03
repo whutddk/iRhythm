@@ -94,7 +94,7 @@ void play_mp3(int filelenth,uint8_t location)
 			byte_left -= offset;        //in buffer
 
 
-			iosignal_ctrl(1,0);
+			// iosignal_ctrl(1,0);
 			if ( flag_sw == 0 )
 			{
 				
