@@ -283,15 +283,15 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 {
 	int i;
-	const int *coef,*coef_save;
+	const int *coef;
 	int *vb1;
 	int vLo[8], vHi[8], c1[8], c2[8],n_c2[8];
 	// Word64 sum1L, sum2L, sum1R, sum2R, rndVal;
-	int sum1L, sum2L, sum1R, sum2R, rndVal;
+	int sum1L, sum2L, sum1R, sum2R;
 	int cal_temp0;
 
 	// rndVal = (Word64)( 1 << (DEF_NFRACBITS - 1 + (32 - CSHIFT)) );
-	rndVal = 0 ;
+	// rndVal = 0 ;
 
 /*****************Part 1****************************************/
 	/* special case, output sample 0 */
@@ -314,7 +314,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	sum1L = _arc_aux_read(ACC0_HI);
 
-	coef = coefBase;
+	// coef = coefBase;
 	// vb1 = vbuf;
 	// sum1R = 0;
 
