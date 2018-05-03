@@ -67,27 +67,26 @@ typedef long long Word64;
 
 static __inline Word64 MADD64(Word64 sum, int x, int y)
 {
-	// return (Word64)x*y + sum;
+	return (Word64)x*y + sum;
 	// Word64 res;
 	// res = (Word64)x*(Word64)y;
 	// sum = res + sum;
 	// return sum;
 
-	Word64 res1;
-	int addr,zero;
+	// Word64 res1;
+	// int addr,zero;
 
-	zero = 0;
-	addr = ACC0_LO;
-	// Asm("SR %0, %1" : "r"(zero), "r"(addr));
+	// zero = 0;
+	// addr = ACC0_LO;
 
-	addr = ACC0_HI;
-	write_aux_reg(ACC0_LO, 0);
-	write_aux_reg(ACC0_HI, 0);
-	// Asm("SR %0, %1" : "r"(zero), "r"(addr));
-	Asm("MAC %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
+	// addr = ACC0_HI;
+	// write_aux_reg(ACC0_LO, 0);
+	// write_aux_reg(ACC0_HI, 0);
+
+	// Asm("MAC %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
 
 
-	return res1;
+	// return res1;
 	
 }
 
@@ -109,12 +108,6 @@ static __inline Word64 SAR64(Word64 x, int n)
 
 static __inline int SAR32(int x, int n)
 {
-	// Word64 res;
-	// res = x >> n;
-	// return res;
-
-	// return (x >> n);
-
 	int y;
 
 	Asm("ASRS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
@@ -122,6 +115,17 @@ static __inline int SAR32(int x, int n)
 	return y;
 	
 }
+
+static __inline int SAL32(int x, int n)
+{
+	int y;
+
+	Asm("ASLS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
+
+	return y;
+	
+}
+
 
 static __inline int MULSHIFT32(int x, int y)
 {
@@ -194,5 +198,17 @@ static __inline int CLZ(int x)
 	return numZeros;
 }
 
+static __inline int FASMAX( int x,int y )
+{
+	int z;
+	Asm("MAX %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
+	return z;
+}
 
+static __inline int FASMIN( int x,int y )
+{
+	int z;
+	Asm("MIN %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
+	return z;
+}
 #endif /* _ASSEMBLY_H */
