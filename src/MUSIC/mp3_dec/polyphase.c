@@ -45,6 +45,8 @@
  * Look in the appropriate subdirectories for optimized asm implementations
  *   (e.g. arm/asmpoly.s)
  **************************************************************************************/
+#include "embARC.h"
+#include "embARC_debug.h"
 
 #include "coder.h"
 #include "assembly.h"
@@ -193,8 +195,9 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 #define MC0SL(x)	{ \
 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
 	vLo = *(vb1+(x));		vHi = *(vb1+(23-(x))); \
-	cal_temp0 = MULSHIFT32(vLo, c1); cal_temp1 = MULSHIFT32(vHi, c2);\
-	sum1L += (cal_temp0 - cal_temp1);\
+	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(-c2));	\
 }
 
 #define MC0SR(x)	{  \
@@ -295,7 +298,11 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	/* special case, output sample 0 */
 	coef = coefBase;
 	vb1 = vbuf;
-	sum1L =  0;
+	// sum1L =  0;
+
+//Reset ACC
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
 
 	MC0SL(0)
 	MC0SL(1)
@@ -305,6 +312,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	MC0SL(5)
 	MC0SL(6)
 	MC0SL(7)
+
+	sum1L = _arc_aux_read(ACC0_HI);
 
 	coef = coefBase;
 	// vb1 = vbuf;
