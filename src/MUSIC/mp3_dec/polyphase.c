@@ -208,7 +208,7 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	c1 = *coef;		coef++;		\
 	Asm("NEGS %0, %1" :"=r"(c2):"r"(*coef));\
 	coef++; \
-	vLo = *(vb1+32+(x));	vHi = *(vb1+55-(x)); \
+	vLo = *(vb1+(32+(x)));	vHi = *(vb1+(55-(x))); \
 	\
 	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
 	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c2));	\
@@ -224,7 +224,7 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 
 #define MC1SR(x)	{ \
 	c1 = *coef;		coef++; \
-	vLo = *(vb1+32+(x)); \
+	vLo = *(vb1+(32+(x))); \
 	\
 	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
 }
@@ -255,7 +255,7 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 		c1 = *coef;		coef++;		\
 		Asm("NEGS %0, %1" :"=r"(c2):"r"(*coef));\
 		coef++; \
-		vLo = *(vb1+32+(x));	vHi = *(vb1+55-(x)); \
+		vLo = *(vb1+(32+(x)));	vHi = *(vb1+(55-(x))); \
 		\
 		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
 		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c2));	\
@@ -263,7 +263,7 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 
 #define MC2S2R(x)	{ \
 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
-		vLo = *(vb1+32+(x));	vHi = *(vb1+55-(x)); \
+		vLo = *(vb1+(32+(x)));	vHi = *(vb1+(55-(x))); \
 		\
 		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c2));	\
 		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c1));	\
