@@ -195,75 +195,70 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 
 /*****************Part 1****************************************/
 #define MC0SL(x)	{ \
-	c1 = *coef;		coef++;		\
-	Asm("NEGS %0, %1" :"=r"(c2):"r"(*coef));\
+	c1[(x)] = *coef;		coef++;		\
+	Asm("NEGS %0, %1" :"=r"(n_c2[(x)]):"r"(*coef));\
 	coef++; \
-	vLo = *(vb1+(x));		vHi = *(vb1+(23-(x))); \
+	vLo[(x)] = *(vb1+(x));		vHi[(x)] = *(vb1+(23-(x))); \
 	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c2));	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi[(x)]), "r"(n_c2[(x)]));	\
 }
 
 #define MC0SR(x)	{  \
-	c1 = *coef;		coef++;		\
-	Asm("NEGS %0, %1" :"=r"(c2):"r"(*coef));\
+	c1[(x)] = *coef;		coef++;		\
+	Asm("NEGS %0, %1" :"=r"(n_c2[(x)]):"r"(*coef));\
 	coef++; \
-	vLo = *(vb1+(32+(x)));	vHi = *(vb1+(55-(x))); \
+	vLo[(x)] = *(vb1+(32+(x)));	vHi[(x)] = *(vb1+(55-(x))); \
 	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c2));	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi[(x)]), "r"(n_c2[(x)]));	\
 }
 
 /*****************Part 2****************************************/
 #define MC1SL(x)	{ \
-	c1 = *coef;		coef++; \
-	vLo = *(vb1+(x)); \
+	c1[(x)] = *coef;		coef++; \
+	vLo[(x)] = *(vb1+(x)); \
 	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
 }
 
 #define MC1SR(x)	{ \
-	c1 = *coef;		coef++; \
-	vLo = *(vb1+(32+(x))); \
+	c1[(x)] = *coef;		coef++; \
+	vLo[(x)] = *(vb1+(32+(x))); \
 	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
+	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
 }
 
 
 
 /*****************Part 3****************************************/
-
+/***2nd*********/
 #define MC2S1L(x)	{ \
-		c1 = *coef;		coef++;		\
-		Asm("NEGS %0, %1" :"=r"(c2):"r"(*coef));\
-		coef++; \
-		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
+		Asm("NEGS %0, %1" :"=r"(n_c2[(x)]):"r"(c2[(x)]));\
 		\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c2));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi[(x)]), "r"(n_c2[(x)]));	\
 }
 
+/****first****/
 #define MC2S2L(x)	{ \
-		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
-		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
+		c1[(x)] = *coef;		coef++;		c2[(x)] = *coef;		coef++; \
+		vLo[(x)] = *(vb1+(x));	vHi[(x)] = *(vb1+(23-(x))); \
 		\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c2));	\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c1));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c2[(x)]));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi[(x)]), "r"(c1[(x)]));	\
 }
 
+/***3rd*********/
 #define MC2S1R(x)	{ \
-		c1 = *coef;		coef++;		\
-		Asm("NEGS %0, %1" :"=r"(c2):"r"(*coef));\
-		coef++; \
-		vLo = *(vb1+(32+(x)));	vHi = *(vb1+(55-(x))); \
+		vLo[(x)] = *(vb1+(32+(x)));	vHi[(x)] = *(vb1+(55-(x))); \
 		\
 		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c1));	\
-		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c2));	\
+		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(n_c2));	\
 }
 
+/***4th*********/
 #define MC2S2R(x)	{ \
-		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
-		vLo = *(vb1+(32+(x)));	vHi = *(vb1+(55-(x))); \
 		\
 		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo), "r"(c2));	\
 		Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi), "r"(c1));	\
@@ -294,7 +289,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	int i;
 	const int *coef,*coef_save;
 	int *vb1;
-	int vLo, vHi, c1, c2;
+	int vLo[8], vHi[8], c1[8], c2[8],n_c2[8];
 	// Word64 sum1L, sum2L, sum1R, sum2R, rndVal;
 	int sum1L, sum2L, sum1R, sum2R, rndVal;
 	int cal_temp0;
@@ -400,25 +395,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 		// sum1L = sum2L = 0;
 		// sum1R = sum2R = 0;
 
-		coef_save = coef;	//SAVE
-
-
-//Reset ACC
-// _arc_aux_write(ACC0_LO, 0);
-_arc_aux_write(ACC0_HI, 0);
-
-		MC2S1L(0)
-		MC2S1L(1)
-		MC2S1L(2)
-		MC2S1L(3)
-		MC2S1L(4)
-		MC2S1L(5)
-		MC2S1L(6)
-		MC2S1L(7)
-
-sum1L = _arc_aux_read(ACC0_HI);
-
-		coef = coef_save;	//Load
+		// coef_save = coef;	//SAVE
 
 //Reset ACC
 // _arc_aux_write(ACC0_LO, 0);
@@ -435,7 +412,25 @@ _arc_aux_write(ACC0_HI, 0);
 
 sum2L = _arc_aux_read(ACC0_HI);
 
-		coef = coef_save;	//RELoad
+		// coef = coef_save;	//Load
+//Reset ACC
+// _arc_aux_write(ACC0_LO, 0);
+_arc_aux_write(ACC0_HI, 0);
+
+		MC2S1L(0)
+		MC2S1L(1)
+		MC2S1L(2)
+		MC2S1L(3)
+		MC2S1L(4)
+		MC2S1L(5)
+		MC2S1L(6)
+		MC2S1L(7)
+
+sum1L = _arc_aux_read(ACC0_HI);
+
+
+
+		// coef = coef_save;	//RELoad
 
 //Reset ACC
 // _arc_aux_write(ACC0_LO, 0);
@@ -452,7 +447,7 @@ _arc_aux_write(ACC0_HI, 0);
 
 sum1R = _arc_aux_read(ACC0_HI);
 
-		coef = coef_save;	//RELoad
+		// coef = coef_save;	//RELoad
 
 //Reset ACC
 // _arc_aux_write(ACC0_LO, 0);
