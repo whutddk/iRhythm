@@ -10,10 +10,10 @@
 #include "esp8266.h"
 
 
-#define WIFI_SSID   "\"Andrew_Sun\""
-#define WIFI_PWD    "\"smartcar\""
-// #define WIFI_SSID   "\"WUT-test\""
-// #define WIFI_PWD    "\"DDK123456\""
+// #define WIFI_SSID   "\"Andrew_Sun\""
+// #define WIFI_PWD    "\"smartcar\""
+#define WIFI_SSID   "\"WUT-test\""
+#define WIFI_PWD    "\"DDK123456\""
 
 
 uint8_t flag_netpoll = 0;				//Big Data Receive Flag
