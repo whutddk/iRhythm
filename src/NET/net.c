@@ -399,15 +399,15 @@ int socket_request(unsigned char option)
 	return 0;
 }
 
-<<<<<<< HEAD
+
 DEV_UART_PTR uart_obj;
-=======
+
 /***
 **Download MP3 use Download link
 **
 **/
 
->>>>>>> feature_mp3dsp
+
 void download_mp3()
 {
 	uint8_t http_cnt = 0;
