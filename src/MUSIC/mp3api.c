@@ -13,23 +13,26 @@
 
 
 // volatile bool isFinished = true;
-volatile uint8_t flag_sw = 0; 
+volatile uint8_t flag_sw = 0; 					//Ping-pong Buff switching Flag
 
-char buf_rec1[2304]={1};
+char buf_rec1[2304]={1};						//Ping-pong Buff for DMA Transfer
 char buf_rec2[2304]={1};
 
-uint8_t dec_buff[NUM_BYTE_READ] = {1};
+uint8_t dec_buff[NUM_BYTE_READ] = {1};			//Decord buff in DCCM,much Smaller,Read Data From 10MB File BUFF
 
+
+/***
+**	MP3 Decord Core Function 
+**  filelenth : BUFF length should be Decord
+**	loction :IF the Data in 10MB FILE BUFF or IN 10MB NET BUFF
+**/
 void play_mp3(int filelenth,uint8_t location)
 {
-
 	uint32_t temp = 0;
 
 	int32_t offset;
 	uint8_t *read_ptr = dec_buff;
-	//uint8_t *raw_ptr = raw_buff;
 	uint8_t *file_ptr;
-	// uint8_t *file_ptr = file_buff;
 	
 	/*这里改文件大小*/
 	int file_left = filelenth;
@@ -78,6 +81,8 @@ void play_mp3(int filelenth,uint8_t location)
 	flag_start = 0;
 	// flag_dma_finish = 1;
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
+
+	/*************Start to Decord MP3******************************/
 	while(1)
 	{
 		offset = MP3FindSyncWord(read_ptr, byte_left);
@@ -89,7 +94,7 @@ void play_mp3(int filelenth,uint8_t location)
 			byte_left -= offset;        //in buffer
 
 
-			iosignal_ctrl(1,0);
+			// iosignal_ctrl(1,0);
 			if ( flag_sw == 0 )
 			{
 				
@@ -150,13 +155,15 @@ void play_mp3(int filelenth,uint8_t location)
 			// 	EMBARC_PRINTF("GPIO Clear BIT1\r\n");
 			// 	uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
 			// }
+			/******Can Replace by IO interrupt to Set Event****************/
 			while(!iosignal_read(0))
 			{
-				_Rtos_Delay(100);
+				;
 			}
 				
 /********************Shedule End Here*****************************/
 
+			/**********Enable DMA to Transfer**********************/
 			if ( flag_sw == 0 )
 			{
 				spi_writeraw((uint8_t*)buf_rec1);
@@ -168,7 +175,7 @@ void play_mp3(int filelenth,uint8_t location)
 		 		flag_sw = 0;
 		    }
 
-
+	    	/**************Read out data in 10MB buff to DCCM BUFF************/
 			if (byte_left < NUM_BYTE_READ) 
 			{
 				memmove(dec_buff,read_ptr,byte_left);
@@ -211,6 +218,7 @@ void play_mp3(int filelenth,uint8_t location)
 			}
 		}
 	}
+	/********Play Song in NET Buff,should Reset Flag*****************/
 	if ( location == IN_BUFF )
 	{
 		flag_netbuff = BUFF_EMPTY;

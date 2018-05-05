@@ -56,168 +56,11 @@
 #ifndef _ASSEMBLY_H
 #define _ASSEMBLY_H
 //#include "arc_dsp_mw.h"
+#include "embARC_toolchain.h"
 
-#if (defined _WIN32 && !defined _WIN32_WCE) || (defined __WINS__ && defined _SYMBIAN) || defined(_OPENWAVE_SIMULATOR) || defined(WINCE_EMULATOR)    /* Symbian emulator for Ix86 */
+#define ACC0_LO 0x580
+#define ACC0_HI 0X582
 
-
-static __inline int MULSHIFT32(int x, int y)
-{
-    __asm {
-		mov		eax, x
-	    imul	y
-	    mov		eax, edx
-	}
-}
-
-static __inline int FASTABS(int x)
-{
-	int sign;
-
-	sign = x >> (sizeof(int) * 8 - 1);
-	x ^= sign;
-	x -= sign;
-
-	return x;
-}
-
-static __inline int CLZ(int x)
-{
-	int numZeros;
-
-	if (!x)
-		return (sizeof(int) * 8);
-
-	numZeros = 0;
-	while (!(x & 0x80000000)) {
-		numZeros++;
-		x <<= 1;
-	}
-
-	return numZeros;
-}
-
-/* MADD64, SHL64, SAR64:
- * write in assembly to avoid dependency on run-time lib for 64-bit shifts, muls
- *  (sometimes compiler thunks to function calls instead of code generating)
- * required for Symbian emulator
- */
-#ifdef __CW32__
-typedef long long Word64;
-#else
-typedef __int64 Word64;
-#endif
-
-static __inline Word64 MADD64(Word64 sum, int x, int y)
-{
-	unsigned int sumLo = ((unsigned int *)&sum)[0];
-	int sumHi = ((int *)&sum)[1];
-
-	__asm {
-		mov		eax, x
-		imul	y
-		add		eax, sumLo
-		adc		edx, sumHi
-	}
-
-	/* equivalent to return (sum + ((__int64)x * y)); */
-}
-
-static __inline Word64 SHL64(Word64 x, int n)
-{
-	unsigned int xLo = ((unsigned int *)&x)[0];
-	int xHi = ((int *)&x)[1];
-	unsigned char nb = (unsigned char)n;
-
-	if (n < 32) {
-		__asm {
-			mov		edx, xHi
-			mov		eax, xLo
-			mov		cl, nb
-			shld    edx, eax, cl
-			shl     eax, cl
-		}
-	} else if (n < 64) {
-		/* shl masks cl to 0x1f */
-		__asm {
-			mov		edx, xLo
-			mov		cl, nb
-			xor     eax, eax
-			shl     edx, cl
-		}
-	} else {
-		__asm {
-			xor		edx, edx
-			xor		eax, eax
-		}
-	}
-}
-
-static __inline Word64 SAR64(Word64 x, int n)
-{
-	unsigned int xLo = ((unsigned int *)&x)[0];
-	int xHi = ((int *)&x)[1];
-	unsigned char nb = (unsigned char)n;
-
-	if (n < 32) {
-		__asm {
-			mov		edx, xHi
-			mov		eax, xLo
-			mov		cl, nb
-			shrd	eax, edx, cl
-			sar		edx, cl
-		}
-	} else if (n < 64) {
-		/* sar masks cl to 0x1f */
-		__asm {
-			mov		edx, xHi
-			mov		eax, xHi
-			mov		cl, nb
-			sar		edx, 31
-			sar		eax, cl
-		}
-	} else {
-		__asm {
-			sar		xHi, 31
-			mov		eax, xHi
-			mov		edx, xHi
-		}
-	}
-}
-
-#elif (defined _WIN32) && (defined _WIN32_WCE)
-
-/* use asm function for now (EVC++ 3.0 does horrible job compiling __int64 version) */
-#define MULSHIFT32	xmp3_MULSHIFT32
-int MULSHIFT32(int x, int y);
-
-static __inline int FASTABS(int x)
-{
-	int sign;
-
-	sign = x >> (sizeof(int) * 8 - 1);
-	x ^= sign;
-	x -= sign;
-
-	return x;
-}
-
-static __inline int CLZ(int x)
-{
-	int numZeros;
-
-	if (!x)
-		return (sizeof(int) * 8);
-
-	numZeros = 0;
-	while (!(x & 0x80000000)) {
-		numZeros++;
-		x <<= 1;
-	}
-
-	return numZeros;
-}
-
-#elif defined ARC_MW
 
 typedef long long Word64;
 
@@ -229,6 +72,22 @@ static __inline Word64 MADD64(Word64 sum, int x, int y)
 	// res = (Word64)x*(Word64)y;
 	// sum = res + sum;
 	// return sum;
+
+	// Word64 res1;
+	// int addr,zero;
+
+	// zero = 0;
+	// addr = ACC0_LO;
+
+	// addr = ACC0_HI;
+	// write_aux_reg(ACC0_LO, 0);
+	// write_aux_reg(ACC0_HI, 0);
+
+	// Asm("MAC %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
+
+
+	// return res1;
+	
 }
 
 static __inline Word64 SHL64(Word64 x, int n)
@@ -247,26 +106,81 @@ static __inline Word64 SAR64(Word64 x, int n)
 	return (x >> n);
 }
 
+static __inline int SAR32(int x, int n)
+{
+	int y;
+
+	Asm("ASRS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
+
+	return y;
+	
+}
+
+static __inline int SAL32(int x, int n)
+{
+	int y;
+
+	Asm("ASLS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
+
+	return y;
+	
+}
+
+
 static __inline int MULSHIFT32(int x, int y)
 {
-	Word64  res;
-	res = (Word64)x*(Word64)y;
-	y = (int)(res>>32);
- 	return y;
+	// Word64  res;
+	// res = (Word64)x*(Word64)y;
+	// y = (int)(res>>32);
+ // 	return y;
 	// return _arc_mpym(x,y);
+
+	int  res1,res2;
+	// Asm("swape %0, %1" :"=r"(x): "r"(y));
+	Asm("MPYM %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
+	// Asm("MPYD %0, %2, %3\n\t"
+	// 	"MOV %1,r1"
+	// 	:"=r"(res1),"=r"(res2): "r"(x), "r"(y));
+	return res1;
 }
 
 static __inline int FASTABS(int x)
 {
 	// return _arc_abss(x);
-	int sign;
+	// int sign;
 
-	sign = x >> (sizeof(int) * 8 - 1);
-	x ^= sign;
-	x -= sign;
+	// sign = x >> (sizeof(int) * 8 - 1);
+	// x ^= sign;
+	// x -= sign;
 
-	return x;
+	// return x;
+
+	int y;
+	Asm("ABSS %0, %1" :"=r"(x):  "r"(y));
+	return y;
+
 }
+
+static __inline int FASSUB32(int x,int y)
+{
+	int z;
+
+	Asm("SUBS %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
+
+	return z;
+
+}
+
+static __inline int FASADD32(int x,int y)
+{
+	int z;
+
+	Asm("ADDS %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
+
+	return z;
+
+}
+
 
 static __inline int CLZ(int x)
 {
@@ -284,38 +198,17 @@ static __inline int CLZ(int x)
 	return numZeros;
 }
 
-#elif defined(__GNUC__) && defined(ARM)
-
-typedef long long Word64;
-
-#define MULSHIFT32	xmp3_MULSHIFT32
-extern int MULSHIFT32(int x, int y);
-
-
-#define FASTABS	xmp3_FASTABS
-int FASTABS(int x);
-
-
-static __inline int CLZ(int x)
+static __inline int FASMAX( int x,int y )
 {
-	int numZeros;
-
-	if (!x)
-		return (sizeof(int) * 8);
-
-	numZeros = 0;
-	while (!(x & 0x80000000)) {
-		numZeros++;
-		x <<= 1;
-	} 
-
-	return numZeros;
+	int z;
+	Asm("MAX %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
+	return z;
 }
 
-#else
-
-#error Unsupported platform in assembly.h
-
-#endif	/* platforms */
-
+static __inline int FASMIN( int x,int y )
+{
+	int z;
+	Asm("MIN %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
+	return z;
+}
 #endif /* _ASSEMBLY_H */
