@@ -8,7 +8,7 @@ DEV_SPI_PTR spi;
 
 FATFS fs_p;
 
-uint8_t *file_buff;
+uint8_t *file_buff;			//10MB File Buff to Read out from SD Card
 
 /**********************
 **	Read out the Information of  file in SD Card and store in file list
@@ -43,7 +43,7 @@ static void playlist_init()
 		{
 			break;
 		}
-		if ( fileinfo.fattrib == 32 )
+		if ( fileinfo.fattrib == 32 )			//Check File Style
 		{
 			filelist_add(FILE_LIST,&(fileinfo.fname[0]),fileinfo.fsize,IN_FILE);
 			EMBARC_PRINTF("File name: %s  File size:%d   \r\n",fileinfo.fname,fileinfo.fsize);
@@ -87,7 +87,7 @@ void play_init()
 		while(1);
 	}
 
-	/*checkout directory and init song list to play*/
+/********checkout directory and init song list to play****************/
 	playlist_init();
 }
 
@@ -113,10 +113,10 @@ int32_t Start_playing()
 	memset( music_filename, 0, sizeof(char) * 50 );
 	strcat( music_filename,Playlist_HEAD -> data ); 
 
-	//不是最后一首
+	/***********If it is the last Song in Play List,Play it again and again and Never Delete*******************/
 	if ( Playlist_HEAD -> next != NULL )
 	{
-		filelist_delete(FILE_LIST);
+		filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
 	}
 	else
 	{
@@ -125,6 +125,7 @@ int32_t Start_playing()
 
 	EMBARC_PRINTF("\r\nplay %s\r\n",music_filename);
 
+	/********If the Song File is Bigger than 10MB Buff,Play Next one*****************************/
 	if ( file_lenth  > 10 * 1024* 1024 )
 	{
 	 	EMBARC_PRINTF("\r\nfile too big,play fail!\r\n");
@@ -132,7 +133,7 @@ int32_t Start_playing()
 	}
 	EMBARC_PRINTF("\r\nfile lenth = %d \r\n",file_lenth);
 
-/**read out file to DDR2 from SD card ,can product by another task**/
+	/**read out file to DDR2 from SD card ,if Net Buff is EMPTY**/
 
 	if ( file_location == IN_FILE )
 	{
