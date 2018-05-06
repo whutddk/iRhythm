@@ -2,9 +2,7 @@
 #include "embARC_debug.h"
 #include "u8g.h"
 
-void gui_task()
-{
-    u8g_t u8g;
+u8g_t u8g;
 char *song[10]={"Attention","Baby","burning","Calibaby","Cool","Cry","Faded","Giants","I Got You"};
 char *menu[2]={"Song List","Volume"};
 int picture = 0;
@@ -106,8 +104,9 @@ if(button_cnt2 > 9)
        board_delay_ms(100, 1);
  }
 
- int main(void)
+int gui_task()
 {
+    
     u8g_InitComFn(&u8g, &u8g_dev_ssd1306_128x64_2x_i2c, U8G_COM_SSD_I2C);
     u8g_Begin(&u8g);
     while(1) {
@@ -142,6 +141,5 @@ if(button_cnt2 > 9)
                 }
                   
              }
-    return E_SYS;
-}
+   return E_SYS;
 }
