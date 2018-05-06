@@ -86,6 +86,10 @@ extern void net_rst();
 #define SONG_ID 0
 #define SONG_INFO 1
 
+#define BUFF_EMPTY 0
+#define BUFF_FULL 1
+
+uint8_t flag_netbuff;
 extern char dllink[500];
 extern char songpoint[50];
 extern uint8_t flag_netpoll ;
