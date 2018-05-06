@@ -1,25 +1,24 @@
-TOOLCHAIN=gnu
-BOARD=emsk
-BD_VER=22
-CUR_CORE=arcem7d
-
 # Application name
-APPL ?= blinky
-
-
+APPL ?= graphic_u8glib
 
 #
 # root dir of embARC
 #
 EMBARC_ROOT = ..
-MID_SEL = common fatfs 
-OS_SEL = freertos
+
+MID_SEL = common u8glib
+
 # application source dirs
-APPL_CSRC_DIR = ./src/GUI ./src/MEM ./src/MUSIC ./src/NET ./src/TASK 
+BOARD=emsk
+BD_VER=23
+CUR_CORE=arcem7d
+TOOLCHAIN=gnu
+OS_SEL = freertos
+APPL_CSRC_DIR = . ./src ./src/GUI ./src/TASK/ 
 APPL_ASMSRC_DIR = .
 
 # application include dirs
-APPL_INC_DIR = ./inc
+APPL_INC_DIR = . ./inc
 
 # include current project makefile
 COMMON_COMPILE_PREREQUISITES += makefile
