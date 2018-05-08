@@ -158,7 +158,7 @@ void play_mp3(int filelenth,uint8_t location)
 			/******Can Replace by IO interrupt to Set Event****************/
 			while(!iosignal_read(0))
 			{
-				;
+				_Rtos_Delay(100);
 			}
 				
 /********************Shedule End Here*****************************/

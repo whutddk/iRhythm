@@ -10,10 +10,10 @@
 #include "esp8266.h"
 
 
-#define WIFI_SSID   "\"Andrew_Sun\""
-#define WIFI_PWD    "\"smartcar\""
-// #define WIFI_SSID   "\"WUT-test\""
-// #define WIFI_PWD    "\"DDK123456\""
+// #define WIFI_SSID   "\"Andrew_Sun\""
+// #define WIFI_PWD    "\"smartcar\""
+#define WIFI_SSID   "\"WUT-test\""
+#define WIFI_PWD    "\"DDK123456\""
 
 
 uint8_t flag_netpoll = 0;				//Big Data Receive Flag
@@ -399,10 +399,14 @@ int socket_request(unsigned char option)
 	return 0;
 }
 
+
+DEV_UART_PTR uart_obj;
+
 /***
 **Download MP3 use Download link
 **
 **/
+
 
 void download_mp3()
 {
@@ -411,6 +415,14 @@ void download_mp3()
 	// uint32_t cur_time;
 	char *http_cmd;
 	uint8_t timeout_cnt = 0;
+
+	
+
+
+	DEV_BUFFER Rxintbuf;
+
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 10 * 1024 * 1024);
+	uart_obj = uart_get_dev(ESP8266_UART_ID);
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
@@ -430,36 +442,39 @@ void download_mp3()
 	vTaskSuspendAll();
     esp8266_passthr_start(ESP8266_A);
 	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );	
+
+	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
+
 	START_REC();
 	xTaskResumeAll();
 
     free(http_cmd);
 
-	while(1)
-	{
-		/***********Wait at lease 1 second and check if new Data Come*******************/
-		_Rtos_Delay(1000);
+	// while(1)
+	// {
+		_Rtos_Delay(4 * 60000);
 
-    	if ( http_sum != bypass_cnt  )
-    	{
-    		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
-			http_sum = bypass_cnt;
-			timeout_cnt = 0;
-    	}
-    	else
-    	/*********No data Come in at lease 4 Second , Regard File Receive Complete**************************/
-    	{
-    		timeout_cnt ++;
-    		EMBARC_PRINTF("\r\nTime out\r\n");
-    		if ( timeout_cnt > 3 )
-    		{
-				EMBARC_PRINTF("\r\nreceive end , %d KB\r\n",bypass_cnt / 1024 );
+
+		
+   //  	if ( http_sum != bypass_cnt  )
+   //  	{
+   //  		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
+			// EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
+			// http_sum = bypass_cnt;
+			// timeout_cnt = 0;
+   //  	}
+   //  	else
+   //  	{
+   //  		timeout_cnt ++;
+   //  		EMBARC_PRINTF("\r\nTime out\r\n");
+   //  		if ( timeout_cnt > 3 )
+   //  		{
+				EMBARC_PRINTF("\r\nreceive end , %d B\r\n",bypass_cnt  );
 				EMBARC_PRINTF("\r\n%s \r\n",net_buff);
-	    		break;
-    		}
-    	}
-	}
+	    // 		break;
+    	// 	}
+    	// }
+	// }
 
 	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
 	esp8266_passthr_end(ESP8266_A);
@@ -467,12 +482,12 @@ void download_mp3()
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 	END_REC();
 
-	/*********Check if only a Header being Receive************************/
-	if ( http_sum > 1024 )
-	{
-		filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);			//Add FILE into Play List to play next
-		flag_netbuff = BUFF_FULL;									//Set Flag to Stop Net Task
-	}
+	http_sum = 10*1024*1024;
+	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
+	_Rtos_Delay(100);
+	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
+	flag_netbuff = BUFF_FULL;
+
 	EMBARC_PRINTF("Socket Close.\r\n");
 
 	/**********Connect will Close Automatic*********************/
