@@ -75,6 +75,7 @@ int main(void)
 /**********MP3 Decord Assist IO Init***************************/
 	iosignal_init();
 
+<<<<<<< HEAD
 /********IO reset ESP8266************************/
 	net_rst();
 /*********init Songid List*****/

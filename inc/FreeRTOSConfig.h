@@ -114,5 +114,4 @@ to exclude the API function. */
 #define configTIMER_QUEUE_LENGTH                64
 #define configTIMER_TASK_STACK_DEPTH            256
 
-
 #endif /* FREERTOS_CONFIG_H */
