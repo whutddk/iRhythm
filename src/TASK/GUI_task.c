@@ -27,7 +27,7 @@ void drawsonglist(int y2,int song_cntlist){
 			 u8g_DrawStr(&u8g,0, 60, song[song_cntlist+2]);
 			 u8g_DrawFrame(&u8g,0,y2,120,22);
 			}while(u8g_NextPage(&u8g));
-		 board_delay_ms(100, 1);
+		 //board_delay_ms(100, 1);
  }
 
 void drawSonglist(){
@@ -68,7 +68,7 @@ void drawMenu(){
 	else
 		ym = 22;  
 	drawmenu(ym);
-		board_delay_ms(100, 1);
+		//board_delay_ms(100, 1);
 }
 
 void drawVolume(){
@@ -83,7 +83,7 @@ void drawVolume(){
 		u8g_DrawBox(&u8g,0,22,vl,22);
 		u8g_DrawStr(&u8g,0,20,"Vol");
 		}while(u8g_NextPage(&u8g));
-	board_delay_ms(100, 1);
+	//board_delay_ms(100, 1);
  }
 
 void drawPlay(){
@@ -105,7 +105,7 @@ void drawPlay(){
 			u8g_DrawLine(&u8g,71,27,71,37); 
 			u8g_DrawStr(&u8g,playx, 20, song[song_cnt]);
 			}while(u8g_NextPage(&u8g));
-			 board_delay_ms(100, 1);
+			 //board_delay_ms(100, 1);
 }
 
 int gui_task()
