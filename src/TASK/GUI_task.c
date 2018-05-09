@@ -72,18 +72,18 @@ void drawMenu(){
 }
 
 void drawVolume(){
-		if(button_read(mask) == 0x04)
-			vl+=10;
+	if(button_read(mask) == 0x04)
+		vl+=10;
 
-		if(vl>120)
-			vl=0;
+	if(vl>120)
+		vl=0;
 
-			u8g_FirstPage(&u8g);
-		do{
-			u8g_DrawBox(&u8g,0,22,vl,22);
-			u8g_DrawStr(&u8g,0,20,"Vol");
-			}while(u8g_NextPage(&u8g));
-		board_delay_ms(100, 1);
+	u8g_FirstPage(&u8g);
+	do{
+		u8g_DrawBox(&u8g,0,22,vl,22);
+		u8g_DrawStr(&u8g,0,20,"Vol");
+		}while(u8g_NextPage(&u8g));
+	board_delay_ms(100, 1);
  }
 
 void drawPlay(){
