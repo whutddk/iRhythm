@@ -214,6 +214,7 @@ static __inline int FASMIN( int x,int y )
 	Asm("MIN %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
 	return z;
 }
+
 static __inline void MC0S(int * SL1,int * SR1,int * coef,int * vb1)
 {
 	/**伪代码
@@ -417,4 +418,67 @@ Asm("LD %%r17, %0\n\t"
 	*SR1 = _arc_aux_read(ACC0_HI);
 
 }
+
+
+static __inline void MC1S()
+{
+	/*
+		伪代码
+	
+	ld r0, *coef
+	ld r1,*(coef+1)
+	ld r2,*(coef+2)
+	ld r3,*(coef+3)
+	ld r4,*(coef+4)
+	ld r5,*(coef+5)
+	ld r6,*(coef+6)
+	ld r7,*(coef+7)
+
+	ld r8,*(vb1)
+	ld r9,*(vb1+1)
+	ld r10,*(vb1+2)
+	ld r11,*(vb1+3)
+	ld r12,*(vb1+4)
+	ld r13,*(vb1+5)
+	ld r14,*(vb1+6)
+	ld r15,*(vb1+7)
+
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
+	mac r16 r8,r0
+	mac r16 r9,r1
+	mac r16 r10,r2
+	mac r16 r11,r3
+	mac r16 r12,r4
+	mac r16 r13,r5
+	mac r16 r14,r6
+	mac r16 r15,r7
+	*SL1 = _arc_aux_read(ACC0_HI);
+
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
+
+	ld r8,*(vb1+32)
+	ld r9,*(vb1+32+1)
+	ld r10,*(vb1+32+2)
+	ld r11,*(vb1+32+3)
+	ld r12,*(vb1+32+4)
+	ld r13,*(vb1+32+5)
+	ld r14,*(vb1+32+6)
+	ld r15,*(vb1+32+7)
+
+	mac r16 r8,r0
+	mac r16 r9,r1
+	mac r16 r10,r2
+	mac r16 r11,r3
+	mac r16 r12,r4
+	mac r16 r13,r5
+	mac r16 r14,r6
+	mac r16 r15,r7
+
+	*SR1 = _arc_aux_read(ACC0_HI);
+	*/
+}
+
+
 #endif /* _ASSEMBLY_H */
