@@ -56,6 +56,9 @@
 #ifndef _ASSEMBLY_H
 #define _ASSEMBLY_H
 //#include "arc_dsp_mw.h"
+#include "embARC.h"
+#include "embARC_debug.h"
+
 #include "embARC_toolchain.h"
 
 #define ACC0_LO 0x580
@@ -323,42 +326,43 @@ Asm("LD %%r0, %0\n\t"
 	:"%r0","%r1","%r2","%r3","%r4","%r5","%r6","%r7","%r8","%r9","%r10","%r11","%r12","%r13","%r14","%r15"
 	);
 
-Asm("sr ACC0_LO, 0\n\t"
-	"sr ACC0_HI, 0\n\t"
-	"LD %%r17, %1\n\t"
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
+
+Asm("LD %%r17, %0\n\t"
 	"MAC %%r16, %%r17, %%r0\n\t"
-	"LD %%r17, %2\n\t"
+	"LD %%r17, %1\n\t"
 	"mac %%r16, %%r17, %%r1\n\t"
-	"LD %%r17, %3\n\t"
+	"LD %%r17, %2\n\t"
 	"MAC %%r16, %%r17, %%r2\n\t"
-	"LD %%r17, %4\n\t"
+	"LD %%r17, %3\n\t"
 	"mac %%r16, %%r17, %%r3\n\t"
-	"LD %%r17, %5\n\t"
+	"LD %%r17, %4\n\t"
 	"MAC %%r16, %%r17, %%r4\n\t"
-	"LD %%r17, %6\n\t"
+	"LD %%r17, %5\n\t"
 	"mac %%r16, %%r17, %%r5\n\t"
-	"LD %%r17, %7\n\t"
+	"LD %%r17, %6\n\t"
 	"MAC %%r16, %%r17, %%r6\n\t"
-	"LD %%r17, %8\n\t"
+	"LD %%r17, %7\n\t"
 	"mac %%r16, %%r17, %%r7\n\t"
-	"LD %%r17, %9\n\t"
+	"LD %%r17, %8\n\t"
 	"MAC %%r16, %%r17, %%r8\n\t"
-	"LD %%r17, %10\n\t"
+	"LD %%r17, %9\n\t"
 	"mac %%r16, %%r17, %%r9\n\t"
-	"LD %%r17, %11\n\t"
+	"LD %%r17, %10\n\t"
 	"MAC %%r16, %%r17, %%r10\n\t"
-	"LD %%r17, %12\n\t"
+	"LD %%r17, %11\n\t"
 	"mac %%r16, %%r17, %%r11\n\t"
-	"LD %%r17, %13\n\t"
+	"LD %%r17, %12\n\t"
 	"MAC %%r16, %%r17, %%r12\n\t"
-	"LD %%r17, %14\n\t"
+	"LD %%r17, %13\n\t"
 	"mac %%r16, %%r17, %%r13\n\t"
-	"LD %%r17, %15\n\t"
+	"LD %%r17, %14\n\t"
 	"MAC %%r16, %%r17, %%r14\n\t"
-	"LD %%r17, %16\n\t"
+	"LD %%r17, %15\n\t"
 	"mac %%r16, %%r17, %%r15\n\t"
-	"lr %0, ACC0_HI"
-	: "=m"(*SL1)
+
+	: 
 	: "m"(*(vb1+0)),"m"(*(vb1+(23))),"m"(*(vb1+1)),"m"(*(vb1+(22))),"m"(*(vb1+2)),"m"(*(vb1+(21))),"m"(*(vb1+3)),"m"(*(vb1+(20))),
 	  "m"(*(vb1+4)),"m"(*(vb1+(19))),"m"(*(vb1+5)),"m"(*(vb1+(18))),"m"(*(vb1+6)),"m"(*(vb1+(17))),"m"(*(vb1+7)),"m"(*(vb1+(16)))
 	: "%r16","%r17","%r0",
@@ -379,42 +383,44 @@ Asm("sr ACC0_LO, 0\n\t"
 	"%r16","%r17","%r15"
 );
 
-Asm("sr ACC0_LO, 0\n\t"
-	"sr ACC0_HI, 0\n\t"
-	"LD %%r17, %1\n\t"
+	*SL1 = _arc_aux_read(ACC0_HI);
+
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
+
+Asm("LD %%r17, %0\n\t"
 	"MAC %%r16, %%r17, %%r0\n\t"
-	"LD %%r17, %2\n\t"
+	"LD %%r17, %1\n\t"
 	"mac %%r16, %%r17, %%r1\n\t"
-	"LD %%r17, %3\n\t"
+	"LD %%r17, %2\n\t"
 	"MAC %%r16, %%r17, %%r2\n\t"
-	"LD %%r17, %4\n\t"
+	"LD %%r17, %3\n\t"
 	"mac %%r16, %%r17, %%r3\n\t"
-	"LD %%r17, %5\n\t"
+	"LD %%r17, %4\n\t"
 	"MAC %%r16, %%r17, %%r4\n\t"
-	"LD %%r17, %6\n\t"
+	"LD %%r17, %5\n\t"
 	"mac %%r16, %%r17, %%r5\n\t"
-	"LD %%r17, %7\n\t"
+	"LD %%r17, %6\n\t"
 	"MAC %%r16, %%r17, %%r6\n\t"
-	"LD %%r17, %8\n\t"
+	"LD %%r17, %7\n\t"
 	"mac %%r16, %%r17, %%r7\n\t"
-	"LD %%r17, %9\n\t"
+	"LD %%r17, %8\n\t"
 	"MAC %%r16, %%r17, %%r8\n\t"
-	"LD %%r17, %10\n\t"
+	"LD %%r17, %9\n\t"
 	"mac %%r16, %%r17, %%r9\n\t"
-	"LD %%r17, %11\n\t"
+	"LD %%r17, %10\n\t"
 	"MAC %%r16, %%r17, %%r10\n\t"
-	"LD %%r17, %12\n\t"
+	"LD %%r17, %11\n\t"
 	"mac %%r16, %%r17, %%r11\n\t"
-	"LD %%r17, %13\n\t"
+	"LD %%r17, %12\n\t"
 	"MAC %%r16, %%r17, %%r12\n\t"
-	"LD %%r17, %14\n\t"
+	"LD %%r17, %13\n\t"
 	"mac %%r16, %%r17, %%r13\n\t"
-	"LD %%r17, %15\n\t"
+	"LD %%r17, %14\n\t"
 	"MAC %%r16, %%r17, %%r14\n\t"
-	"LD %%r17, %16\n\t"
+	"LD %%r17, %15\n\t"
 	"mac %%r16, %%r17, %%r15\n\t"
-	"lr %0, ACC0_HI"
-	: "=m"(*SR1)
+	: 
 	: 	"m"(*(vb1+32+0)),"m"(*(vb1+32+(23-0))),"m"(*(vb1+32+1)),
 		"m"(*(vb1+32+(23-1))),"m"(*(vb1+32+2)),"m"(*(vb1+32+(23-2))),"m"(*(vb1+32+3)),"m"(*(vb1+32+(23-3))),"m"(*(vb1+32+4)),"m"(*(vb1+32+(23-4))),"m"(*(vb1+32+5)),"m"(*(vb1+32+(23-5))),"m"(*(vb1+32+6)),
 		"m"(*(vb1+32+(23-6))),"m"(*(vb1+32+7)),"m"(*(vb1+32+(23-7)))
@@ -436,6 +442,7 @@ Asm("sr ACC0_LO, 0\n\t"
 	"%r16","%r17","%r15"
 	);
 
+	*SR1 = _arc_aux_read(ACC0_HI);
 
 }
 #endif /* _ASSEMBLY_H */
