@@ -291,34 +291,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 //Reset ACC
 	// _arc_aux_write(ACC0_LO, 0);
-	_arc_aux_write(ACC0_HI, 0);
-
-	MC1SL(0)
-	MC1SL(1)
-	MC1SL(2)
-	MC1SL(3)
-	MC1SL(4)
-	MC1SL(5)
-	MC1SL(6)
-	MC1SL(7)
-
-	sum1L = _arc_aux_read(ACC0_HI);
-
-
-	//Reset ACC
-	// _arc_aux_write(ACC0_LO, 0);
-	_arc_aux_write(ACC0_HI, 0);
-
-	MC1SR(0)
-	MC1SR(1)
-	MC1SR(2)
-	MC1SR(3)
-	MC1SR(4)
-	MC1SR(5)
-	MC1SR(6)
-	MC1SR(7)
-
-	sum1R = _arc_aux_read(ACC0_HI);
+	MC1S(&sum1L,&sum1R,coef,vb1);
 
 	*(pcm + 32) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 33) = (char)(SAR32(sum1R,CHECK_BIT));
