@@ -731,7 +731,7 @@ static __inline void MC2S(int* SL1,int* SR1,int* SL2,int* SR2,int* coef,int * vb
 	mac r25, r22, r13
 	mac r25, r23, r15
 
-	lr r24 ,[0x592]
+	lr r24 ,[0x582]
 
 
 ////////////////////////2R all
@@ -794,12 +794,12 @@ static __inline void MC2S(int* SL1,int* SR1,int* SL2,int* SR2,int* coef,int * vb
 	
 	mac r25, r16, r0
 	mac r25, r17, r2
-	mac r25, r16, r4
-	mac r25, r17, r6
-	mac r25, r16, r8
-	mac r25, r17, r10
-	mac r25, r16, r12
-	mac r25, r17, r14
+	mac r25, r18, r4
+	mac r25, r19, r6
+	mac r25, r20, r8
+	mac r25, r21, r10
+	mac r25, r22, r12
+	mac r25, r23, r14
 
 	lr r25,[0x582]
 	st r25,*SR1
