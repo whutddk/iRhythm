@@ -217,90 +217,62 @@ static __inline int FASMIN( int x,int y )
 static __inline void MC0S(int * SL1,int * SR1,int * coef,int * vb1)
 {
 	/**伪代码
-
 	LD r0，*coef
 	negs r1 ,*(coef+1)
-
 	LD r2，*coef+2
 	negs r3 ,*coef+3
-
 	LD r4，*coef+4
 	negs r5 ,*coef+5
-
 	LD r6，*coef+6
 	negs r7 ,*coef+7
-
 	LD r8，*coef+8
 	negs r9 ,*coef+9
-
 	LD r10，*coef+10
 	negs r11 ,*coef+11
-
 	LD r12，*coef+12
 	negs r13 ,*coef+13
-
 	LD r14，*coef+14
 	negs r15,*coef+15
 
 	sr ACC0_LO ,0
 	sr ACC0_HI ,0
-
 	MAC r16 *(vb1+0) r0
 	mac r16 *(vb1+(23-0)) r1
-
 	MAC r16 *(vb1+1) r2
 	mac r16 *(vb1+(23-1)) r3
-
 	MAC r16 *(vb1+2) r4
 	mac r16 *(vb1+(23-2)) r5
-
 	MAC r16 *(vb1+3) r6
 	mac r16 *(vb1+(23-3)) r7
-
 	MAC r16 *(vb1+4) r8
 	mac r16 *(vb1+(23-4)) r9
-
 	MAC r16 *(vb1+5) r10
 	mac r16 *(vb1+(23-5)) r11
-
 	MAC r16 *(vb1+6) r12
 	mac r16 *(vb1+(23-6)) r13
-
 	MAC r16 *(vb1+7) r14
 	mac r16 *(vb1+(23-7)) r15
-
 	lr *SL1 ACC0_HI
-
 
 	sr ACC0_LO ,0
 	sr ACC0_HI ,0
-
 	MAC r16 *(vb1+32+0) r0
 	mac r16 *(vb1+32+(23-0)) r1
-
 	MAC r16 *(vb1+32+1) r2
 	mac r16 *(vb1+32+(23-1)) r3
-
 	MAC r16 *(vb1+32+2) r4
 	mac r16 *(vb1+32+(23-2)) r5
-
 	MAC r16 *(vb1+32+3) r6
 	mac r16 *(vb1+32+(23-3)) r7
-
 	MAC r16 *(vb1+32+4) r8
 	mac r16 *(vb1+32+(23-4)) r9
-
 	MAC r16 *(vb1+32+5) r10
 	mac r16 *(vb1+32+(23-5)) r11
-
 	MAC r16 *(vb1+32+6) r12
 	mac r16 *(vb1+32+(23-6)) r13
-
 	MAC r16 *(vb1+32+7) r14
 	mac r16 *(vb1+32+(23-7)) r15
-
 	lr *SR1 ACC0_HI
-
 
 	**/
 
