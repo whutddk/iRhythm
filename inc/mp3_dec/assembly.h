@@ -300,5 +300,92 @@ static __inline void MC0SL()
 
 
 	**/
+
+	Asm("LD %%r0，%2\n\t"
+	"negs %%r1 ,*(coef+1)\n\t"
+
+	"LD %%r2，*coef+2\n\t"
+	"negs %%r3 ,*coef+3\n\t"
+
+	"LD %%r4，*coef+4\n\t"
+	"negs %%r5 ,*coef+5\n\t"
+
+	"LD %%r6，*coef+6\n\t"
+	"negs %%r7 ,*coef+7\n\t"
+
+	"LD %%r8，*coef+8\n\t"
+	"negs %%r9 ,*coef+9\n\t"
+
+	"LD %%r10，*coef+10\n\t"
+	"negs %%r11 ,*coef+11\n\t"
+
+	"LD %%r12，*coef+12\n\t"
+	"negs %%r13 ,*coef+13\n\t"
+
+	"LD %%r14，*coef+14\n\t"
+	"negs %%r15,*coef+15\n\t"
+
+	"sr ACC0_LO ,0\n\t"
+	"sr ACC0_HI ,0\n\t"
+
+	"MAC %%r16 *(vb1+0) %%r0\n\t"
+	"mac %%r16 *(vb1+(23-0)) %%r1\n\t"
+
+	"MAC %%r16 *(vb1+1) %%r2\n\t"
+	"mac %%r16 *(vb1+(23-1)) %%r3\n\t"
+
+	"MAC %%r16 *(vb1+2) %%r4\n\t"
+	"mac %%r16 *(vb1+(23-2)) %%r5\n\t"
+
+	"MAC %%r16 *(vb1+3) %%r6\n\t"
+	"mac %%r16 *(vb1+(23-3)) %%r7\n\t"
+
+	"MAC %%r16 *(vb1+4) %%r8\n\t"
+	"mac %%r16 *(vb1+(23-4)) %%r9\n\t"
+
+	"MAC %%r16 *(vb1+5) %%r10\n\t"
+	"mac %%r16 *(vb1+(23-5)) %%r11\n\t"
+
+	"MAC %%r16 *(vb1+6) %%r12\n\t"
+	"mac %%r16 *(vb1+(23-6)) %%r13\n\t"
+
+	"MAC %%r16 *(vb1+7) %%r14\n\t"
+	"mac %%r16 *(vb1+(23-7)) %%r15\n\t"
+
+	"lr %0 ACC0_HI\n\t"
+
+
+	"sr ACC0_LO ,0\n\t"
+	"sr ACC0_HI ,0\n\t"
+
+	"MAC %%r16 *(vb1+32+0) %%r0\n\t"
+	"mac %%r16 *(vb1+32+(23-0)) %%r1\n\t"
+
+	"MAC %%r16 *(vb1+32+1) r2\n\t"
+	"mac %%r16 *(vb1+32+(23-1)) r3\n\t"
+
+	"MAC %%r16 *(vb1+32+2) %%r4\n\t"
+	"mac %%r16 *(vb1+32+(23-2)) %%r5\n\t"
+
+	"MAC %%r16 *(vb1+32+3) %%6\n\t"
+	"mac %%r16 *(vb1+32+(23-3)) %%r7\n\t"
+
+	"MAC %%r16 *(vb1+32+4) %%r8\n\t"
+	"mac %%r16 *(vb1+32+(23-4)) %%r9\n\t"
+
+	"MAC %%r16 *(vb1+32+5) %%r10\n\t"
+	"mac %%r16 *(vb1+32+(23-5)) %%r11\n\t"
+
+	"MAC %%r16 *(vb1+32+6) %%r12\n\t"
+	"mac %%r16 *(vb1+32+(23-6)) %%r13\n\t"
+
+	"MAC %%r16 *(vb1+32+7) %%r14\n\t"
+	"mac %%r16 *(vb1+32+(23-7)) %%r15\n\t"
+
+	"lr %1 ACC0_HI\n\t"
+	: "=r"(*SL1),"=r"(*SR1)
+	: );
+
+
 }
 #endif /* _ASSEMBLY_H */
