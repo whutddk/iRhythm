@@ -354,9 +354,18 @@ Asm("LD %%r17, %0\n\t"
 	"%r16","%r17","%r13",
 	"%r16","%r17","%r14",
 	"%r16","%r17","%r15"
-);
+	);
 
-	*SL1 = _arc_aux_read(ACC0_HI);
+	// *SL1 = _arc_aux_read(ACC0_HI);
+
+	Asm ( "LR %%r18, [0X582]\n\t "
+		"ST %%r18,%0"
+		:"=m" (*SL1)
+		:
+		:"%r18","%r18"
+		);
+
+
 
 	_arc_aux_write(ACC0_LO, 0);
 	_arc_aux_write(ACC0_HI, 0);
@@ -415,7 +424,13 @@ Asm("LD %%r17, %0\n\t"
 	"%r16","%r17","%r15"
 	);
 
-	*SR1 = _arc_aux_read(ACC0_HI);
+	// *SR1 = _arc_aux_read(ACC0_HI);
+
+	Asm ( "LR %%r18, [0X582]\n\t "
+		"ST %%r18,%0"
+		:"=m" (*SR1)
+		:
+		:"%r18","%r18");
 
 }
 
@@ -528,10 +543,13 @@ Asm("mac %%r16, %%r8, %%r0\n\t"
 	"%r16","%r15","%r7"
 	);
 
-	*SL1 = _arc_aux_read(ACC0_HI);
+	// *SL1 = _arc_aux_read(ACC0_HI);
 
-	// Asm ( "LR %0, [0X582]\n\t "
-	// 	:"=m" (*SR1));
+	Asm ( "LR %%r17, [0X582]\n\t "
+		"ST %%r17,%0"
+		:"=m" (*SL1)
+		:
+		:"%r17","%r17");
 
 	_arc_aux_write(ACC0_LO, 0);
 	_arc_aux_write(ACC0_HI, 0);
@@ -573,7 +591,7 @@ Asm(
 		"ST %%r17,%0"
 		:"=m" (*SR1)
 		:
-		:"%r17");
+		:"%r17","%r17");
 }
 
 static __inline void MC2S()
