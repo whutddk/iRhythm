@@ -807,7 +807,8 @@ static __inline void MC2S(int* SL1,int* SR1,int* SL2,int* SR2,int* coef,int * vb
 	*/
 
 
-Asm("LD %%r0, %0\n\t"
+Asm(
+	"LD %%r0, %0\n\t"
 	"LD %%r1, %1\n\t"
 	"LD %%r2, %2\n\t"
 	"LD %%r3, %3\n\t"
@@ -815,19 +816,29 @@ Asm("LD %%r0, %0\n\t"
 	"LD %%r5, %5\n\t"
 	"LD %%r6, %6\n\t"
 	"LD %%r7, %7\n\t"
-	"LD %%r8, %8\n\t"
-	"LD %%r9, %9\n\t"
-	"LD %%r10, %10\n\t"
-	"LD %%r11, %11\n\t"
-	"LD %%r12, %12\n\t"
-	"LD %%r13, %13\n\t"
-	"LD %%r14, %14\n\t"
-	"LD %%r15, %15\n\t"
 	:
-	:"m"(*coef),"m"(*(coef+1)),"m"(*(coef+2)),"m"(*(coef+3)),"m"(*(coef+4)),"m"(*(coef+5)),"m"(*(coef+6)),"m"(*(coef+7)),"m"(*(coef+8)),"m"(*(coef+9)),"m"(*(coef+10)),"m"(*(coef+11)),"m"(*(coef+12)),"m"(*(coef+13)),"m"(*(coef+14)),"m"(*(coef+15))
+	:"m"(*coef),"m"(*(coef+1)),"m"(*(coef+2)),
+	"m"(*(coef+3)),"m"(*(coef+4)),"m"(*(coef+5)),
+	"m"(*(coef+6)),"m"(*(coef+7))
 	:"%r0","%r1","%r2",
 	"%r3","%r4","%r5",
-	"%r6","%r7","%r8",
+	"%r6","%r7"
+);
+
+Asm(
+	"LD %%r8, %0\n\t"
+	"LD %%r9, %1\n\t"
+	"LD %%r10, %2\n\t"
+	"LD %%r11, %3\n\t"
+	"LD %%r12, %4\n\t"
+	"LD %%r13, %5\n\t"
+	"LD %%r14, %6\n\t"
+	"LD %%r15, %7\n\t"
+	:
+	:"m"(*(coef+8)),
+	"m"(*(coef+9)),"m"(*(coef+10)),"m"(*(coef+11)),
+	"m"(*(coef+12)),"m"(*(coef+13)),"m"(*(coef+14)),"m"(*(coef+15))
+	:"%r8",
 	"%r9","%r10","%r11",
 	"%r12","%r13","%r14",
 	"%r15"
