@@ -307,7 +307,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	for (i = 15; i > 0; i--) {
 
 		MC2S(&sum1L,&sum1R,&sum2L,&sum2R,coef,vb1);
-
+		coef += 16;
 		vb1 += 64;
 		*(pcm )         = (char)(SAR32(sum1L,CHECK_BIT));
 		*(pcm + 1)         = (char)(SAR32(sum1R,CHECK_BIT));
