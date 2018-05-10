@@ -192,25 +192,6 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	}
 }
 
-
-/*****************Part 1****************************************/
-#define MC0SL(x)	{ \
-	c1[(x)] = *coef;		coef++;		\
-	Asm("NEGS %0, %1" :"=r"(n_c2[(x)]):"r"(*coef));\
-	coef++; \
-	vLo[(x)] = *(vb1+(x));		vHi[(x)] = *(vb1+(23-(x))); \
-	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi[(x)]), "r"(n_c2[(x)]));	\
-}
-
-#define MC0SR(x)	{  \
-	vLo[(x)] = *(vb1+(32+(x)));	vHi[(x)] = *(vb1+(55-(x))); \
-	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vLo[(x)]), "r"(c1[(x)]));	\
-	Asm("MAC %0, %1, %2" :"=r"(cal_temp0): "r"(vHi[(x)]), "r"(n_c2[(x)]));	\
-}
-
 /*****************Part 2****************************************/
 #define MC1SL(x)	{ \
 	c1[(x)] = *coef;		coef++; \
@@ -297,45 +278,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	/* special case, output sample 0 */
 	coef = coefBase;
 	vb1 = vbuf;
-	// sum1L =  0;
-
-//Reset ACC
-	// _arc_aux_write(ACC0_LO, 0);
-	// _arc_aux_write(ACC0_HI, 0);
-
-	// MC0SL(0)
-	// MC0SL(1)
-	// MC0SL(2)
-	// MC0SL(3)
-	// MC0SL(4)
-	// MC0SL(5)
-	// MC0SL(6)
-	// MC0SL(7)
-
-	// sum1L = _arc_aux_read(ACC0_HI);
-
-
 	MC0S(&sum1L,&sum1R,coef,vb1);
-
-
-	// coef = coefBase;
-	// vb1 = vbuf;
-	// sum1R = 0;
-
-//Reset ACC
-	// _arc_aux_write(ACC0_LO, 0);
-	// _arc_aux_write(ACC0_HI, 0);
-
-	// MC0SR(0)
-	// MC0SR(1)
-	// MC0SR(2)
-	// MC0SR(3)
-	// MC0SR(4)
-	// MC0SR(5)
-	// MC0SR(6)
-	// MC0SR(7)
-
-	// sum1R = _arc_aux_read(ACC0_HI);
 
 	*(pcm ) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 1) = (char)(SAR32(sum1R,CHECK_BIT));
