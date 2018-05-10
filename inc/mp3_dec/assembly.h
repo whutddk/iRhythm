@@ -530,6 +530,9 @@ Asm("mac %%r16, %%r8, %%r0\n\t"
 
 	*SL1 = _arc_aux_read(ACC0_HI);
 
+	// Asm ( "LR %0, [0X582]\n\t "
+	// 	:"=m" (*SR1));
+
 	_arc_aux_write(ACC0_LO, 0);
 	_arc_aux_write(ACC0_HI, 0);
 
@@ -564,8 +567,67 @@ Asm(
 	"%r16","%r14","%r6",
 	"%r16","%r15","%r7"
 );
-	*SR1 = _arc_aux_read(ACC0_HI);
+	// *SR1 = _arc_aux_read(ACC0_HI);
+
+	Asm ( "LR %%r17, [0X582]\n\t "
+		"ST %%r17,%0"
+		:"=m" (*SR1)
+		:
+		:"%r17");
 }
+
+static __inline void MC2S()
+{
+	/*伪代码
+	ld r0, *coef
+	ld r1,	*(coef+1)
+	ld r2,	*(coef+2)
+	ld r3,	*(coef+3)
+	ld r4,	*(coef+4)
+	ld r5,	*(coef+5)
+	ld r6,	*(coef+6)
+	ld r7,	*(coef+7)
+	ld r8,	*(coef+8)
+	ld r9,	*(coef+9)
+	ld r10,	*(coef+10)
+	ld r11,	*(coef+11)
+	ld r12,	*(coef+12)
+	ld r13,	*(coef+13)
+	ld r14,	*(coef+14)
+	ld r15,	*(coef+15)
+
+	ld r16, *(vb1)
+	ld r17, *(vb1+1)
+	ld r18, *(vb1+2)
+	ld r19, *(vb1+3)
+	ld r20, *(vb1+4)
+	ld r21, *(vb1+5)
+	ld r22, *(vb1+6)
+	ld r23, *(vb1+7)
+
+//2L part1
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
+
+	mac r25, r16, r1
+	mac r25, r17, r3 
+	mac r25, r18, r5
+	mac r25, r19, r7 
+	mac r25, r20, r9
+	mac r25, r21, r11 
+	mac r25, r22, r13
+	mac r25, r23, r15 
+
+	mac r25, r24, r0
+
+	ld
+
+
+
+	*/
+
+}
+
 
 
 #endif /* _ASSEMBLY_H */
