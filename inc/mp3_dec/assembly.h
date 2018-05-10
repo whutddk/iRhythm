@@ -627,6 +627,7 @@ static __inline void MC2S()
 	_arc_aux_write(ACC0_LO, 0);
 	_arc_aux_write(ACC0_HI, 0);
 
+//vlo*c2
 	mac r25, r16, r1
 	mac r25, r17, r3 
 	mac r25, r18, r5
@@ -634,13 +635,174 @@ static __inline void MC2S()
 	mac r25, r20, r9
 	mac r25, r21, r11 
 	mac r25, r22, r13
-	mac r25, r23, r15 
+	mac r25, r23, r15 	
 
-	mac r25, r24, r0
+	lr r24,[0x582]
 
-	ld
+//1L ALL
+	_arc_aux_write(ACC0_LO, 0);
+	_arc_aux_write(ACC0_HI, 0);
+
+//vlo*c1
+	mac r25,r16,r0
+	mac r25,r17,r2
+	mac r25,r18,r4
+	mac r25,r19,r6
+	mac r25,r20,r8
+	mac r25,r21,r10
+	mac r25,r22,r12
+	mac r25,r23,r14
 
 
+//-c2
+	negs r1,r1
+	negs r3,r3
+	negs r5,r5
+	negs r7,r7
+	megs r9,r9
+	negs r11,r11
+	negs r13,r13
+	megs r15,r15
+
+//vhi
+	ld r16,*(vb1+(23))
+	ld r17,*(vb1+(23-1))
+	ld r18,*(vb1+(23-2))
+	ld r19,*(vb1+(23-3))
+	ld r20,*(vb1+(23-4))
+	ld r21,*(vb1+(23-5))
+	ld r22,*(vb1+(23-6))
+	ld r23,*(vb1+(23-7))
+
+//vhi*-c2
+	mac r25, r16, r1
+	mac r25, r17, r3
+	mac r25, r18, r5
+	mac r25, r19, r7
+	mac r25, r20, r9
+	mac r25, r21, r11
+	mac r25, r22, r13
+	mac r25, r23, r15
+
+	lr r25 [0x582]
+	st r25 *SL1
+
+//2L PART2
+
+	SR r24 [0x582]
+	_arc_aux_write(ACC0_LO, 0);
+
+//vhi *c1
+	
+	mac r25, r16, r0
+	mac r25, r17, r2
+	mac r25, r18, r4
+	mac r25, r19, r6
+	mac r25, r20, r8
+	mac r25, r21, r10
+	mac r25, r22, r12
+	mac r25, r23, r14
+
+	lr r25 [0x582]
+	st r25 *SL2
+
+1R part1
+
+	SR 0 [0x582]
+	_arc_aux_write(ACC0_LO, 0);
+
+//load vhi
+	ld r16,*(vb1+32+(23))
+	ld r17,*(vb1+32+(23-1))
+	ld r18,*(vb1+32+(23-2))
+	ld r19,*(vb1+32+(23-3))
+	ld r20,*(vb1+32+(23-4))
+	ld r21,*(vb1+32+(23-5))
+	ld r22,*(vb1+32+(23-6))
+	ld r23,*(vb1+32+(23-7))
+
+//vHI*-c2
+	mac r25, r16, r1
+	mac r25, r17, r3
+	mac r25, r18, r5
+	mac r25, r19, r7
+	mac r25, r20, r9
+	mac r25, r21, r11
+	mac r25, r22, r13
+	mac r25, r23, r15
+
+	lr r24 ,[0x592]
+
+
+////////////////////////2R all
+	SR 0 [0x582]
+	_arc_aux_write(ACC0_LO, 0);
+
+//vhi*c1
+	mac r25, r16, r0
+	mac r25, r17, r2
+	mac r25, r18, r4
+	mac r25, r19, r6
+	mac r25, r20, r8
+	mac r25, r21, r10
+	mac r25, r22, r12
+	mac r25, r23, r14
+
+//c2
+
+	negs r1, r1
+	negs r3, r3
+	negs r5, r5
+	negs r7, r7
+	negs r9, r9
+	negs r11, r11
+	negs r13, r13
+	negs r15, r15
+
+//load vlo
+
+	ld r16, *(vb1+32)
+	ld r17, *(vb1+32+1)
+	ld r18, *(vb1+32+2)
+	ld r19, *(vb1+32+3)
+	ld r20, *(vb1+32+4)
+	ld r21, *(vb1+32+5)
+	ld r22, *(vb1+32+6)
+	ld r23, *(vb1+32+7)
+
+//vlo*c2
+	
+	mac r25, r16, r1
+	mac r25, r17, r3
+	mac r25, r18, r5
+	mac r25, r19, r7
+	mac r25, r20, r9
+	mac r25, r21, r11
+	mac r25, r22, r13
+	mac r25, r23, r15
+
+	lr r25,[0x582]
+	st r25,*SR2
+
+///////////////////////1R part2
+
+	sr r24,[0x582]
+	sr 0,[0x580]
+
+
+//vlo *c1
+	
+	mac r25, r16, r0
+	mac r25, r17, r2
+	mac r25, r16, r4
+	mac r25, r17, r6
+	mac r25, r16, r8
+	mac r25, r17, r10
+	mac r25, r16, r12
+	mac r25, r17, r14
+
+	lr r25,[0x582]
+	st r25,*SR1
 
 	*/
 
