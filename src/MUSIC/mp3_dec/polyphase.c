@@ -283,7 +283,7 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 {
 	int i;
-	const int *coef;
+	int *coef;
 	int *vb1;
 	int vLo[8], vHi[8], c1[8], c2[8],n_c2[8];
 	// Word64 sum1L, sum2L, sum1R, sum2R, rndVal;
@@ -301,18 +301,22 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 //Reset ACC
 	// _arc_aux_write(ACC0_LO, 0);
-	_arc_aux_write(ACC0_HI, 0);
+	// _arc_aux_write(ACC0_HI, 0);
 
-	MC0SL(0)
-	MC0SL(1)
-	MC0SL(2)
-	MC0SL(3)
-	MC0SL(4)
-	MC0SL(5)
-	MC0SL(6)
-	MC0SL(7)
+	// MC0SL(0)
+	// MC0SL(1)
+	// MC0SL(2)
+	// MC0SL(3)
+	// MC0SL(4)
+	// MC0SL(5)
+	// MC0SL(6)
+	// MC0SL(7)
 
-	sum1L = _arc_aux_read(ACC0_HI);
+	// sum1L = _arc_aux_read(ACC0_HI);
+
+
+	MC0S(&sum1L,&sum1R,coef,vb1);
+
 
 	// coef = coefBase;
 	// vb1 = vbuf;
@@ -320,18 +324,18 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 //Reset ACC
 	// _arc_aux_write(ACC0_LO, 0);
-	_arc_aux_write(ACC0_HI, 0);
+	// _arc_aux_write(ACC0_HI, 0);
 
-	MC0SR(0)
-	MC0SR(1)
-	MC0SR(2)
-	MC0SR(3)
-	MC0SR(4)
-	MC0SR(5)
-	MC0SR(6)
-	MC0SR(7)
+	// MC0SR(0)
+	// MC0SR(1)
+	// MC0SR(2)
+	// MC0SR(3)
+	// MC0SR(4)
+	// MC0SR(5)
+	// MC0SR(6)
+	// MC0SR(7)
 
-	sum1R = _arc_aux_read(ACC0_HI);
+	// sum1R = _arc_aux_read(ACC0_HI);
 
 	*(pcm ) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 1) = (char)(SAR32(sum1R,CHECK_BIT));
