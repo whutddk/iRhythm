@@ -305,77 +305,8 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	/* right now, the compiler creates bad asm from this... */
 	for (i = 15; i > 0; i--) {
-		// sum1L = sum2L = 0;
-		// sum1R = sum2R = 0;
 
-		// coef_save = coef;	//SAVE
-
-//Reset ACC
-// _arc_aux_write(ACC0_LO, 0);
-_arc_aux_write(ACC0_HI, 0);
-
-		MC2S2L(0)
-		MC2S2L(1)
-		MC2S2L(2)
-		MC2S2L(3)
-		MC2S2L(4)
-		MC2S2L(5)
-		MC2S2L(6)
-		MC2S2L(7)
-
-sum2L = _arc_aux_read(ACC0_HI);
-
-		// coef = coef_save;	//Load
-//Reset ACC
-// _arc_aux_write(ACC0_LO, 0);
-_arc_aux_write(ACC0_HI, 0);
-
-		MC2S1L(0)
-		MC2S1L(1)
-		MC2S1L(2)
-		MC2S1L(3)
-		MC2S1L(4)
-		MC2S1L(5)
-		MC2S1L(6)
-		MC2S1L(7)
-
-sum1L = _arc_aux_read(ACC0_HI);
-
-
-
-		// coef = coef_save;	//RELoad
-
-//Reset ACC
-// _arc_aux_write(ACC0_LO, 0);
-_arc_aux_write(ACC0_HI, 0);
-
-		MC2S1R(0)
-		MC2S1R(1)
-		MC2S1R(2)
-		MC2S1R(3)
-		MC2S1R(4)
-		MC2S1R(5)
-		MC2S1R(6)
-		MC2S1R(7)
-
-sum1R = _arc_aux_read(ACC0_HI);
-
-		// coef = coef_save;	//RELoad
-
-//Reset ACC
-// _arc_aux_write(ACC0_LO, 0);
-_arc_aux_write(ACC0_HI, 0);
-
-		MC2S2R(0)
-		MC2S2R(1)
-		MC2S2R(2)
-		MC2S2R(3)
-		MC2S2R(4)
-		MC2S2R(5)
-		MC2S2R(6)
-		MC2S2R(7)
-
-sum2R = _arc_aux_read(ACC0_HI);
+		MC2S(&sum1L,&sum1R,&sum2L,&sum2R,coef,vb1);
 
 		vb1 += 64;
 		*(pcm )         = (char)(SAR32(sum1L,CHECK_BIT));
