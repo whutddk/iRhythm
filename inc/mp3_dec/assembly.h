@@ -215,7 +215,7 @@ static __inline int FASMIN( int x,int y )
 	return z;
 }
 
-static __inline void MC0S(int * SL1,int * SR1,int * coef,int * vb1)
+static __inline void MC0S(int * SL1,int * SR1,const int * coef,int * vb1)
 {
 	/**伪代码
 	LD r0，*coef
@@ -278,24 +278,40 @@ static __inline void MC0S(int * SL1,int * SR1,int * coef,int * vb1)
 	**/
 
 Asm("LD %%r0, %0\n\t"
-	"negs %%r1, %1\n\t"
+	"LD %%r1, %1\n\t"
+			
 	"LD %%r2, %2\n\t"
-	"negs %%r3, %3\n\t"
+	"LD %%r3, %3\n\t"
+			
 	"LD %%r4, %4\n\t"
-	"negs %%r5, %5\n\t"
+	"LD %%r5, %5\n\t"
+			
 	"LD %%r6, %6\n\t"
-	"negs %%r7,  %7\n\t"
+	"LD %%r7, %7\n\t"
+			
 	"LD %%r8, %8\n\t"
-	"negs %%r9,  %9\n\t"
+	"LD %%r9, %9\n\t"
+			
 	"LD %%r10, %10\n\t"
-	"negs %%r11, %11\n\t"
+	"LD %%r11, %11\n\t"
+			
 	"LD %%r12, %12\n\t"
-	"negs %%r13, %13\n\t"
+	"LD %%r13, %13\n\t"
+			
 	"LD %%r14, %14\n\t"
-	"negs %%r15, %15"
+	"LD %%r15, %15\n\t"
+
+	"negs %%r1,  %%r1\n\t"
+	"negs %%r3,  %%r3\n\t"
+	"negs %%r5,  %%r5\n\t"
+	"negs %%r7,  %%r7\n\t"
+	"negs %%r9,  %%r9\n\t"
+	"negs %%r11, %%r11\n\t"
+	"negs %%r13, %%r13\n\t"
+	"negs %%r15, %%r15"
 	:
-	:"m"(*coef),"r"(*(coef+1)),"m"(*(coef+2)),"r"(*(coef+3)),"m"(*(coef+4)),"r"(*(coef+5)),"m"(*(coef+6)),"r"(*(coef+7)),"m"(*(coef+8)),"r"(*(coef+9)),"m"(*(coef+10)),"r"(*(coef+11)),"m"(*(coef+12)),
-	"r"(*(coef+13)),"m"(*(coef+14)),"r"(*(coef+15))
+	:"m"(*coef),"m"(*(coef+1)),"m"(*(coef+2)),"m"(*(coef+3)),"m"(*(coef+4)),"m"(*(coef+5)),"m"(*(coef+6)),"m"(*(coef+7)),"m"(*(coef+8)),"m"(*(coef+9)),"m"(*(coef+10)),"m"(*(coef+11)),"m"(*(coef+12)),
+	"m"(*(coef+13)),"m"(*(coef+14)),"m"(*(coef+15))
 	:"%r0","%r1","%r2","%r3","%r4","%r5","%r6","%r7","%r8","%r9","%r10","%r11","%r12","%r13","%r14","%r15","%r16","%r17","%r18"
 	);
 
@@ -406,7 +422,7 @@ Asm("LD %%r17, %0\n\t"
 }
 
 
-static __inline void MC1S(int * SL1,int * SR1,int * coef,int * vb1)
+static __inline void MC1S(int * SL1,int * SR1,const int * coef,int * vb1)
 {
 	/*
 		伪代码
@@ -552,7 +568,7 @@ Asm(
 		);
 }
 
-static __inline void MC2S(int* SL1,int* SR1,int* SL2,int* SR2,int* coef,int * vb1)
+static __inline void MC2S(int* SL1,int* SR1,int* SL2,int* SR2,const int* coef,int * vb1)
 {
 	/*伪代码
 	ld r0, *coef

@@ -264,7 +264,7 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 {
 	int i;
-	int *coef;
+	const int *coef;
 	int *vb1;
 	int vLo[8], vHi[8], c1[8], c2[8],n_c2[8];
 	// Word64 sum1L, sum2L, sum1R, sum2R, rndVal;
