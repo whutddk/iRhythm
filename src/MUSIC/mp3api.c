@@ -58,7 +58,7 @@ void play_mp3(int filelenth,uint8_t location)
 
 	/***Prepare to transfer by SPI DMA *****/
 	spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
-	spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(3000000));
+	spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(12000000));
 
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
 	if ( mp3_dec == NULL )
@@ -71,7 +71,6 @@ void play_mp3(int filelenth,uint8_t location)
 		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\n");
 	}
 
-	// fread(buf_read,1,NUM_BYTE_READ,fd);
 	memmove(dec_buff,file_ptr,NUM_BYTE_READ);
 	file_ptr += NUM_BYTE_READ;
 	file_left -= NUM_BYTE_READ;
@@ -79,7 +78,7 @@ void play_mp3(int filelenth,uint8_t location)
 	EMBARC_PRINTF("Start to Trace\r\n");
 	
 	flag_start = 0;
-	// flag_dma_finish = 1;
+
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
 
 	/*************Start to Decord MP3******************************/
@@ -180,7 +179,7 @@ void play_mp3(int filelenth,uint8_t location)
 			{
 				memmove(dec_buff,read_ptr,byte_left);
 
-							//num_read = fread(buf_read + byte_left,1,NUM_BYTE_READ - byte_left,fd);
+							
 				memmove(dec_buff + byte_left,file_ptr,NUM_BYTE_READ - byte_left);
 				file_ptr += NUM_BYTE_READ - byte_left;
 				file_left -= NUM_BYTE_READ - byte_left;
@@ -199,10 +198,9 @@ void play_mp3(int filelenth,uint8_t location)
 		{
 			if( flag_start == 0 )
 			{
-					//fread(buf_read,1,NUM_BYTE_READ,fd);
-						memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-						file_ptr += NUM_BYTE_READ;
-						file_left -= NUM_BYTE_READ;
+				memmove(dec_buff,file_ptr,NUM_BYTE_READ);
+				file_ptr += NUM_BYTE_READ;
+				file_left -= NUM_BYTE_READ;
 				if ( file_left <= 0 )
 				{
 					//这里可能越界，需要保护
