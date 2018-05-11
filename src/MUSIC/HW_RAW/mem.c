@@ -20,7 +20,7 @@ FIL fp;
 
 void readout_file(char* music_name)
 {
-	char filename[50] = "0:/";
+	char filename[50] = "0:/music/";
 	uint32_t num_read;
 	uint8_t *fbuff_p = file_buff;
 	uint32_t read_sum = 0;

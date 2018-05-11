@@ -30,7 +30,7 @@ static void playlist_init()
 
 /*open and checkout the directory*/
 	// DIR* dir = opendir("/fs");
-	error_num = f_opendir (&dir, "0:/");
+	error_num = f_opendir (&dir, "0:/music");
 	if ( error_num != FR_OK )
 	{
 		;
