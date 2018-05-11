@@ -145,7 +145,7 @@ void gui_task()
 				picture = 0;
 				break;
 		}
-	_Rtos_Delay(100);
+	//_Rtos_Delay(100);
 	}
 	 return ;
 }

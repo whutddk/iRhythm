@@ -134,7 +134,7 @@ int32_t Start_playing()
 	EMBARC_PRINTF("\r\nfile lenth = %d \r\n",file_lenth);
 
 	/**read out file to DDR2 from SD card ,if Net Buff is EMPTY**/
-
+vTaskSuspendAll();
 	if ( file_location == IN_FILE )
 	{
 		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(2000000));
@@ -146,6 +146,7 @@ int32_t Start_playing()
 	{
 		;
 	}
+xTaskResumeAll();
 	play_mp3(file_lenth,file_location);
 	EMBARC_PRINTF("\r\nplay complete!!!\r\n");
 	return 0;

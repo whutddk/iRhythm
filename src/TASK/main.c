@@ -49,9 +49,15 @@
 static TaskHandle_t MUSIC_task_handle = NULL;
 static TaskHandle_t GUI_task_handle = NULL;
 static TaskHandle_t NET_task_handle = NULL;
+static TaskHandle_t IDLE_task_handle = NULL;
 
 // Events
 EventGroupHandle_t evt1_cb;
+
+void idle_task()
+{
+	while(1);
+}
 
 
 /**
@@ -95,12 +101,18 @@ int main(void)
 	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create NET_task error\r\n");
 		return -1;
+	}    
+	if (xTaskCreate(gui_task, "gui_task", 256, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create GUI_task error\r\n");
+		return -1;
 	}
- //    if (xTaskCreate(gui_task, "gui_task", 256, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
-	//     != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-	// 	EMBARC_PRINTF("create GUI_task error\r\n");
-	// 	return -1;
-	// }
+	if (xTaskCreate(idle_task, "idle_task", 128, (void *)NULL, configMAX_PRIORITIES-4, &IDLE_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create IDLE_task error\r\n");
+		return -1;
+	}
+
 
 	//other task
 
