@@ -58,7 +58,7 @@ void play_mp3(int filelenth,uint8_t location)
 
 	/***Prepare to transfer by SPI DMA *****/
 	spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
-	spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(3000000));
+	spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(8000000));
 
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
 	if ( mp3_dec == NULL )

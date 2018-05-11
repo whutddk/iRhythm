@@ -137,7 +137,7 @@ int32_t Start_playing()
 
 	if ( file_location == IN_FILE )
 	{
-		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(1000000));
+		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(2000000));
 		// iosignal_ctrl(1,0);
 		readout_file(music_filename);
 		// iosignal_ctrl(0,0);	
