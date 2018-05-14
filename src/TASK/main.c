@@ -96,11 +96,11 @@ int main(void)
 		return -1;
 	}
 
-	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-2, &MUSIC_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create music_task error\r\n");
-		return -1;
-	}	
+	// if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-2, &MUSIC_task_handle)
+	//     != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+	// 	EMBARC_PRINTF("create music_task error\r\n");
+	// 	return -1;
+	// }	
 	// if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES-3, &NET_task_handle)
 	// 	!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 	// 	EMBARC_PRINTF("create NET_task error\r\n");

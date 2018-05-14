@@ -100,6 +100,12 @@ extern void net_init();
 extern int socket_request(unsigned char option);
 extern void download_mp3();
 
+
+/*********define in GUI.c************************/
+extern void gui_init();
+extern void reflash_screen();
+
+
 #endif
 
 
