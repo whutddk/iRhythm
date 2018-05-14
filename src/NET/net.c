@@ -464,7 +464,7 @@ void download_mp3()
     	if ( http_sum != bypass_cnt  )
     	{
     		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( net_time - net_time_pre ) );
+			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) * 1000 / 1024 / ( net_time - net_time_pre ) );
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
     	}
