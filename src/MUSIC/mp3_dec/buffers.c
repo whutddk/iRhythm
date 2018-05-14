@@ -50,6 +50,9 @@
 
 #include "coder.h"
 
+#define static_buffers
+
+
 #ifdef static_buffers
 MP3DecInfo  mp3DecInfo;     //  0x7f0 =  2032
 SubbandInfo sbi;            // 0x2204 =  8708
