@@ -62,7 +62,7 @@ extern void readout_file(char* music_name);
 
 /***********define in music.c ************/
 extern DEV_SPI_PTR spi;
-extern uint8_t *file_buff; 
+extern uint8_t file_buff[15*1024*1024]; 
 extern volatile uint8_t flag_dma_finish;
 
 extern void play_init();
