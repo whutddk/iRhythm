@@ -18,7 +18,7 @@
 
 uint8_t flag_netpoll = 0;				//Big Data Receive Flag
 uint8_t flag_netbuff = BUFF_EMPTY;		//Net Buff FULL Flag
-int8_t net_buff[15*1024*1024];							//10MB Net Buff
+int8_t net_buff[15*1024*1024];			//10MB Net Buff
 uint32_t bypass_cnt = 0;				//Big Data Receive Count
 
 char dllink[500] = { 0 };				//Store Song Download Url

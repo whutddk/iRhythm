@@ -86,27 +86,27 @@ int main(void)
 /*********init Songid List*****/
     filelist_init();
 /*******Init Esp8266 and Connect to Wifi***************/
-    net_init();
+    // net_init();
     spi_dma_prepare();
 /********************** Create Tasks**************************/
 
+	if (xTaskCreate(gui_task, "gui_task", 256, (void *)NULL, configMAX_PRIORITIES-1, &GUI_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create GUI_task error\r\n");
+		return -1;
+	}
 
-
-	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
+	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-2, &MUSIC_task_handle)
 	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create music_task error\r\n");
 		return -1;
 	}	
-	if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES-2, &NET_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create NET_task error\r\n");
-		return -1;
-	}    
-	// if (xTaskCreate(gui_task, "gui_task", 256, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
-	//     != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-	// 	EMBARC_PRINTF("create GUI_task error\r\n");
+	// if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES-3, &NET_task_handle)
+	// 	!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+	// 	EMBARC_PRINTF("create NET_task error\r\n");
 	// 	return -1;
 	// }
+
 	if (xTaskCreate(idle_task, "idle_task", 128, (void *)NULL, configMAX_PRIORITIES-4, &IDLE_task_handle)
 	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create IDLE_task error\r\n");
