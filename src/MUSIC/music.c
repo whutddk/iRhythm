@@ -8,7 +8,7 @@ DEV_SPI_PTR spi;
 
 FATFS fs_p;
 
-uint8_t file_buff[15 *1024*1024];			//10MB File Buff to Read out from SD Card
+int8_t file_buff[15 *1024*1024];			//10MB File Buff to Read out from SD Card
 
 /**********************
 **	Read out the Information of  file in SD Card and store in file list
@@ -53,8 +53,6 @@ static void playlist_init()
 
 	EMBARC_PRINTF("\r\nCloseing root directory. \r\n");
 	f_closedir(&dir);
-	// return_error(error);
-
 }
 
 /***********
@@ -65,7 +63,6 @@ static void playlist_init()
 void play_init()
 {
 	
-
 	spi =  spi_get_dev(DW_SPI_0_ID);
 	
 /**mount Fatfs**/

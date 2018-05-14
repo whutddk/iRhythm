@@ -31,7 +31,6 @@ void play_mp3(int32_t filelenth,uint8_t location)
 	int32_t byte_left = filelenth;
 
 	uint32_t res_dec;
-	uint8_t flag_start = 0;
 
 	MP3DecInfo *mp3_dec;
 
@@ -68,7 +67,6 @@ void play_mp3(int32_t filelenth,uint8_t location)
 
 	EMBARC_PRINTF("Start to Trace\r\n");
 	
-	flag_start = 0;
 
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
 
@@ -79,7 +77,6 @@ void play_mp3(int32_t filelenth,uint8_t location)
  
 		if ( offset >= 0 )
 		{
-
 			read_ptr += offset;         //data start point
 			byte_left -= offset;        //in buffer
 
@@ -158,15 +155,10 @@ void play_mp3(int32_t filelenth,uint8_t location)
 		}
 		else
 		{
-			if( flag_start == 0 )
-			{
-				continue;
-			}
-			else
-			{
-				EMBARC_PRINTF("Decorder Start and Complete!\n\r" );
-				break;
-			}
+/*****scan whole buff,no start is end **********/
+			EMBARC_PRINTF("Decorder Complete!\n\r" );
+			break;
+
 		}
 	}
 	/********Play Song in NET Buff,should Reset Flag*****************/
