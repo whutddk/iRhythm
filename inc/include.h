@@ -72,7 +72,7 @@ extern int32_t spi_writeraw(const void *data);
 extern int32_t Start_playing();
 
 /**************define in mp3api.c************/
-extern void play_mp3(int filelenth,uint8_t location);
+extern void play_mp3(int32_t filelenth,uint8_t location);
 
 /**************define in iosignal.c**********/
 

@@ -9,8 +9,6 @@
 
 #include "include.h"
 
- #define NUM_BYTE_READ 4096
-
 
 // volatile bool isFinished = true;
 volatile uint8_t flag_sw = 0; 					//Ping-pong Buff switching Flag
@@ -24,20 +22,16 @@ char buf_rec2[2304]={1};
 **  filelenth : BUFF length should be Decord
 **	loction :IF the Data in 10MB FILE BUFF or IN 10MB NET BUFF
 **/
-void play_mp3(int filelenth,uint8_t location)
+void play_mp3(int32_t filelenth,uint8_t location)
 {
-	uint32_t temp = 0;
-
 	int32_t offset;
 	uint8_t *read_ptr;
 	uint8_t *file_ptr;
 	
-	/*这里改文件大小*/
-	int file_left = filelenth;
-	int byte_left = file_left;
+	int32_t byte_left = filelenth;
 
 	uint32_t res_dec;
-	int flag_start = 0;
+	uint8_t flag_start = 0;
 
 	MP3DecInfo *mp3_dec;
 
@@ -71,10 +65,6 @@ void play_mp3(int filelenth,uint8_t location)
 	{
 		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\n");
 	}
-
-				// memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-				// file_ptr += NUM_BYTE_READ;
-				// file_left -= NUM_BYTE_READ;
 
 	EMBARC_PRINTF("Start to Trace\r\n");
 	
@@ -110,23 +100,13 @@ void play_mp3(int filelenth,uint8_t location)
 			iosignal_ctrl(0,0);
 			if (res_dec == ERR_MP3_NONE)
 			{
-				// EMBARC_PRINTF("MP3Decode Pass!\n\r");
-				// memcpy(raw_ptr,(uint8_t*)(buf_rec1),4608);
-				// raw_ptr += 4608;
+				;
 			}
 			else
 			{
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
-						read_ptr += 2;
-						byte_left -= 2;
-				// 		memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-				// 				file_ptr += NUM_BYTE_READ;
-				// 				file_left -= NUM_BYTE_READ;
-				// 		if ( file_left <= 0 )
-				// 		{
-				// 			//这里可能越界，需要保护
-				// 			break;
-				// 		}
+				read_ptr += 2;
+				byte_left -= 2;
 				continue;
 				
 			}
@@ -174,45 +154,17 @@ void play_mp3(int filelenth,uint8_t location)
 				spi_writeraw((uint8_t*)buf_rec2);
 		 		flag_sw = 0;
 		    }
-
-				    	/**************Read out data in 10MB buff to DCCM BUFF************/
-						// if (byte_left < NUM_BYTE_READ) 
-						// {
-						// 	memmove(dec_buff,read_ptr,byte_left);
-
-										
-						// 	memmove(dec_buff + byte_left,file_ptr,NUM_BYTE_READ - byte_left);
-						// 	file_ptr += NUM_BYTE_READ - byte_left;
-						// 	file_left -= NUM_BYTE_READ - byte_left;
-						// 	if ( file_left <= 0 )
-						// 	{
-						// 		//这里可能越界，需要保护
-						// 		break;
-						// 	}
-							
-						// 	byte_left = NUM_BYTE_READ;
-						// 	read_ptr = dec_buff;
-						// }
 			
 		}
 		else
 		{
 			if( flag_start == 0 )
 			{
-						// memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-						// file_ptr += NUM_BYTE_READ;
-						// file_left -= NUM_BYTE_READ;
-						// if ( file_left <= 0 )
-						// {
-						// 	//这里可能越界，需要保护
-						// 	EMBARC_PRINTF("decorder never start and file end!\n\r" );
-						// 	break;
-						// }
 				continue;
 			}
 			else
 			{
-				EMBARC_PRINTF("decorder start and complete!\n\r" );
+				EMBARC_PRINTF("Decorder Start and Complete!\n\r" );
 				break;
 			}
 		}
