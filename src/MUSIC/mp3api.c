@@ -18,8 +18,6 @@ volatile uint8_t flag_sw = 0; 					//Ping-pong Buff switching Flag
 char buf_rec1[2304]={1};						//Ping-pong Buff for DMA Transfer
 char buf_rec2[2304]={1};
 
-uint8_t dec_buff[NUM_BYTE_READ] = {1};			//Decord buff in DCCM,much Smaller,Read Data From 10MB File BUFF
-
 
 /***
 **	MP3 Decord Core Function 
@@ -31,12 +29,12 @@ void play_mp3(int filelenth,uint8_t location)
 	uint32_t temp = 0;
 
 	int32_t offset;
-	uint8_t *read_ptr = dec_buff;
+	uint8_t *read_ptr;
 	uint8_t *file_ptr;
 	
 	/*这里改文件大小*/
 	int file_left = filelenth;
-	int byte_left = NUM_BYTE_READ;
+	int byte_left = file_left;
 
 	uint32_t res_dec;
 	int flag_start = 0;
@@ -56,6 +54,9 @@ void play_mp3(int filelenth,uint8_t location)
 		file_ptr = net_buff;
 	}
 
+	read_ptr = file_ptr;
+
+
 	/***Prepare to transfer by SPI DMA *****/
 	spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
 	spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(12000000));
@@ -71,9 +72,9 @@ void play_mp3(int filelenth,uint8_t location)
 		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\n");
 	}
 
-	memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-	file_ptr += NUM_BYTE_READ;
-	file_left -= NUM_BYTE_READ;
+				// memmove(dec_buff,file_ptr,NUM_BYTE_READ);
+				// file_ptr += NUM_BYTE_READ;
+				// file_left -= NUM_BYTE_READ;
 
 	EMBARC_PRINTF("Start to Trace\r\n");
 	
@@ -116,16 +117,16 @@ void play_mp3(int filelenth,uint8_t location)
 			else
 			{
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
-				read_ptr += 2;
-				byte_left -= 2;
-						memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-								file_ptr += NUM_BYTE_READ;
-								file_left -= NUM_BYTE_READ;
-						if ( file_left <= 0 )
-						{
-							//这里可能越界，需要保护
-							break;
-						}
+						read_ptr += 2;
+						byte_left -= 2;
+				// 		memmove(dec_buff,file_ptr,NUM_BYTE_READ);
+				// 				file_ptr += NUM_BYTE_READ;
+				// 				file_left -= NUM_BYTE_READ;
+				// 		if ( file_left <= 0 )
+				// 		{
+				// 			//这里可能越界，需要保护
+				// 			break;
+				// 		}
 				continue;
 				
 			}
@@ -174,39 +175,39 @@ void play_mp3(int filelenth,uint8_t location)
 		 		flag_sw = 0;
 		    }
 
-	    	/**************Read out data in 10MB buff to DCCM BUFF************/
-			if (byte_left < NUM_BYTE_READ) 
-			{
-				memmove(dec_buff,read_ptr,byte_left);
+				    	/**************Read out data in 10MB buff to DCCM BUFF************/
+						// if (byte_left < NUM_BYTE_READ) 
+						// {
+						// 	memmove(dec_buff,read_ptr,byte_left);
 
+										
+						// 	memmove(dec_buff + byte_left,file_ptr,NUM_BYTE_READ - byte_left);
+						// 	file_ptr += NUM_BYTE_READ - byte_left;
+						// 	file_left -= NUM_BYTE_READ - byte_left;
+						// 	if ( file_left <= 0 )
+						// 	{
+						// 		//这里可能越界，需要保护
+						// 		break;
+						// 	}
 							
-				memmove(dec_buff + byte_left,file_ptr,NUM_BYTE_READ - byte_left);
-				file_ptr += NUM_BYTE_READ - byte_left;
-				file_left -= NUM_BYTE_READ - byte_left;
-				if ( file_left <= 0 )
-				{
-					//这里可能越界，需要保护
-					break;
-				}
-				
-				byte_left = NUM_BYTE_READ;
-				read_ptr = dec_buff;
-			}
+						// 	byte_left = NUM_BYTE_READ;
+						// 	read_ptr = dec_buff;
+						// }
 			
 		}
 		else
 		{
 			if( flag_start == 0 )
 			{
-				memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-				file_ptr += NUM_BYTE_READ;
-				file_left -= NUM_BYTE_READ;
-				if ( file_left <= 0 )
-				{
-					//这里可能越界，需要保护
-					EMBARC_PRINTF("decorder never start and file end!\n\r" );
-					break;
-				}
+						// memmove(dec_buff,file_ptr,NUM_BYTE_READ);
+						// file_ptr += NUM_BYTE_READ;
+						// file_left -= NUM_BYTE_READ;
+						// if ( file_left <= 0 )
+						// {
+						// 	//这里可能越界，需要保护
+						// 	EMBARC_PRINTF("decorder never start and file end!\n\r" );
+						// 	break;
+						// }
 				continue;
 			}
 			else
