@@ -49,9 +49,15 @@
 static TaskHandle_t MUSIC_task_handle = NULL;
 static TaskHandle_t GUI_task_handle = NULL;
 static TaskHandle_t NET_task_handle = NULL;
+static TaskHandle_t IDLE_task_handle = NULL;
 
 // Events
 EventGroupHandle_t evt1_cb;
+
+void idle_task()
+{
+	while(1);
+}
 
 
 /**
@@ -63,33 +69,50 @@ int32_t error_num = 0;
 
 int main(void)
 {
-	board_init();
-	
+	// board_init();
+	io_mux_init();
+	emsk_gpio_init();
+
 	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
 	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
 
 	vTaskSuspendAll();
 
+/**********MP3 Decord Assist IO Init***************************/
 	iosignal_init();
 
+/********IO reset ESP8266************************/
+	net_rst();
+/*********init Songid List*****/
+    filelist_init();
+/*******Init Esp8266 and Connect to Wifi***************/
+    // net_init();
+    spi_dma_prepare();
+/********************** Create Tasks**************************/
 
-// Create Tasks
 
-	// if (xTaskCreate(music_task, "music_task", 128, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
+
+	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-1, &MUSIC_task_handle)
+	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+		EMBARC_PRINTF("create music_task error\r\n");
+		return -1;
+	}	
+	// if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES-2, &NET_task_handle)
 	//     != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-	// 	EMBARC_PRINTF("create music_task error\r\n");
+	// 	EMBARC_PRINTF("create NET_task error\r\n");
 	// 	return -1;
-	// }	
-	if (xTaskCreate(net_task, "net_task", 128, (void *)NULL, configMAX_PRIORITIES-2, &NET_task_handle)
+	// }    
+	// if (xTaskCreate(gui_task, "gui_task", 256, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
+	//     != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+	// 	EMBARC_PRINTF("create GUI_task error\r\n");
+	// 	return -1;
+	// }
+	if (xTaskCreate(idle_task, "idle_task", 128, (void *)NULL, configMAX_PRIORITIES-4, &IDLE_task_handle)
 	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create NET_task error\r\n");
+		EMBARC_PRINTF("create IDLE_task error\r\n");
 		return -1;
 	}
-	if (xTaskCreate(gui_task, "gui_task", 128, (void *)NULL, configMAX_PRIORITIES-3, &GUI_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create GUI_task error\r\n");
-		return -1;
-	}
+
 
 	//other task
 

@@ -11,11 +11,16 @@
 
 FIL fp;
 
-uint8_t buf_read[NUM_BYTE_READ];
+// uint8_t buf_read[NUM_BYTE_READ];
+
+/***
+*** Read out File Form SD Card to DDR2 10MB buff
+**
+**/
 
 void readout_file(char* music_name)
 {
-	char filename[50] = "0:/";
+	char filename[50] = "0:/music/";
 	uint32_t num_read;
 	uint8_t *fbuff_p = file_buff;
 	uint32_t read_sum = 0;

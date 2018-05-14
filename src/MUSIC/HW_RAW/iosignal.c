@@ -11,16 +11,17 @@ static DEV_GPIO *io_signal;
 
 void empty_isr()
 {
-	// BaseType_t xHigherPriorityTaskWoken = pdFALSE;;
-	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;;
+	
 
 	/*******No a Suggestion Used Here**************************/
-	xEventGroupSetBits( evt1_cb, BIT_1 );
+	// xEventGroupSetBits( evt1_cb, BIT_1 );
 
-	// xEventGroupSetBitsFromISR(
-	// 	evt1_cb,	// The event group being updated.
-	// 	BIT_1,   // The bits being set.
-	// 	&xHigherPriorityTaskWoken );
+	xEventGroupSetBitsFromISR(
+		evt1_cb,	// The event group being updated.
+		BIT_1,   // The bits being set.
+		&xHigherPriorityTaskWoken );
+	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
 }
 
 
@@ -47,9 +48,9 @@ void iosignal_init()
 
 		/*************Interrupt enable********************/
 		io_signal->gpio_control(GPIO_CMD_DIS_BIT_INT, (void *)(BOARD_SIGNIN_MASK));
-		io_signal->gpio_control(GPIO_CMD_SET_BIT_ISR, (void *)(&gpio_bit_isr));
-		io_signal->gpio_control(GPIO_CMD_SET_BIT_INT_CFG, (void *)(&gpio_int_cfg));
-		io_signal->gpio_control(GPIO_CMD_ENA_BIT_INT, (void *)(BOARD_SIGNIN_MASK));
+		// io_signal->gpio_control(GPIO_CMD_SET_BIT_ISR, (void *)(&gpio_bit_isr));
+		// io_signal->gpio_control(GPIO_CMD_SET_BIT_INT_CFG, (void *)(&gpio_int_cfg));
+		// io_signal->gpio_control(GPIO_CMD_ENA_BIT_INT, (void *)(BOARD_SIGNIN_MASK));
 	}
 
 	iosignal_ctrl(0,0);
@@ -118,8 +119,13 @@ uint8_t iosignal_read(uint8_t num)
 
 void net_rst()
 {
-		/***************RST = 0;*****************/
+	uint32_t cur_time;
+	/***************RST = 0;*****************/
 	io_signal->gpio_write(0x00000000, 0x00000100);
+
+	// _Rtos_Delay(100);
+	cur_time = OSP_GET_CUR_MS();
+	while((OSP_GET_CUR_MS()-cur_time) < 1000);
 
 	/***************RST = 1;*****************/
 	io_signal->gpio_write(0x00000100, 0x00000100);
