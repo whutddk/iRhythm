@@ -18,7 +18,7 @@
 
 uint8_t flag_netpoll = 0;				//Big Data Receive Flag
 uint8_t flag_netbuff = BUFF_EMPTY;		//Net Buff FULL Flag
-char *net_buff;							//10MB Net Buff
+int8_t net_buff[15*1024*1024];							//10MB Net Buff
 uint32_t bypass_cnt = 0;				//Big Data Receive Count
 
 char dllink[500] = { 0 };				//Store Song Download Url
@@ -168,85 +168,7 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
-/***
-** 302 Redirect dure to hust school Network Mirror
-**	do not need to use anymore
-**/
 
-
-// static int get_302(char *buff)
-// {
-// 	char *string_p1; 
-// 	char *string_p2 ;
-
-// 	string_p1 = strstr(buff,"http://");
-// 	if ( string_p1 == NULL )
-// 	{
-// 		EMBARC_PRINTF("No http\r\n");
-// 		while(1);
-// 		return -1;
-// 	}
-// 	string_p2 = strstr(string_p1,"\r\n");
-// 	if ( string_p1 == NULL )
-// 	{
-// 		EMBARC_PRINTF("No rn\r\n");
-// 		while(1);
-// 		return -1;
-// 	}
-// 	memset(dllink,0,sizeof(char) * 500);
-// 	strncpy(dllink,string_p1,(uint8_t)(string_p2 - string_p1));
-// 	return 0;
-// }
-// static uint32_t fix_netbuff(char *net_buff,uint32_t length)
-// {
-// 	char *buff_p1;
-// 	char *buff_p2;
-
-// 	uint32_t i = 0;
-// 	uint8_t j = 0;
-// 	uint32_t len = length;
-
-// 	for ( i = 0;i < len; i++ )
-// 	{
-// 		if ( ( *(net_buff + i ) == '+' ) 
-// 			&& ( *(net_buff + i + 1 ) == 'I' )
-// 			&& ( *(net_buff + i + 2 ) == 'P' )
-// 			&& ( *(net_buff + i + 3 ) == 'D' ) )
-// 		{
-// 		/*********Record Start Point***************/
-// 			buff_p1 = net_buff + i;	
-
-// 			j = 4;
-
-// 			/*****Just a Protection*************/
-// 			while( ( i+j ) < len )
-// 			{
-// 				***':' only one****
-// 				if ( *(net_buff + i + j ) != ':' )
-// 				{
-// 					j++;
-// 				}
-// 				/*************(net_buff + i + j ) == ':'**********************/
-// 				else
-// 				{
-// 					/*****next char***********/
-// 					j++;
-// 					buff_p2 = net_buff + i + j;
-
-// 					/***********i is correct length***********************/
-// 					memmove(buff_p1 ,buff_p2,len - i - j);
-// 					/***********j is cut lenth******************************/
-// 					len -= j;
-// 					EMBARC_PRINTF("\r\ncut %d \r\n",j);
-// 					break;
-// 				}
-// 			}
-
-// 		}
-// 	}
-
-// 	return len;
-// }
 /**
 **	 Init ESP8266 and Malloc 10MB net buff and Connect to WIfi
 **
@@ -256,17 +178,9 @@ void net_init()
 {
 	EMBARC_PRINTF("============================ Init ============================\n");
 	
-	net_buff = malloc(sizeof(char) * 10 * 1024 * 1024);
-	if ( net_buff == NULL )
-	{
-		EMBARC_PRINTF("Malloc Net Buff Fail!\r\nstop!\r\n");
-		while(1);
-	}
-	else
-	{
-		memset( net_buff, 0, sizeof(char) * 10 * 1024 * 1024 );
-		EMBARC_PRINTF("Malloc Net Buff Pass!\r\n");
-	}
+	
+	memset( net_buff, 0, sizeof(int8_t) * 15 * 1024 * 1024 );
+
 
 
     esp8266_init(ESP8266_A, UART_BAUDRATE_230400);
@@ -321,7 +235,7 @@ int socket_request(unsigned char option)
 
     http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
+	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
 
     EMBARC_PRINTF("============================ create http command ============================\r\n");
     switch (option)
@@ -416,12 +330,14 @@ void download_mp3()
 	char *http_cmd;
 	uint8_t timeout_cnt = 0;
 
+	uint32_t net_time = 0;
+	uint32_t net_time_pre = 0;
 	
 
 
 	DEV_BUFFER Rxintbuf;
 
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 10 * 1024 * 1024);
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 15 * 1024 * 1024);
 	uart_obj = uart_get_dev(ESP8266_UART_ID);
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
@@ -429,7 +345,7 @@ void download_mp3()
 
     http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
+	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
 
     strcat (http_cmd,"GET ");
     strcat (http_cmd,dllink);
@@ -450,31 +366,41 @@ void download_mp3()
 
     free(http_cmd);
 
-	// while(1)
-	// {
-		_Rtos_Delay(4 * 60000);
+	net_time_pre = xTaskGetTickCount ();
+	while(1)
+	{
+		_Rtos_Delay(1000);
 
+		net_time = xTaskGetTickCount ();
 
+		bypass_cnt = uart_obj -> uart_info.rx_buf.ofs;//read the buff offset has received
 		
-   //  	if ( http_sum != bypass_cnt  )
-   //  	{
-   //  		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			// EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
-			// http_sum = bypass_cnt;
-			// timeout_cnt = 0;
-   //  	}
-   //  	else
-   //  	{
-   //  		timeout_cnt ++;
-   //  		EMBARC_PRINTF("\r\nTime out\r\n");
-   //  		if ( timeout_cnt > 3 )
-   //  		{
+    	if ( http_sum != bypass_cnt  )
+    	{
+    		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
+			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) * 1000 / 1024 / ( net_time - net_time_pre ) );
+			http_sum = bypass_cnt;
+			timeout_cnt = 0;
+
+			if ( http_sum > 14*1024*1024 )//protect
+			{
+				EMBARC_PRINTF("received More than 14MB! Break！\r\n");
+				break;
+			}
+    	}
+    	else
+    	{
+    		timeout_cnt ++;
+    		EMBARC_PRINTF("\r\nTime out\r\n");
+    		if ( timeout_cnt > 3 )
+    		{
 				EMBARC_PRINTF("\r\nreceive end , %d B\r\n",bypass_cnt  );
 				EMBARC_PRINTF("\r\n%s \r\n",net_buff);
-	    // 		break;
-    	// 	}
-    	// }
-	// }
+	    		break;
+    		}
+    	}
+    	net_time_pre = net_time;
+	}
 
 	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
 	esp8266_passthr_end(ESP8266_A);
@@ -482,12 +408,19 @@ void download_mp3()
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 	END_REC();
 
-	http_sum = 10*1024*1024;
+	
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
 	_Rtos_Delay(100);
-	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
-	flag_netbuff = BUFF_FULL;
 
+	if ( http_sum >1024 )
+	{
+		filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
+		flag_netbuff = BUFF_FULL;
+	}
+	else
+	{ 
+		EMBARC_PRINTF("Receive Fail!\r\n");
+	}
 	EMBARC_PRINTF("Socket Close.\r\n");
 
 	/**********Connect will Close Automatic*********************/

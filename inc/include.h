@@ -62,7 +62,7 @@ extern void readout_file(char* music_name);
 
 /***********define in music.c ************/
 extern DEV_SPI_PTR spi;
-extern uint8_t *file_buff; 
+extern int8_t file_buff[15*1024*1024]; 
 extern volatile uint8_t flag_dma_finish;
 
 extern void play_init();
@@ -72,7 +72,7 @@ extern int32_t spi_writeraw(const void *data);
 extern int32_t Start_playing();
 
 /**************define in mp3api.c************/
-extern void play_mp3(int filelenth,uint8_t location);
+extern void play_mp3(int32_t filelenth,uint8_t location);
 
 /**************define in iosignal.c**********/
 
@@ -93,7 +93,7 @@ uint8_t flag_netbuff;
 extern char dllink[500];
 extern char songpoint[50];
 extern uint8_t flag_netpoll ;
-extern char *net_buff;
+extern int8_t net_buff[15*1024*1024];
 extern uint32_t bypass_cnt;
 extern ESP8266_DEF_PTR ESP8266_A;
 extern void net_init();

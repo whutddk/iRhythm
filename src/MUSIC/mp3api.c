@@ -9,8 +9,6 @@
 
 #include "include.h"
 
- #define NUM_BYTE_READ 4096
-
 
 // volatile bool isFinished = true;
 volatile uint8_t flag_sw = 0; 					//Ping-pong Buff switching Flag
@@ -18,28 +16,21 @@ volatile uint8_t flag_sw = 0; 					//Ping-pong Buff switching Flag
 char buf_rec1[2304]={1};						//Ping-pong Buff for DMA Transfer
 char buf_rec2[2304]={1};
 
-uint8_t dec_buff[NUM_BYTE_READ] = {1};			//Decord buff in DCCM,much Smaller,Read Data From 10MB File BUFF
-
 
 /***
 **	MP3 Decord Core Function 
 **  filelenth : BUFF length should be Decord
 **	loction :IF the Data in 10MB FILE BUFF or IN 10MB NET BUFF
 **/
-void play_mp3(int filelenth,uint8_t location)
+void play_mp3(int32_t filelenth,uint8_t location)
 {
-	uint32_t temp = 0;
-
 	int32_t offset;
-	uint8_t *read_ptr = dec_buff;
+	uint8_t *read_ptr;
 	uint8_t *file_ptr;
 	
-	/*这里改文件大小*/
-	int file_left = filelenth;
-	int byte_left = NUM_BYTE_READ;
+	int32_t byte_left = filelenth;
 
 	uint32_t res_dec;
-	int flag_start = 0;
 
 	MP3DecInfo *mp3_dec;
 
@@ -56,6 +47,9 @@ void play_mp3(int filelenth,uint8_t location)
 		file_ptr = net_buff;
 	}
 
+	read_ptr = file_ptr;
+
+
 	/***Prepare to transfer by SPI DMA *****/
 	spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
 	spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(12000000));
@@ -71,13 +65,8 @@ void play_mp3(int filelenth,uint8_t location)
 		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\n");
 	}
 
-	memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-	file_ptr += NUM_BYTE_READ;
-	file_left -= NUM_BYTE_READ;
-
 	EMBARC_PRINTF("Start to Trace\r\n");
 	
-	flag_start = 0;
 
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
 
@@ -88,7 +77,6 @@ void play_mp3(int filelenth,uint8_t location)
  
 		if ( offset >= 0 )
 		{
-
 			read_ptr += offset;         //data start point
 			byte_left -= offset;        //in buffer
 
@@ -109,23 +97,13 @@ void play_mp3(int filelenth,uint8_t location)
 			iosignal_ctrl(0,0);
 			if (res_dec == ERR_MP3_NONE)
 			{
-				// EMBARC_PRINTF("MP3Decode Pass!\n\r");
-				// memcpy(raw_ptr,(uint8_t*)(buf_rec1),4608);
-				// raw_ptr += 4608;
+				;
 			}
 			else
 			{
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
 				read_ptr += 2;
 				byte_left -= 2;
-						memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-								file_ptr += NUM_BYTE_READ;
-								file_left -= NUM_BYTE_READ;
-						if ( file_left <= 0 )
-						{
-							//这里可能越界，需要保护
-							break;
-						}
 				continue;
 				
 			}
@@ -173,47 +151,14 @@ void play_mp3(int filelenth,uint8_t location)
 				spi_writeraw((uint8_t*)buf_rec2);
 		 		flag_sw = 0;
 		    }
-
-	    	/**************Read out data in 10MB buff to DCCM BUFF************/
-			if (byte_left < NUM_BYTE_READ) 
-			{
-				memmove(dec_buff,read_ptr,byte_left);
-
-							
-				memmove(dec_buff + byte_left,file_ptr,NUM_BYTE_READ - byte_left);
-				file_ptr += NUM_BYTE_READ - byte_left;
-				file_left -= NUM_BYTE_READ - byte_left;
-				if ( file_left <= 0 )
-				{
-					//这里可能越界，需要保护
-					break;
-				}
-				
-				byte_left = NUM_BYTE_READ;
-				read_ptr = dec_buff;
-			}
 			
 		}
 		else
 		{
-			if( flag_start == 0 )
-			{
-				memmove(dec_buff,file_ptr,NUM_BYTE_READ);
-				file_ptr += NUM_BYTE_READ;
-				file_left -= NUM_BYTE_READ;
-				if ( file_left <= 0 )
-				{
-					//这里可能越界，需要保护
-					EMBARC_PRINTF("decorder never start and file end!\n\r" );
-					break;
-				}
-				continue;
-			}
-			else
-			{
-				EMBARC_PRINTF("decorder start and complete!\n\r" );
-				break;
-			}
+/*****scan whole buff,no start is end **********/
+			EMBARC_PRINTF("Decorder Complete!\n\r" );
+			break;
+
 		}
 	}
 	/********Play Song in NET Buff,should Reset Flag*****************/
