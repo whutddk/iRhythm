@@ -59,6 +59,10 @@ void reflash_screen()
 		u8g_prepare();
 		// u8g_ascii_1();
 		u8g_DrawStr(&_u8g, 0, 0, "net_speed:");
+		u8g_DrawStr(&_u8g, 0, 10, "dec_time:");
+		u8g_DrawStr(&_u8g, 0, 20, "main_cycle:");
+		u8g_DrawStr(&_u8g, 0, 30, "SONG:");
+		u8g_DrawStr(&_u8g, 64, 30, "NEXT SONG:");
 	} 
 	while( u8g_NextPage(&_u8g) );
 
