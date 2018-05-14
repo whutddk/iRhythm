@@ -450,31 +450,31 @@ void download_mp3()
 
     free(http_cmd);
 
-	// while(1)
-	// {
-		_Rtos_Delay(4 * 60000);
+while(1)
+{
+		_Rtos_Delay(1000);
 
-
+		bypass_cnt = uart_obj -> uart_info.rx_buf.ofs;
 		
-   //  	if ( http_sum != bypass_cnt  )
-   //  	{
-   //  		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			// EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
-			// http_sum = bypass_cnt;
-			// timeout_cnt = 0;
-   //  	}
-   //  	else
-   //  	{
-   //  		timeout_cnt ++;
-   //  		EMBARC_PRINTF("\r\nTime out\r\n");
-   //  		if ( timeout_cnt > 3 )
-   //  		{
+    	if ( http_sum != bypass_cnt  )
+    	{
+    		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
+			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
+			http_sum = bypass_cnt;
+			timeout_cnt = 0;
+    	}
+    	else
+    	{
+    		timeout_cnt ++;
+    		EMBARC_PRINTF("\r\nTime out\r\n");
+    		if ( timeout_cnt > 3 )
+    		{
 				EMBARC_PRINTF("\r\nreceive end , %d B\r\n",bypass_cnt  );
 				EMBARC_PRINTF("\r\n%s \r\n",net_buff);
-	    // 		break;
-    	// 	}
-    	// }
-	// }
+	    		break;
+    		}
+    	}
+}
 
 	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
 	esp8266_passthr_end(ESP8266_A);
