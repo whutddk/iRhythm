@@ -2,6 +2,8 @@
 #include "embARC_debug.h"
 #include "u8g.h"
 
+#include "include.h"
+
 u8g_t u8g;
 char *song[10]={"Attention","Baby","burning","Calibaby","Cool","Cry","Faded","Giants","I Got You"};
 char *menu[2]={"Song List","Volume"};
@@ -21,13 +23,12 @@ uint32_t mask = 0x7;
 
 void drawsonglist(int y2,int song_cntlist){
 	u8g_FirstPage(&u8g);
-		do{
-			 u8g_DrawStr(&u8g,0, 20, song[song_cntlist]);
-			 u8g_DrawStr(&u8g,0, 40, song[song_cntlist+1]);
-			 u8g_DrawStr(&u8g,0, 60, song[song_cntlist+2]);
-			 u8g_DrawFrame(&u8g,0,y2,120,22);
-			}while(u8g_NextPage(&u8g));
-		 board_delay_ms(100, 1);
+	do{
+		u8g_DrawStr(&u8g,0, 20, song[song_cntlist]);
+		u8g_DrawStr(&u8g,0, 40, song[song_cntlist+1]);
+		u8g_DrawStr(&u8g,0, 60, song[song_cntlist+2]);
+		u8g_DrawFrame(&u8g,0,y2,120,22);
+		}while(u8g_NextPage(&u8g));
  }
 
 void drawSonglist(){
@@ -68,7 +69,7 @@ void drawMenu(){
 	else
 		ym = 22;  
 	drawmenu(ym);
-		board_delay_ms(100, 1);
+		//board_delay_ms(100, 1);
 }
 
 void drawVolume(){
@@ -83,7 +84,7 @@ void drawVolume(){
 		u8g_DrawBox(&u8g,0,22,vl,22);
 		u8g_DrawStr(&u8g,0,20,"Vol");
 		}while(u8g_NextPage(&u8g));
-	board_delay_ms(100, 1);
+	//board_delay_ms(100, 1);
  }
 
 void drawPlay(){
@@ -105,15 +106,15 @@ void drawPlay(){
 			u8g_DrawLine(&u8g,71,27,71,37); 
 			u8g_DrawStr(&u8g,playx, 20, song[song_cnt]);
 			}while(u8g_NextPage(&u8g));
-			 board_delay_ms(100, 1);
+			 //board_delay_ms(100, 1);
 }
 
-int gui_task()
+void gui_task()
 {		
 	u8g_InitComFn(&u8g, &u8g_dev_ssd1306_128x64_2x_i2c, U8G_COM_SSD_I2C);
 	u8g_Begin(&u8g);
-	while(1){
-		u8g_SetFont(&u8g, u8g_font_osb18);
+	u8g_SetFont(&u8g, u8g_font_osb18);
+	while(1){		
 		switch(picture){
 			case 0:
 			drawMenu();
@@ -144,7 +145,7 @@ int gui_task()
 				picture = 0;
 				break;
 		}
-									
+	//_Rtos_Delay(100);
 	}
-	 return E_SYS;
+	 return ;
 }
