@@ -168,85 +168,7 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
-/***
-** 302 Redirect dure to hust school Network Mirror
-**	do not need to use anymore
-**/
 
-
-// static int get_302(char *buff)
-// {
-// 	char *string_p1; 
-// 	char *string_p2 ;
-
-// 	string_p1 = strstr(buff,"http://");
-// 	if ( string_p1 == NULL )
-// 	{
-// 		EMBARC_PRINTF("No http\r\n");
-// 		while(1);
-// 		return -1;
-// 	}
-// 	string_p2 = strstr(string_p1,"\r\n");
-// 	if ( string_p1 == NULL )
-// 	{
-// 		EMBARC_PRINTF("No rn\r\n");
-// 		while(1);
-// 		return -1;
-// 	}
-// 	memset(dllink,0,sizeof(char) * 500);
-// 	strncpy(dllink,string_p1,(uint8_t)(string_p2 - string_p1));
-// 	return 0;
-// }
-// static uint32_t fix_netbuff(char *net_buff,uint32_t length)
-// {
-// 	char *buff_p1;
-// 	char *buff_p2;
-
-// 	uint32_t i = 0;
-// 	uint8_t j = 0;
-// 	uint32_t len = length;
-
-// 	for ( i = 0;i < len; i++ )
-// 	{
-// 		if ( ( *(net_buff + i ) == '+' ) 
-// 			&& ( *(net_buff + i + 1 ) == 'I' )
-// 			&& ( *(net_buff + i + 2 ) == 'P' )
-// 			&& ( *(net_buff + i + 3 ) == 'D' ) )
-// 		{
-// 		/*********Record Start Point***************/
-// 			buff_p1 = net_buff + i;	
-
-// 			j = 4;
-
-// 			/*****Just a Protection*************/
-// 			while( ( i+j ) < len )
-// 			{
-// 				***':' only one****
-// 				if ( *(net_buff + i + j ) != ':' )
-// 				{
-// 					j++;
-// 				}
-// 				/*************(net_buff + i + j ) == ':'**********************/
-// 				else
-// 				{
-// 					/*****next char***********/
-// 					j++;
-// 					buff_p2 = net_buff + i + j;
-
-// 					/***********i is correct length***********************/
-// 					memmove(buff_p1 ,buff_p2,len - i - j);
-// 					/***********j is cut lenth******************************/
-// 					len -= j;
-// 					EMBARC_PRINTF("\r\ncut %d \r\n",j);
-// 					break;
-// 				}
-// 			}
-
-// 		}
-// 	}
-
-// 	return len;
-// }
 /**
 **	 Init ESP8266 and Malloc 10MB net buff and Connect to WIfi
 **
@@ -488,12 +410,19 @@ void download_mp3()
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
 	END_REC();
 
-	http_sum = 10*1024*1024;
+	
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
 	_Rtos_Delay(100);
-	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
-	flag_netbuff = BUFF_FULL;
 
+	if ( http_sum >1024 )
+	{
+		filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
+		flag_netbuff = BUFF_FULL;
+	}
+	else
+	{ 
+		EMBARC_PRINTF("Receive Fail!\r\n");
+	}
 	EMBARC_PRINTF("Socket Close.\r\n");
 
 	/**********Connect will Close Automatic*********************/
