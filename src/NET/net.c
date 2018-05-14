@@ -18,7 +18,7 @@
 
 uint8_t flag_netpoll = 0;				//Big Data Receive Flag
 uint8_t flag_netbuff = BUFF_EMPTY;		//Net Buff FULL Flag
-char *net_buff;							//10MB Net Buff
+int8_t net_buff[15*1024*1024];							//10MB Net Buff
 uint32_t bypass_cnt = 0;				//Big Data Receive Count
 
 char dllink[500] = { 0 };				//Store Song Download Url
@@ -178,17 +178,9 @@ void net_init()
 {
 	EMBARC_PRINTF("============================ Init ============================\n");
 	
-	net_buff = malloc(sizeof(char) * 10 * 1024 * 1024);
-	if ( net_buff == NULL )
-	{
-		EMBARC_PRINTF("Malloc Net Buff Fail!\r\nstop!\r\n");
-		while(1);
-	}
-	else
-	{
-		memset( net_buff, 0, sizeof(char) * 10 * 1024 * 1024 );
-		EMBARC_PRINTF("Malloc Net Buff Pass!\r\n");
-	}
+	
+	memset( net_buff, 0, sizeof(int8_t) * 15 * 1024 * 1024 );
+
 
 
     esp8266_init(ESP8266_A, UART_BAUDRATE_230400);
@@ -243,7 +235,7 @@ int socket_request(unsigned char option)
 
     http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
+	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
 
     EMBARC_PRINTF("============================ create http command ============================\r\n");
     switch (option)
@@ -345,7 +337,7 @@ void download_mp3()
 
 	DEV_BUFFER Rxintbuf;
 
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 10 * 1024 * 1024);
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 15 * 1024 * 1024);
 	uart_obj = uart_get_dev(ESP8266_UART_ID);
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
@@ -353,7 +345,7 @@ void download_mp3()
 
     http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
+	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
 
     strcat (http_cmd,"GET ");
     strcat (http_cmd,dllink);
@@ -389,6 +381,12 @@ void download_mp3()
 			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) * 1000 / 1024 / ( net_time - net_time_pre ) );
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
+
+			if ( http_sum > 14*1024*1024 )//protect
+			{
+				EMBARC_PRINTF("received More than 14MB! Break！\r\n");
+				break;
+			}
     	}
     	else
     	{

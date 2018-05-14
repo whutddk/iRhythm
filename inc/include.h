@@ -93,7 +93,7 @@ uint8_t flag_netbuff;
 extern char dllink[500];
 extern char songpoint[50];
 extern uint8_t flag_netpoll ;
-extern char *net_buff;
+extern int8_t net_buff[15*1024*1024];
 extern uint32_t bypass_cnt;
 extern ESP8266_DEF_PTR ESP8266_A;
 extern void net_init();
