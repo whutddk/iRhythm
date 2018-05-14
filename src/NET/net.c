@@ -416,6 +416,8 @@ void download_mp3()
 	char *http_cmd;
 	uint8_t timeout_cnt = 0;
 
+	uint32_t net_time = 0;
+	uint32_t net_time_pre = 0;
 	
 
 
@@ -450,16 +452,19 @@ void download_mp3()
 
     free(http_cmd);
 
-while(1)
-{
+	net_time_pre = xTaskGetTickCount ();
+	while(1)
+	{
 		_Rtos_Delay(1000);
 
-		bypass_cnt = uart_obj -> uart_info.rx_buf.ofs;
+		net_time = xTaskGetTickCount ();
+
+		bypass_cnt = uart_obj -> uart_info.rx_buf.ofs;//read the buff offset has received
 		
     	if ( http_sum != bypass_cnt  )
     	{
     		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
+			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( net_time - net_time_pre ) );
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
     	}
@@ -474,7 +479,8 @@ while(1)
 	    		break;
     		}
     	}
-}
+    	net_time_pre = net_time;
+	}
 
 	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
 	esp8266_passthr_end(ESP8266_A);
