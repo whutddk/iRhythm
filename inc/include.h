@@ -125,6 +125,14 @@ extern struct _gui_info gui_info;
 extern void gui_init();
 extern void reflash_screen();
 
+/********define in perform.c*******************/
+extern uint32_t cost_cyc;
+
+
+extern void perf_init(uint32_t id);
+extern void perf_start(void);
+extern uint32_t perf_end(void);
+
 
 #endif
 

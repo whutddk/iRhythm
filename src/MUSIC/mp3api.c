@@ -71,6 +71,7 @@ void play_mp3(int32_t filelenth,uint8_t location)
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
 
 	/*************Start to Decord MP3******************************/
+	perf_start();
 	while(1)
 	{
 		offset = MP3FindSyncWord(read_ptr, byte_left);
@@ -82,6 +83,7 @@ void play_mp3(int32_t filelenth,uint8_t location)
 
 
 			// iosignal_ctrl(1,0);
+			//perf_start();
 			if ( flag_sw == 0 )
 			{
 				
@@ -94,10 +96,11 @@ void play_mp3(int32_t filelenth,uint8_t location)
 				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec2, 0);
 				
 			}
+			//cost_cyc = perf_end();
 			iosignal_ctrl(0,0);
 			if (res_dec == ERR_MP3_NONE)
 			{
-				;
+				//EMBARC_PRINTF("MP3Decode Time :%dus!\n\r",cost_cyc/25);
 			}
 			else
 			{

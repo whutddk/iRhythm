@@ -4,11 +4,11 @@
 #include "include.h"
 
 uint32_t cost_cyc;
-static volatile unsigned int start = 0;
-static unsigned int perf_id = 0xFF;
+static volatile uint32_t start = 0;
+static uint32_t perf_id = 0xFF;
 
 /** performance timer initialization */
-void perf_init(unsigned int id)
+void perf_init(uint32_t id)
 {
 	if (timer_start(id, TIMER_CTRL_NH, 0xFFFFFFFF) < 0) {
 		EMBARC_PRINTF("perf timer init failed\r\n");
@@ -26,9 +26,9 @@ void perf_start(void)
 }
 
 /** performance timer end, and return the time passed */
-unsigned int perf_end(void)
+uint32_t perf_end(void)
 {
-	unsigned int end = 0;
+	uint32_t end = 0;
 
 	if (timer_current(perf_id, (void *)(&end)) < 0) {
 		return 0;
