@@ -13,7 +13,7 @@ struct _gui_info gui_info;
 
 
 static void u8g_prepare(void) {
-	u8g_SetFont(&_u8g, u8g_font_8x13);		/* set the current font and reset the font reference position to "Baseline" */
+	u8g_SetFont(&_u8g, u8g_font_6x10);		/* set the current font and reset the font reference position to "Baseline" */
 	u8g_SetFontRefHeightExtendedText(&_u8g);		/* define the calculation method for the ascent and descent of the current font */
 	u8g_SetDefaultForegroundColor(&_u8g);		/* assign one of the default colors as current color index */
 	u8g_SetFontPosTop(&_u8g);			/* set the reference position for the character and string draw procedure */
@@ -29,7 +29,7 @@ static void screen1()
 		}
 		else
 		{
-			u8g_DrawStr(&_u8g, 80, 0,u8g_u16toa((uint16_t) gui_info.network_speed, 3));
+			u8g_DrawStr(&_u8g, 80, 0,u8g_u16toa((uint16_t) gui_info.network_speed, 2));
 			u8g_DrawStr(&_u8g, 100, 0,"KB/s");
 		}
 
@@ -58,7 +58,7 @@ static void screen1()
 			}
 
 		u8g_DrawStr(&_u8g, 0, 45, "SONG:");
-		u8g_DrawStr(&_u8g, 64, 45, gui_info.song_name);
+		u8g_DrawStr(&_u8g, 50, 45, gui_info.song_name);
 
 }
 
