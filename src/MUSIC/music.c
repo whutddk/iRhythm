@@ -109,7 +109,11 @@ int32_t Start_playing()
 		EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
 	}
 
+	gui_info.song_name = music_filename;
+	xEventGroupSetBits( GUI_Ev, BIT_0 );
+	
 	EMBARC_PRINTF("\r\nplay %s\r\n",music_filename);
+	
 
 	/********If the Song File is Bigger than 10MB Buff,Play Next one*****************************/
 	if ( file_lenth  > 10 * 1024* 1024 )

@@ -58,6 +58,7 @@ static void screen1()
 			}
 
 		u8g_DrawStr(&_u8g, 0, 45, "SONG:");
+		u8g_DrawStr(&_u8g, 64, 45, gui_info.song_name);
 
 }
 
@@ -74,6 +75,9 @@ void gui_init()
 	gui_info.decord_speed = -1;
 	gui_info.main_cycle = -1;
 	gui_info.flag_next = 0;
+	gui_info.song_name = NULL;
+	gui_info.next_song = NULL;
+
 	u8g_InitComFn(&_u8g, &u8g_dev_ssd1306_128x64_2x_i2c, U8G_COM_SSD_I2C);
 	u8g_Begin(&_u8g);
 	u8g_SetFont(&_u8g, u8g_font_5x7);

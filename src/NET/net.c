@@ -377,10 +377,15 @@ void download_mp3()
 		
     	if ( http_sum != bypass_cnt  )
     	{
+			gui_info.network_speed = ( bypass_cnt - http_sum ) * 1000 / 1024 / ( net_time - net_time_pre );
+    		xEventGroupSetBits( GUI_Ev, BIT_0 );
+
     		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) * 1000 / 1024 / ( net_time - net_time_pre ) );
+			EMBARC_PRINTF("received : %d KB/s\r", gui_info.network_speed);
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
+
+
 
 			if ( http_sum > 14*1024*1024 )//protect
 			{
@@ -390,6 +395,9 @@ void download_mp3()
     	}
     	else
     	{
+    		gui_info.network_speed = -1;
+    		xEventGroupSetBits( GUI_Ev, BIT_0 );
+    		
     		timeout_cnt ++;
     		EMBARC_PRINTF("\r\nTime out\r\n");
     		if ( timeout_cnt > 3 )

@@ -43,6 +43,7 @@ extern void filelist_delete(uint8_t list_id);
 
 // Events
 extern EventGroupHandle_t evt1_cb;
+extern EventGroupHandle_t GUI_Ev;
 
 #define BIT_0	( 1 << 0 )
 #define BIT_1	( 1 << 1 )
@@ -109,8 +110,8 @@ struct _gui_info
 	int16_t decord_speed;
 	int16_t main_cycle;
 
-	char song_name[15];
-	char next_song[15];
+	char* song_name;
+	char* next_song;
 
 	// uint8_t KEEP_ID3V2;
 	uint8_t flag_next;
