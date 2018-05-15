@@ -10,10 +10,10 @@
 #include "esp8266.h"
 
 
-// #define WIFI_SSID   "\"Andrew_Sun\""
-// #define WIFI_PWD    "\"smartcar\""
-#define WIFI_SSID   "\"WUT-test\""
-#define WIFI_PWD    "\"DDK123456\""
+#define WIFI_SSID   "\"Andrew_Sun\""
+#define WIFI_PWD    "\"smartcar\""
+// #define WIFI_SSID   "\"WUT-test\""
+// #define WIFI_PWD    "\"DDK123456\""
 
 
 uint8_t flag_netpoll = 0;				//Big Data Receive Flag
@@ -27,27 +27,27 @@ char songpoint[50] = { 0 };				//Store Song Name Download Form Net ,Unnecessart 
 ESP8266_DEF __ESP8266_A;				//Define ESP8266 Control Struct
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
+DEV_UART_PTR uart_obj;
+// /***
+// **	Start to Receive File
+// **
+// */
+// inline static void START_REC()
+// {	
+// 	bypass_cnt = 0;
+// 	flag_netpoll = 1;
+// }
 
-/***
-**	Start to Receive File
-**
-*/
-inline static void START_REC()
-{	
-	bypass_cnt = 0;
-	flag_netpoll = 1;
-}
+// /***
+// **	End Receive File
+// **
+// **/
+// inline static void END_REC()
+// {
 
-/***
-**	End Receive File
-**
-**/
-inline static void END_REC()
-{
-
-	bypass_cnt = 0;
-	flag_netpoll = 0;
-}
+// 	bypass_cnt = 0;
+// 	flag_netpoll = 0;
+// }
 
 /**
 ** Deal with Receive Buff and extract Song ID 
@@ -213,6 +213,7 @@ void net_init()
     EMBARC_PRINTF("============================ Show IP ============================\n");
     esp8266_address_get(ESP8266_A);
     
+    uart_obj = uart_get_dev(ESP8266_UART_ID);
     // _Rtos_Delay(100);
 	
 }
@@ -229,6 +230,11 @@ int socket_request(unsigned char option)
 	char idlen_char[3] = "";
 
 	TickType_t xLastWakeTime;
+
+	DEV_BUFFER Rxintbuf;
+
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 15 * 1024 * 1024);
+
 
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
@@ -271,9 +277,13 @@ int socket_request(unsigned char option)
 
     /*****Enable passthrough to Deal with +IPD flag********/
     esp8266_passthr_start(ESP8266_A);
+    _Rtos_Delay(100);
 	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+	_Rtos_Delay(100);
 	// esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-	START_REC();				//Set Flag for isr to Receive Buff Directly
+	//START_REC();				//Set Flag for isr to Receive Buff Directly
+
+	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
 	xTaskResumeAll();
 
     free(http_cmd);
@@ -285,11 +295,15 @@ int socket_request(unsigned char option)
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
 	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
-	END_REC();
+	//END_REC();
+	
 	esp8266_passthr_end(ESP8266_A);
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
+	_Rtos_Delay(100);
 
+	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
+	_Rtos_Delay(100);
 	/*********Exract Data From Buff******************************/
 	switch(option)
 	{
@@ -314,7 +328,7 @@ int socket_request(unsigned char option)
 }
 
 
-DEV_UART_PTR uart_obj;
+
 
 /***
 **Download MP3 use Download link
@@ -338,7 +352,7 @@ void download_mp3()
 	DEV_BUFFER Rxintbuf;
 
 	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 15 * 1024 * 1024);
-	uart_obj = uart_get_dev(ESP8266_UART_ID);
+	
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
@@ -357,11 +371,12 @@ void download_mp3()
 	/*****Enable passthrough to Deal with +IPD flag********/
 	vTaskSuspendAll();
     esp8266_passthr_start(ESP8266_A);
+    _Rtos_Delay(100);
 	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );	
-
+	_Rtos_Delay(100);
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
 
-	START_REC();
+	//START_REC();
 	xTaskResumeAll();
 
     free(http_cmd);
@@ -414,7 +429,7 @@ void download_mp3()
 	esp8266_passthr_end(ESP8266_A);
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
-	END_REC();
+	//END_REC();
 
 	
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);

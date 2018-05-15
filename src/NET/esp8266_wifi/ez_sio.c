@@ -115,16 +115,7 @@ static void sio_rx_callback(void *ptr)
 	uart_obj->uart_control(UART_CMD_GET_RXAVAIL, (void *)(&rd_avail));
 	while (rd_avail > 0) {
 		rd_cnt = (rd_avail<BUFSZ_LOCAL) ? rd_avail : BUFSZ_LOCAL;
-		/***************Add a Capacitance When Receive Data*************************/
-		if ( flag_netpoll == 1 ) 
-		{
-			cpu_status = cpu_lock_save();
-			uart_obj->uart_read((void *)(net_buff + bypass_cnt), rd_cnt);
-			bypass_cnt += rd_cnt;
-			cpu_unlock_restore(cpu_status);
-		}
-		else
-		{
+		/***************Add a Capacitance When Receive Data*************************/		
 			cpu_status = cpu_lock_save();
 			if (rb_isfull(rcv_rb) == 0) {
 				uart_obj->uart_read((void *)rbbuf, rd_cnt);
@@ -135,8 +126,7 @@ static void sio_rx_callback(void *ptr)
 			cpu_unlock_restore(cpu_status);
 			if (pushed_cnt != rd_cnt) {
 				break;
-			}
-		}
+			}		
 		uart_obj->uart_control(UART_CMD_GET_RXAVAIL, (void *)(&rd_avail));
 	}
 
