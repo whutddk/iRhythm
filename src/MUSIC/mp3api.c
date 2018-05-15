@@ -6,7 +6,7 @@
 #include "mp3common.h"
 #include "coder.h"
 
-
+#include "perform.h"
 #include "include.h"
 
 
@@ -83,7 +83,9 @@ void play_mp3(int32_t filelenth,uint8_t location)
 
 
 			// iosignal_ctrl(1,0);
-			//perf_start();
+			cost_cyc = perf_end();
+			EMBARC_PRINTF("Cycle Time :%dus!\n\r",cost_cyc);
+			perf_start();
 			if ( flag_sw == 0 )
 			{
 				
@@ -96,11 +98,11 @@ void play_mp3(int32_t filelenth,uint8_t location)
 				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec2, 0);
 				
 			}
-			//cost_cyc = perf_end();
+			cost_cyc = perf_end();
 			iosignal_ctrl(0,0);
 			if (res_dec == ERR_MP3_NONE)
 			{
-				//EMBARC_PRINTF("MP3Decode Time :%dus!\n\r",cost_cyc/25);
+				EMBARC_PRINTF("MP3Decode Time :%dus!\n\r",cost_cyc);
 			}
 			else
 			{

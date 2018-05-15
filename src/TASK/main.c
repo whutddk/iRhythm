@@ -68,7 +68,6 @@ int main(void)
 	// board_init();
 	io_mux_init();
 	emsk_gpio_init();
-	// perf_init(TIMER_1);
 	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
 	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
 
