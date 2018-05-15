@@ -21,9 +21,41 @@ static void u8g_prepare(void) {
 
 static void screen1()
 {
-		u8g_DrawStr(&_u8g, 0, 0, "net_speed:");
-		u8g_DrawStr(&_u8g, 0, 15, "dec_time:");
-		u8g_DrawStr(&_u8g, 0, 30, "main_cycle:");
+		u8g_DrawStr(&_u8g, 0, 0, "Net Speed:");
+
+		if ( gui_info.network_speed < 0)
+		{
+			u8g_DrawStr(&_u8g, 80, 0, "None!");
+		}
+		else
+		{
+			u8g_DrawStr(&_u8g, 80, 0,u8g_u16toa((uint16_t) gui_info.network_speed, 3));
+			u8g_DrawStr(&_u8g, 100, 0,"KB/s");
+		}
+
+		u8g_DrawStr(&_u8g, 0, 15, "Decord:");
+
+		if ( gui_info.decord_speed < 0)
+			{
+				u8g_DrawStr(&_u8g, 80, 15, "None!");
+			}
+			else
+			{
+				u8g_DrawStr(&_u8g, 80, 15,u8g_u16toa((uint16_t) gui_info.decord_speed, 2));
+				u8g_DrawStr(&_u8g, 100, 15,"ms");
+			}
+
+		u8g_DrawStr(&_u8g, 0, 30, "Cycle:");
+
+		if ( gui_info.main_cycle < 0)
+			{
+				u8g_DrawStr(&_u8g, 80, 30, "None!");
+			}
+			else
+			{
+				u8g_DrawStr(&_u8g, 80, 30,u8g_u16toa((uint16_t) gui_info.main_cycle, 3));
+				u8g_DrawStr(&_u8g, 100, 30,"KB/s");
+			}
 
 		u8g_DrawStr(&_u8g, 0, 45, "SONG:");
 
