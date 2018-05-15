@@ -102,6 +102,25 @@ extern void download_mp3();
 
 
 /*********define in GUI.c************************/
+struct _gui_info
+{
+	uint8_t screen_point;
+	int16_t network_speed;
+	int16_t decord_speed;
+	int16_t main_cycle;
+
+	char song_name[15];
+	char next_song[15];
+
+	// uint8_t KEEP_ID3V2;
+	uint8_t flag_next;
+
+	uint32_t delay_cnt;
+};
+
+extern struct _gui_info gui_info;
+
+
 extern void gui_init();
 extern void reflash_screen();
 
