@@ -8,7 +8,7 @@ DEV_SPI_PTR spi;
 
 FATFS fs_p;
 
-uint8_t *file_buff;			//10MB File Buff to Read out from SD Card
+int8_t file_buff[15 *1024*1024];			//10MB File Buff to Read out from SD Card
 
 /**********************
 **	Read out the Information of  file in SD Card and store in file list
@@ -29,8 +29,7 @@ static void playlist_init()
 	}
 
 /*open and checkout the directory*/
-	// DIR* dir = opendir("/fs");
-	error_num = f_opendir (&dir, "0:/");
+	error_num = f_opendir (&dir, "0:/music");
 	if ( error_num != FR_OK )
 	{
 		;
@@ -53,8 +52,6 @@ static void playlist_init()
 
 	EMBARC_PRINTF("\r\nCloseing root directory. \r\n");
 	f_closedir(&dir);
-	// return_error(error);
-
 }
 
 /***********
@@ -65,19 +62,7 @@ static void playlist_init()
 void play_init()
 {
 	
-
 	spi =  spi_get_dev(DW_SPI_0_ID);
-/** malloc 10MB space from DDR2 for reading mp3 file from SD card **/
-	file_buff = malloc(sizeof(uint8_t) * 10 * 1024 * 1024);
-	if ( file_buff == NULL )
-	{
-		EMBARC_PRINTF("Malloc file buff fail!\r\nstop!\r\n");
-		while(1);
-	}
-	else
-	{
-		EMBARC_PRINTF("Malloc file buff pass!\r\n");
-	}
 	
 /**mount Fatfs**/
 	error_num = f_mount(&fs_p,"0:/",1);
@@ -96,37 +81,27 @@ void play_init()
 **	if Song is in SD Card ,Read Out File
 **	Play Song
 */
-
-
-
 int32_t Start_playing()
 {
-	char * music_filename = NULL;
+	char music_filename[50] = {0};
 	int file_lenth;
 	uint8_t file_location;
-
-	/**Malloc file name string space**/
-	music_filename = malloc(sizeof(char) * 50);
 
 	file_lenth = Playlist_HEAD -> lenth;
 	file_location = Playlist_HEAD -> location;
 	memset( music_filename, 0, sizeof(char) * 50 );
 	strcat( music_filename,Playlist_HEAD -> data ); 
 
-	/***********If it is the last Song in Play List,Play it again and again and Never Delete*******************/
-	if ( Playlist_HEAD -> next != NULL )
-	{
-		filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
-	}
-	else
-	{
-		EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
-	}
 
+
+	gui_info.song_name = music_filename;
+	xEventGroupSetBits( GUI_Ev, BIT_0 );
+	
 	EMBARC_PRINTF("\r\nplay %s\r\n",music_filename);
+	
 
 	/********If the Song File is Bigger than 10MB Buff,Play Next one*****************************/
-	if ( file_lenth  > 10 * 1024* 1024 )
+	if ( file_lenth  > 15 * 1024* 1024 )
 	{
 	 	EMBARC_PRINTF("\r\nfile too big,play fail!\r\n");
 	 	return -1;
@@ -137,16 +112,38 @@ int32_t Start_playing()
 
 	if ( file_location == IN_FILE )
 	{
-		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(1000000));
-		// iosignal_ctrl(1,0);
+		spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(2000000));
+
 		readout_file(music_filename);
-		// iosignal_ctrl(0,0);	
+
 	}
 	else
 	{
 		;
 	}
-	play_mp3(file_lenth,file_location);
-	EMBARC_PRINTF("\r\nplay complete!!!\r\n");
+
+	if ( gui_info.flag_next != 1 && 0 == play_mp3(file_lenth,file_location))
+	{
+		EMBARC_PRINTF("\r\nplay complete!!!\r\n");;
+	}
+	else//play next song?
+	{
+		gui_info.flag_next = 0;
+		return 1;
+	}
+
+	
+	
+	/***********If it is the last Song in Play List,Play it again and again and Never Delete*******************/
+	cpu_lock();
+	if ( Playlist_HEAD -> next != NULL )
+	{
+		filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
+	}
+	else
+	{
+		EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
+	}
+	cpu_unlock();
 	return 0;
 }

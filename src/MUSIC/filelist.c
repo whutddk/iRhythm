@@ -56,7 +56,7 @@ void filelist_add(uint8_t list_id,char* id_data,int lenth,uint8_t location)
 			}
 
 			strcat(lists -> data,id_data);
-			lists -> next = NULL;
+			lists -> next = NULL;//插入到表尾
 
 			Songid_END -> next = lists;
 			Songid_END = Songid_END -> next;
@@ -73,11 +73,17 @@ void filelist_add(uint8_t list_id,char* id_data,int lenth,uint8_t location)
 			strcat(lists -> data,id_data);
 			lists->lenth = lenth;
 			lists->location = location;
-			lists -> next = Playlist_HEAD;
 
-			// struct filelist *temp = Playlist_HEAD;
-			Playlist_HEAD = lists;
-			// Playlist_END = Playlist_END -> next;
+			if ( location == IN_BUFF )
+			{
+				lists -> next = Playlist_HEAD -> next; //插入到第二节点上
+				Playlist_HEAD -> next = lists ; //链表头不变
+			}
+			else
+			{
+				lists -> next = Playlist_HEAD ; //插入到第一节点上
+				Playlist_HEAD = lists;			//成为链表头
+			}
 			break;
 	}
 }

@@ -50,15 +50,18 @@
 
 #include "coder.h"
 
+#define static_buffers
+
+
 #ifdef static_buffers
-MP3DecInfo  mp3DecInfo;     //  0x7f0 =  2032
-SubbandInfo sbi;            // 0x2204 =  8708
-IMDCTInfo mi;               // 0x1b20 =  6944
-HuffmanInfo hi;             // 0x1210 =  4624
-DequantInfo di;             //  0x348 =   840
-ScaleFactorInfo sfi;        //  0x124 =   292
-SideInfo si;                //  0x148 =   328
-FrameHeader fh;             //   0x38 =    56
+__attribute__ ((section("indccm"))) MP3DecInfo  mp3DecInfo;     //  0x7f0 =  2032
+__attribute__ ((section("indccm"))) SubbandInfo sbi;            // 0x2204 =  8708
+__attribute__ ((section("indccm"))) IMDCTInfo mi;               // 0x1b20 =  6944
+__attribute__ ((section("indccm"))) HuffmanInfo hi;             // 0x1210 =  4624
+__attribute__ ((section("indccm"))) DequantInfo di;             //  0x348 =   840
+__attribute__ ((section("indccm"))) ScaleFactorInfo sfi;        //  0x124 =   292
+__attribute__ ((section("indccm"))) SideInfo si;                //  0x148 =   328
+__attribute__ ((section("indccm"))) FrameHeader fh;             //   0x38 =    56
 #else
 #include <malloc.h>
 #endif

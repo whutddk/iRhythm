@@ -18,7 +18,7 @@
 
 uint8_t flag_netpoll = 0;				//Big Data Receive Flag
 uint8_t flag_netbuff = BUFF_EMPTY;		//Net Buff FULL Flag
-char *net_buff;							//10MB Net Buff
+int8_t net_buff[15*1024*1024];			//10MB Net Buff
 uint32_t bypass_cnt = 0;				//Big Data Receive Count
 
 char dllink[500] = { 0 };				//Store Song Download Url
@@ -27,27 +27,27 @@ char songpoint[50] = { 0 };				//Store Song Name Download Form Net ,Unnecessart 
 ESP8266_DEF __ESP8266_A;				//Define ESP8266 Control Struct
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
+DEV_UART_PTR uart_obj;
+// /***
+// **	Start to Receive File
+// **
+// */
+// inline static void START_REC()
+// {	
+// 	bypass_cnt = 0;
+// 	flag_netpoll = 1;
+// }
 
-/***
-**	Start to Receive File
-**
-*/
-inline static void START_REC()
-{	
-	bypass_cnt = 0;
-	flag_netpoll = 1;
-}
+// /***
+// **	End Receive File
+// **
+// **/
+// inline static void END_REC()
+// {
 
-/***
-**	End Receive File
-**
-**/
-inline static void END_REC()
-{
-
-	bypass_cnt = 0;
-	flag_netpoll = 0;
-}
+// 	bypass_cnt = 0;
+// 	flag_netpoll = 0;
+// }
 
 /**
 ** Deal with Receive Buff and extract Song ID 
@@ -168,85 +168,7 @@ static int get_songinfo(char *jsonstr)
 	return 0;
 }
 
-/***
-** 302 Redirect dure to hust school Network Mirror
-**	do not need to use anymore
-**/
 
-
-// static int get_302(char *buff)
-// {
-// 	char *string_p1; 
-// 	char *string_p2 ;
-
-// 	string_p1 = strstr(buff,"http://");
-// 	if ( string_p1 == NULL )
-// 	{
-// 		EMBARC_PRINTF("No http\r\n");
-// 		while(1);
-// 		return -1;
-// 	}
-// 	string_p2 = strstr(string_p1,"\r\n");
-// 	if ( string_p1 == NULL )
-// 	{
-// 		EMBARC_PRINTF("No rn\r\n");
-// 		while(1);
-// 		return -1;
-// 	}
-// 	memset(dllink,0,sizeof(char) * 500);
-// 	strncpy(dllink,string_p1,(uint8_t)(string_p2 - string_p1));
-// 	return 0;
-// }
-// static uint32_t fix_netbuff(char *net_buff,uint32_t length)
-// {
-// 	char *buff_p1;
-// 	char *buff_p2;
-
-// 	uint32_t i = 0;
-// 	uint8_t j = 0;
-// 	uint32_t len = length;
-
-// 	for ( i = 0;i < len; i++ )
-// 	{
-// 		if ( ( *(net_buff + i ) == '+' ) 
-// 			&& ( *(net_buff + i + 1 ) == 'I' )
-// 			&& ( *(net_buff + i + 2 ) == 'P' )
-// 			&& ( *(net_buff + i + 3 ) == 'D' ) )
-// 		{
-// 		/*********Record Start Point***************/
-// 			buff_p1 = net_buff + i;	
-
-// 			j = 4;
-
-// 			/*****Just a Protection*************/
-// 			while( ( i+j ) < len )
-// 			{
-// 				***':' only one****
-// 				if ( *(net_buff + i + j ) != ':' )
-// 				{
-// 					j++;
-// 				}
-// 				/*************(net_buff + i + j ) == ':'**********************/
-// 				else
-// 				{
-// 					/*****next char***********/
-// 					j++;
-// 					buff_p2 = net_buff + i + j;
-
-// 					/***********i is correct length***********************/
-// 					memmove(buff_p1 ,buff_p2,len - i - j);
-// 					/***********j is cut lenth******************************/
-// 					len -= j;
-// 					EMBARC_PRINTF("\r\ncut %d \r\n",j);
-// 					break;
-// 				}
-// 			}
-
-// 		}
-// 	}
-
-// 	return len;
-// }
 /**
 **	 Init ESP8266 and Malloc 10MB net buff and Connect to WIfi
 **
@@ -256,20 +178,12 @@ void net_init()
 {
 	EMBARC_PRINTF("============================ Init ============================\n");
 	
-	net_buff = malloc(sizeof(char) * 10 * 1024 * 1024);
-	if ( net_buff == NULL )
-	{
-		EMBARC_PRINTF("Malloc Net Buff Fail!\r\nstop!\r\n");
-		while(1);
-	}
-	else
-	{
-		memset( net_buff, 0, sizeof(char) * 10 * 1024 * 1024 );
-		EMBARC_PRINTF("Malloc Net Buff Pass!\r\n");
-	}
+	
+	memset( net_buff, 0, sizeof(int8_t) * 15 * 1024 * 1024 );
 
 
-    esp8266_init(ESP8266_A, UART_BAUDRATE_230400);
+
+    esp8266_init(ESP8266_A, 3125000);
     at_test(ESP8266_A->p_at);
 
 
@@ -299,6 +213,7 @@ void net_init()
     EMBARC_PRINTF("============================ Show IP ============================\n");
     esp8266_address_get(ESP8266_A);
     
+    uart_obj = uart_get_dev(ESP8266_UART_ID);
     // _Rtos_Delay(100);
 	
 }
@@ -310,18 +225,22 @@ void net_init()
 
 int socket_request(unsigned char option)
 {
-	char *http_cmd;
+	char http_cmd[500] = {0};
 	uint32_t idlen_int;
 	char idlen_char[3] = "";
 
 	TickType_t xLastWakeTime;
 
+	DEV_BUFFER Rxintbuf;
+
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 15 * 1024 * 1024);
+
+
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
 
-    http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
+	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
 
     EMBARC_PRINTF("============================ create http command ============================\r\n");
     switch (option)
@@ -357,13 +276,14 @@ int socket_request(unsigned char option)
 
     /*****Enable passthrough to Deal with +IPD flag********/
     esp8266_passthr_start(ESP8266_A);
+    _Rtos_Delay(100);
 	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
+	_Rtos_Delay(100);
 	// esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-	START_REC();				//Set Flag for isr to Receive Buff Directly
+	//START_REC();				//Set Flag for isr to Receive Buff Directly
+
+	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
 	xTaskResumeAll();
-
-    free(http_cmd);
-
 
 	EMBARC_PRINTF("======================== Get all Data Driectly===================\r\n");
 	_Rtos_Delay(1000);			//Wait Data to Arrive
@@ -371,11 +291,15 @@ int socket_request(unsigned char option)
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
 	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
-	END_REC();
+	//END_REC();
+	
 	esp8266_passthr_end(ESP8266_A);
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
+	_Rtos_Delay(100);
 
+	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
+	_Rtos_Delay(100);
 	/*********Exract Data From Buff******************************/
 	switch(option)
 	{
@@ -400,7 +324,7 @@ int socket_request(unsigned char option)
 }
 
 
-DEV_UART_PTR uart_obj;
+
 
 /***
 **Download MP3 use Download link
@@ -413,23 +337,24 @@ void download_mp3()
 	uint8_t http_cnt = 0;
 	uint32_t http_sum = 0;
 	// uint32_t cur_time;
-	char *http_cmd;
+	char http_cmd[500] = {0};
 	uint8_t timeout_cnt = 0;
 
+	uint32_t net_time = 0;
+	uint32_t net_time_pre = 0;
 	
 
 
 	DEV_BUFFER Rxintbuf;
 
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 10 * 1024 * 1024);
-	uart_obj = uart_get_dev(ESP8266_UART_ID);
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 15 * 1024 * 1024);
+	
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
 
-    http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(char) * 10 * 1024 * 1024);
+	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
 
     strcat (http_cmd,"GET ");
     strcat (http_cmd,dllink);
@@ -441,53 +366,77 @@ void download_mp3()
 	/*****Enable passthrough to Deal with +IPD flag********/
 	vTaskSuspendAll();
     esp8266_passthr_start(ESP8266_A);
+    _Rtos_Delay(100);
 	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );	
-
+	_Rtos_Delay(100);
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
 
-	START_REC();
+	//START_REC();
 	xTaskResumeAll();
 
-    free(http_cmd);
+	net_time_pre = xTaskGetTickCount ();
+	while(1)
+	{
+		_Rtos_Delay(1000);
 
-	// while(1)
-	// {
-		_Rtos_Delay(4 * 60000);
+		net_time = xTaskGetTickCount ();
 
-
+		bypass_cnt = uart_obj -> uart_info.rx_buf.ofs;//read the buff offset has received
 		
-   //  	if ( http_sum != bypass_cnt  )
-   //  	{
-   //  		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			// EMBARC_PRINTF("received : %d KB/s\r",( bypass_cnt - http_sum ) / 1024 / ( ( timeout_cnt+1 ) ) );
-			// http_sum = bypass_cnt;
-			// timeout_cnt = 0;
-   //  	}
-   //  	else
-   //  	{
-   //  		timeout_cnt ++;
-   //  		EMBARC_PRINTF("\r\nTime out\r\n");
-   //  		if ( timeout_cnt > 3 )
-   //  		{
+    	if ( http_sum != bypass_cnt  )
+    	{
+			gui_info.network_speed = ( bypass_cnt - http_sum ) * 1000 / 1024 / ( net_time - net_time_pre );
+    		xEventGroupSetBits( GUI_Ev, BIT_0 );
+
+    		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
+			EMBARC_PRINTF("received : %d KB/s\r", gui_info.network_speed);
+			http_sum = bypass_cnt;
+			timeout_cnt = 0;
+
+
+
+			if ( http_sum > 14*1024*1024 )//protect
+			{
+				EMBARC_PRINTF("received More than 14MB! Break！\r\n");
+				break;
+			}
+    	}
+    	else
+    	{
+    		gui_info.network_speed = -1;
+    		xEventGroupSetBits( GUI_Ev, BIT_0 );
+    		
+    		timeout_cnt ++;
+    		EMBARC_PRINTF("\r\nTime out\r\n");
+    		if ( timeout_cnt > 3 )
+    		{
 				EMBARC_PRINTF("\r\nreceive end , %d B\r\n",bypass_cnt  );
 				EMBARC_PRINTF("\r\n%s \r\n",net_buff);
-	    // 		break;
-    	// 	}
-    	// }
-	// }
+	    		break;
+    		}
+    	}
+    	net_time_pre = net_time;
+	}
 
 	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
 	esp8266_passthr_end(ESP8266_A);
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
-	END_REC();
+	//END_REC();
 
-	http_sum = 10*1024*1024;
+	
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
 	_Rtos_Delay(100);
-	filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
-	flag_netbuff = BUFF_FULL;
 
+	if ( http_sum >1024 )
+	{
+		filelist_add(FILE_LIST,songpoint,http_sum,IN_BUFF);
+		flag_netbuff = BUFF_FULL;
+	}
+	else
+	{ 
+		EMBARC_PRINTF("Receive Fail!\r\n");
+	}
 	EMBARC_PRINTF("Socket Close.\r\n");
 
 	/**********Connect will Close Automatic*********************/

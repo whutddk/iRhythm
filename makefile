@@ -9,8 +9,8 @@ APPL ?= blinky
 OLEVEL ?= O3
 
 
-HEAPSZ ?= 83886080 
-STACKSZ ?= 1048576
+HEAPSZ ?= 2097152
+STACKSZ ?= 2097152
 
 #
 # root dir of embARC
