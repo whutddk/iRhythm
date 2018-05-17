@@ -183,7 +183,7 @@ void net_init()
 
 
 
-    esp8266_init(ESP8266_A, UART_BAUDRATE_230400);
+    esp8266_init(ESP8266_A, 3125000);
     at_test(ESP8266_A->p_at);
 
 
