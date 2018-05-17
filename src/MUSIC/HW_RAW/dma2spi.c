@@ -189,10 +189,10 @@ void spi_dma_prepare(void)
 int32_t spi_writeraw(const void *data)
 {
 	
-	uint16_t *xfer_buf = (uint16_t *)data;
+	uint8_t *xfer_buf = (uint8_t *)data;
 
-	data_xfer.tx_buf = (uint16_t *)(xfer_buf);
-	data_xfer.len = 2306;
+	data_xfer.tx_buf = (uint8_t *)(xfer_buf);
+	data_xfer.len = 2304;
 
 	/*ask dma to send here*/
 	if (spi_xfer(&data_xfer) != 0) 

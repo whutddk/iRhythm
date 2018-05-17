@@ -84,7 +84,7 @@
 #define configUSE_TICK_HOOK                     0
 #define configCPU_CLOCK_HZ                      ( ( unsigned long ) BOARD_CPU_CLOCK )
 #define configTICK_RATE_HZ                      ( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES                    ( 4 )
+#define configMAX_PRIORITIES                    ( 5 )
 #define configMINIMAL_STACK_SIZE                ( ( unsigned short ) 104 )
 #define configTOTAL_HEAP_SIZE                   ( ( size_t ) ( 18 * 1024 ) )
 #define configMAX_TASK_NAME_LEN                 ( 10 )
@@ -113,6 +113,5 @@ to exclude the API function. */
 #define configTIMER_TASK_PRIORITY               configMAX_PRIORITIES-1
 #define configTIMER_QUEUE_LENGTH                64
 #define configTIMER_TASK_STACK_DEPTH            256
-
 
 #endif /* FREERTOS_CONFIG_H */
