@@ -21,6 +21,9 @@ static void u8g_prepare(void) {
 
 static void screen1()
 {
+	u8g_FirstPage(&_u8g);
+	do 
+	{
 		u8g_DrawStr(&_u8g, 0, 0, "Net Speed:");
 
 		if ( gui_info.network_speed < 0)
@@ -53,16 +56,22 @@ static void screen1()
 			}
 			else
 			{
-				u8g_DrawStr(&_u8g, 80, 30,u8g_u16toa((uint16_t) gui_info.main_cycle, 3));
-				u8g_DrawStr(&_u8g, 100, 30,"KB/s");
+				u8g_DrawStr(&_u8g, 80, 30,u8g_u16toa((uint16_t) gui_info.main_cycle, 2));
+				u8g_DrawStr(&_u8g, 100, 30,"ms");
 			}
 
 		u8g_DrawStr(&_u8g, 0, 45, "SONG:");
 		u8g_DrawStr(&_u8g, 50, 45, gui_info.song_name);
-
+	} 
+	while( u8g_NextPage(&_u8g) );
 
 }
 
+
+/***
+***This function used to show song name to select next song 
+***
+*/
 void screen2()
 {
 
@@ -86,21 +95,20 @@ void gui_init()
 
 void reflash_screen()
 {
+	
+	
+	
 
-	u8g_FirstPage(&_u8g);
-	u8g_prepare();
-	do 
-	{
 		
 		switch(gui_info.screen_point)
 		{
 			case(0):
+			u8g_prepare();
 			screen1();
 			break;
 		}
 
-	} 
-	while( u8g_NextPage(&_u8g) );
+	
 
 }
 
