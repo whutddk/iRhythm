@@ -96,19 +96,13 @@ void gui_init()
 void reflash_screen()
 {
 	
-	
-	
-
-		
-		switch(gui_info.screen_point)
-		{
-			case(0):
-			u8g_prepare();
-			screen1();
-			break;
-		}
-
-	
+	switch(gui_info.screen_point)
+	{
+		case(0):
+		u8g_prepare();
+		screen1();
+		break;
+	}
 
 }
 

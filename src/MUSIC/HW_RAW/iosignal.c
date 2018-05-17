@@ -5,7 +5,7 @@
 
 /*****A[31:28]****PMOD6[10:7]*************/
 #define BOARD_SIGNOUT_MASK 0x30000100
-#define BOARD_SIGNIN_MASK 0xC0000000
+#define BOARD_SIGNIN_MASK 0xC0000007
 
 static DEV_GPIO *io_signal;
 
@@ -24,6 +24,20 @@ void empty_isr()
 	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
 }
 
+void key1_isr()
+{
+	EMBARC_PRINTF("key1_isr!\r\n");
+}
+
+void key2_isr()
+{
+	EMBARC_PRINTF("key2_isr!\r\n");
+}
+
+void key3_isr()
+{
+	EMBARC_PRINTF("key3_isr!\r\n");
+}
 
 void iosignal_init()
 {
@@ -48,7 +62,24 @@ void iosignal_init()
 
 		/*************Interrupt enable********************/
 		io_signal->gpio_control(GPIO_CMD_DIS_BIT_INT, (void *)(BOARD_SIGNIN_MASK));
+
+		gpio_bit_isr.int_bit_ofs = 30;
+		gpio_bit_isr.int_bit_handler = empty_isr;
 		io_signal->gpio_control(GPIO_CMD_SET_BIT_ISR, (void *)(&gpio_bit_isr));
+
+
+		gpio_bit_isr.int_bit_ofs = 0;
+		gpio_bit_isr.int_bit_handler = key1_isr;
+		io_signal->gpio_control(GPIO_CMD_SET_BIT_ISR, (void *)(&gpio_bit_isr));
+
+		gpio_bit_isr.int_bit_ofs = 1;
+		gpio_bit_isr.int_bit_handler = key2_isr;
+		io_signal->gpio_control(GPIO_CMD_SET_BIT_ISR, (void *)(&gpio_bit_isr));
+
+		gpio_bit_isr.int_bit_ofs = 2;
+		gpio_bit_isr.int_bit_handler = key3_isr;
+		io_signal->gpio_control(GPIO_CMD_SET_BIT_ISR, (void *)(&gpio_bit_isr));
+
 		io_signal->gpio_control(GPIO_CMD_SET_BIT_INT_CFG, (void *)(&gpio_int_cfg));
 		io_signal->gpio_control(GPIO_CMD_ENA_BIT_INT, (void *)(BOARD_SIGNIN_MASK));
 	}
