@@ -43,6 +43,7 @@ extern void filelist_delete(uint8_t list_id);
 
 // Events
 extern EventGroupHandle_t evt1_cb;
+extern EventGroupHandle_t GUI_Ev;
 
 #define BIT_0	( 1 << 0 )
 #define BIT_1	( 1 << 1 )
@@ -72,7 +73,7 @@ extern int32_t spi_writeraw(const void *data);
 extern int32_t Start_playing();
 
 /**************define in mp3api.c************/
-extern void play_mp3(int32_t filelenth,uint8_t location);
+extern int play_mp3(int32_t filelenth,uint8_t location);
 
 /**************define in iosignal.c**********/
 
@@ -99,6 +100,30 @@ extern ESP8266_DEF_PTR ESP8266_A;
 extern void net_init();
 extern int socket_request(unsigned char option);
 extern void download_mp3();
+
+
+/*********define in GUI.c************************/
+struct _gui_info
+{
+	uint8_t screen_point;
+	int16_t network_speed;
+	int16_t decord_speed;
+	int16_t main_cycle;
+
+	char* song_name;
+	char* next_song;
+
+	// uint8_t KEEP_ID3V2;
+	uint8_t flag_next;
+
+	uint32_t delay_cnt;
+};
+
+extern struct _gui_info gui_info;
+
+
+extern void gui_init();
+extern void reflash_screen();
 
 #endif
 

@@ -6,7 +6,7 @@
 #include "mp3common.h"
 #include "coder.h"
 
-
+#include "perform.h"
 #include "include.h"
 
 
@@ -22,7 +22,7 @@ char buf_rec2[2304]={1};
 **  filelenth : BUFF length should be Decord
 **	loction :IF the Data in 10MB FILE BUFF or IN 10MB NET BUFF
 **/
-void play_mp3(int32_t filelenth,uint8_t location)
+int play_mp3(int32_t filelenth,uint8_t location)
 {
 	int32_t offset;
 	uint8_t *read_ptr;
@@ -71,8 +71,20 @@ void play_mp3(int32_t filelenth,uint8_t location)
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
 
 	/*************Start to Decord MP3******************************/
+	perf_start();
 	while(1)
 	{
+
+		if ( gui_info.flag_next != 1)
+		{
+			;
+		}
+		else//play next song?
+		{
+			return 1;
+		}
+
+
 		offset = MP3FindSyncWord(read_ptr, byte_left);
  
 		if ( offset >= 0 )
@@ -81,7 +93,12 @@ void play_mp3(int32_t filelenth,uint8_t location)
 			byte_left -= offset;        //in buffer
 
 
-			// iosignal_ctrl(1,0);
+			// iosignal_ctrl(1,0);			
+			// EMBARC_PRINTF("Cycle Time :%dus!\n\r",cost_cyc);
+			gui_info.main_cycle = perf_end();
+			
+			perf_start();
+			
 			if ( flag_sw == 0 )
 			{
 				
@@ -94,10 +111,11 @@ void play_mp3(int32_t filelenth,uint8_t location)
 				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec2, 0);
 				
 			}
+			gui_info.decord_speed = perf_end();
 			iosignal_ctrl(0,0);
 			if (res_dec == ERR_MP3_NONE)
 			{
-				;
+				//EMBARC_PRINTF("MP3Decode Time :%dus!\n\r",cost_cyc);
 			}
 			else
 			{
@@ -119,24 +137,25 @@ void play_mp3(int32_t filelenth,uint8_t location)
 			// while(flag_dma_finish==0);
 			// flag_dma_finish = 0;
 
-			// if ( iosignal_read(0) )
-			// {
-			// 	uxBits = 0;
-			// }
+			if ( iosignal_read(0) )
+			{
+				uxBits = 0;
+			}
 			// else if (( uxBits & BIT_1 ) != 0 )
 			// {
 			// 	EMBARC_PRINTF("uxBits & BIT_1  != 0\r\n");
 			// }
-			// else
-			// {
-			// 	EMBARC_PRINTF("GPIO Clear BIT1\r\n");
-			// 	uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
-			// }
-			/******Can Replace by IO interrupt to Set Event****************/
-			while(!iosignal_read(0))
+			else
 			{
-				_Rtos_Delay(100);
+				xEventGroupSetBits( GUI_Ev, BIT_0 );
+				EMBARC_PRINTF("GPIO Clear BIT1\r\n");
+				uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
 			}
+			/******Can Replace by IO interrupt to Set Event****************/
+			// while(!iosignal_read(0))
+			// {
+			// 	_Rtos_Delay(100);
+			// }
 				
 /********************Shedule End Here*****************************/
 
@@ -161,15 +180,21 @@ void play_mp3(int32_t filelenth,uint8_t location)
 
 		}
 	}
+
+	gui_info.decord_speed = -1;
+	gui_info.main_cycle = -1;
 	/********Play Song in NET Buff,should Reset Flag*****************/
 	if ( location == IN_BUFF )
 	{
 		flag_netbuff = BUFF_EMPTY;
 	}
-	EMBARC_PRINTF("Free mp3_dec!\n\r" );
-	MP3FreeDecoder(mp3_dec);
+
+	// EMBARC_PRINTF("Free mp3_dec!\n\r" );
+	// MP3FreeDecoder(mp3_dec);
 
 	EMBARC_PRINTF("MP3 file: decorder is over!\n\r" );
+
+	return 0;
 }
 
 

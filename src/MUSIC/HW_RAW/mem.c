@@ -39,10 +39,21 @@ void readout_file(char* music_name)
 
 	while( num_read != 0 )
 	{
+		cpu_lock();
 		error_num = f_read(&fp,fbuff_p,NUM_BYTE_READ,&num_read);
+		cpu_unlock();
 		fbuff_p += num_read;
 		read_sum += num_read;
 		//EMBARC_PRINTF("readout %d!!!\r\n",read_sum);
+
+		if ( gui_info.flag_next != 1)
+		{
+			;
+		}
+		else//play next song?
+		{
+			break;
+		}
 	}
 	EMBARC_PRINTF("readout %d!!!\r\n",read_sum);
 	EMBARC_PRINTF("File %s Read End\r\n",filename);
