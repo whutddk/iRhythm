@@ -81,17 +81,11 @@ void play_init()
 **	if Song is in SD Card ,Read Out File
 **	Play Song
 */
-
-
-
 int32_t Start_playing()
 {
-	char * music_filename = NULL;
+	char music_filename[50] = {0};
 	int file_lenth;
 	uint8_t file_location;
-
-	/**Malloc file name string space**/
-	music_filename = malloc(sizeof(char) * 50);
 
 	file_lenth = Playlist_HEAD -> lenth;
 	file_location = Playlist_HEAD -> location;
