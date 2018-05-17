@@ -11,7 +11,7 @@ static DEV_GPIO *io_signal;
 
 void empty_isr()
 {
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	
 
 	/*******No a Suggestion Used Here**************************/
@@ -28,20 +28,37 @@ void key1_isr()//确定键
 {
 	//SWITCH 254 SONG most 
 	uint8_t i;
+	struct filelist *file_pointer = Playlist_HEAD;
 
 	gui_info.delay_cnt = xTaskGetTickCount ();
-	if( gui_info.screen_point == 0 )
+
+	if ( gui_info.screen_point == 0 )
 	{
 		gui_info.screen_point ++;
+		gui_info.next_song = file_pointer -> data;
 	}
 	else
 	{
-		//how to stay in the same song?
-		// for ( i = gui_info.screen_point - 1; i > 0; i-- )
-		// {
-		// 	;
-		// }
+		gui_info.flag_next = 1;
 
+		if ( gui_info.screen_point != 1 || Playlist_HEAD -> location != IN_BUFF )
+		{
+			flag_netbuff = BUFF_EMPTY;	//protect that break while net_buff was playing and flag net reset
+		}
+
+		//how to stay in the same song?
+		for ( i = gui_info.screen_point - 1; i > 0; i -- )
+		{
+				/***********If it is the last Song in Play List,Play it again and again and Never Delete*******************/
+			if ( Playlist_HEAD -> next != NULL )
+			{
+				filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
+			}
+			else
+			{
+				EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
+			}
+		}
 	}
 	EMBARC_PRINTF("key1_isr!\r\n");
 

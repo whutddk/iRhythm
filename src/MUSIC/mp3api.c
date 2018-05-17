@@ -22,7 +22,7 @@ char buf_rec2[2304]={1};
 **  filelenth : BUFF length should be Decord
 **	loction :IF the Data in 10MB FILE BUFF or IN 10MB NET BUFF
 **/
-void play_mp3(int32_t filelenth,uint8_t location)
+int play_mp3(int32_t filelenth,uint8_t location)
 {
 	int32_t offset;
 	uint8_t *read_ptr;
@@ -74,6 +74,17 @@ void play_mp3(int32_t filelenth,uint8_t location)
 	perf_start();
 	while(1)
 	{
+
+		if ( gui_info.flag_next != 1)
+		{
+			;
+		}
+		else//play next song?
+		{
+			return 1;
+		}
+
+
 		offset = MP3FindSyncWord(read_ptr, byte_left);
  
 		if ( offset >= 0 )
@@ -174,10 +185,13 @@ void play_mp3(int32_t filelenth,uint8_t location)
 	{
 		flag_netbuff = BUFF_EMPTY;
 	}
-	EMBARC_PRINTF("Free mp3_dec!\n\r" );
-	MP3FreeDecoder(mp3_dec);
+	
+	// EMBARC_PRINTF("Free mp3_dec!\n\r" );
+	// MP3FreeDecoder(mp3_dec);
 
 	EMBARC_PRINTF("MP3 file: decorder is over!\n\r" );
+
+	return 0;
 }
 
 
