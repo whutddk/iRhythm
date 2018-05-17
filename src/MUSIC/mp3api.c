@@ -81,6 +81,8 @@ int play_mp3(int32_t filelenth,uint8_t location)
 		}
 		else//play next song?
 		{
+			gui_info.decord_speed = -1;
+			gui_info.main_cycle = -1;
 			return 1;
 		}
 
