@@ -225,7 +225,7 @@ void net_init()
 
 int socket_request(unsigned char option)
 {
-	char *http_cmd;
+	char http_cmd[500] = {0};
 	uint32_t idlen_int;
 	char idlen_char[3] = "";
 
@@ -239,7 +239,6 @@ int socket_request(unsigned char option)
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
 
-    http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
 	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
 
@@ -285,9 +284,6 @@ int socket_request(unsigned char option)
 
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
 	xTaskResumeAll();
-
-    free(http_cmd);
-
 
 	EMBARC_PRINTF("======================== Get all Data Driectly===================\r\n");
 	_Rtos_Delay(1000);			//Wait Data to Arrive
@@ -341,7 +337,7 @@ void download_mp3()
 	uint8_t http_cnt = 0;
 	uint32_t http_sum = 0;
 	// uint32_t cur_time;
-	char *http_cmd;
+	char http_cmd[500] = {0};
 	uint8_t timeout_cnt = 0;
 
 	uint32_t net_time = 0;
@@ -357,7 +353,6 @@ void download_mp3()
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
 
-    http_cmd = (char *)malloc(sizeof(char) * 500);
     memset(http_cmd, 0, sizeof(char) * 500);
 	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
 
@@ -378,8 +373,6 @@ void download_mp3()
 
 	//START_REC();
 	xTaskResumeAll();
-
-    free(http_cmd);
 
 	net_time_pre = xTaskGetTickCount ();
 	while(1)
