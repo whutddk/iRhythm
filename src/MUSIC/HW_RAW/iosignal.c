@@ -59,6 +59,10 @@ void key1_isr()//确定键
 				EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
 			}
 		}
+		gui_info.screen_point = 0;
+		gui_info.network_speed = -1;
+		gui_info.decord_speed = -1;
+		gui_info.main_cycle = -1;
 	}
 	EMBARC_PRINTF("key1_isr!\r\n");
 

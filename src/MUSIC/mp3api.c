@@ -180,12 +180,15 @@ int play_mp3(int32_t filelenth,uint8_t location)
 
 		}
 	}
+
+	gui_info.decord_speed = -1;
+	gui_info.main_cycle = -1;
 	/********Play Song in NET Buff,should Reset Flag*****************/
 	if ( location == IN_BUFF )
 	{
 		flag_netbuff = BUFF_EMPTY;
 	}
-	
+
 	// EMBARC_PRINTF("Free mp3_dec!\n\r" );
 	// MP3FreeDecoder(mp3_dec);
 
