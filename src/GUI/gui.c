@@ -72,9 +72,14 @@ static void screen1()
 ***This function used to show song name to select next song 
 ***
 */
-void screen2()
+static void screen2()
 {
-
+	u8g_FirstPage(&_u8g);
+	do 
+	{
+		u8g_DrawStr(&_u8g, 20, 20, gui_info.next_song);
+	}
+	while( u8g_NextPage(&_u8g) );
 }
 
 
@@ -95,12 +100,20 @@ void gui_init()
 
 void reflash_screen()
 {
-	
+	if ( gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 ) )
+	{
+		gui_info.screen_point = 0;
+	}
+
 	switch(gui_info.screen_point)
 	{
 		case(0):
 		u8g_prepare();
 		screen1();
+		break;
+		default:
+		u8g_prepare();
+		screen2();
 		break;
 	}
 

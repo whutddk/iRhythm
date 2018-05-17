@@ -24,14 +24,59 @@ void empty_isr()
 	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
 }
 
-void key1_isr()
+void key1_isr()//确定键
 {
+	//SWITCH 254 SONG most 
+	uint8_t i;
+
+	gui_info.delay_cnt = xTaskGetTickCount ();
+	if( gui_info.screen_point == 0 )
+	{
+		gui_info.screen_point ++;
+	}
+	else
+	{
+		//how to stay in the same song?
+		// for ( i = gui_info.screen_point - 1; i > 0; i-- )
+		// {
+		// 	;
+		// }
+
+	}
 	EMBARC_PRINTF("key1_isr!\r\n");
+
+
+	//Now Reflash the Srceen
+	xEventGroupSetBits( GUI_Ev, BIT_0 );
 }
 
-void key2_isr()
+void key2_isr()//右键
 {
+	uint8_t i;
+	struct filelist *file_pointer = Playlist_HEAD;
+
+	gui_info.delay_cnt = xTaskGetTickCount ();
+
+	for ( i = gui_info.screen_point ; i > 0 ;i -- )
+	{
+		file_pointer = file_pointer -> next;
+		if ( file_pointer != NULL )
+		{
+			
+		}
+		else
+		{
+			return;	//超出了没必要刷新画面，刷新了时间即可，如果是0界面，不会出现这种情况
+		}
+	}
+
 	EMBARC_PRINTF("key2_isr!\r\n");
+
+	gui_info.next_song = file_pointer -> data;
+	gui_info.screen_point ++;
+
+	//Now Reflash the Srceen
+	xEventGroupSetBits( GUI_Ev, BIT_0 );
 }
 
 void key3_isr()
