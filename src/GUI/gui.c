@@ -23,44 +23,43 @@ static void screen1()
 {
 		u8g_DrawStr(&_u8g, 0, 0, "Net Speed:");
 
-		// if ( gui_info.network_speed < 0)
-		// {
-		// 	u8g_DrawStr(&_u8g, 80, 0, "None!");
-		// }
-		// else
-		// {
-		// 	u8g_DrawStr(&_u8g, 80, 0,u8g_u16toa((uint16_t) gui_info.network_speed, 2));
-		// 	u8g_DrawStr(&_u8g, 100, 0,"KB/s");
-		// }
+		if ( gui_info.network_speed < 0)
+		{
+			u8g_DrawStr(&_u8g, 80, 0, "None!");
+		}
+		else
+		{
+			u8g_DrawStr(&_u8g, 80, 0,u8g_u16toa((uint16_t) gui_info.network_speed, 2));
+			u8g_DrawStr(&_u8g, 100, 0,"KB/s");
+		}
 
-		// u8g_DrawStr(&_u8g, 0, 15, "Decord:");
+		u8g_DrawStr(&_u8g, 0, 15, "Decord:");
 
-		// if ( gui_info.decord_speed < 0)
-		// 	{
-		// 		u8g_DrawStr(&_u8g, 80, 15, "None!");
-		// 	}
-		// 	else
-		// 	{
-		// 		u8g_DrawStr(&_u8g, 80, 15,u8g_u16toa((uint16_t) gui_info.decord_speed, 2));
-		// 		u8g_DrawStr(&_u8g, 100, 15,"ms");
-		// 	}
+		if ( gui_info.decord_speed < 0)
+			{
+				u8g_DrawStr(&_u8g, 80, 15, "None!");
+			}
+			else
+			{
+				u8g_DrawStr(&_u8g, 80, 15,u8g_u16toa((uint16_t) gui_info.decord_speed, 2));
+				u8g_DrawStr(&_u8g, 100, 15,"ms");
+			}
 
-		// u8g_DrawStr(&_u8g, 0, 30, "Cycle:");
+		u8g_DrawStr(&_u8g, 0, 30, "Cycle:");
 
-		// if ( gui_info.main_cycle < 0)
-		// 	{
-		// 		u8g_DrawStr(&_u8g, 80, 30, "None!");
-		// 	}
-		// 	else
-		// 	{
-		// 		u8g_DrawStr(&_u8g, 80, 30,u8g_u16toa((uint16_t) gui_info.main_cycle, 3));
-		// 		u8g_DrawStr(&_u8g, 100, 30,"KB/s");
-		// 	}
+		if ( gui_info.main_cycle < 0)
+			{
+				u8g_DrawStr(&_u8g, 80, 30, "None!");
+			}
+			else
+			{
+				u8g_DrawStr(&_u8g, 80, 30,u8g_u16toa((uint16_t) gui_info.main_cycle, 3));
+				u8g_DrawStr(&_u8g, 100, 30,"KB/s");
+			}
 
-		// u8g_DrawStr(&_u8g, 0, 45, "SONG:");
-		// u8g_DrawStr(&_u8g, 50, 45, gui_info.song_name);
-// u8g_u16toa((uint16_t) gui_info.main_cycle,3);
-// u8g_u16toa((uint16_t) gui_info.decord_speed, 2);
+		u8g_DrawStr(&_u8g, 0, 45, "SONG:");
+		u8g_DrawStr(&_u8g, 50, 45, gui_info.song_name);
+
 
 }
 
