@@ -10,16 +10,15 @@
 #include "esp8266.h"
 
 
-// #define WIFI_SSID   "\"Andrew_Sun\""
-// #define WIFI_PWD    "\"smartcar\""
-#define WIFI_SSID   "\"WUT-test\""
-#define WIFI_PWD    "\"DDK123456\""
+#define WIFI_SSID   "\"Andrew_Sun\""
+#define WIFI_PWD    "\"smartcar\""
+// #define WIFI_SSID   "\"WUT-test\""
+// #define WIFI_PWD    "\"DDK123456\""
 
 
-uint8_t flag_netpoll = 0;				//Big Data Receive Flag
 uint8_t flag_netbuff = BUFF_EMPTY;		//Net Buff FULL Flag
 int8_t net_buff[BUFF_SPACE];			//10MB Net Buff
-uint32_t bypass_cnt = 0;				//Big Data Receive Count
+
 
 char dllink[500] = { 0 };				//Store Song Download Url
 char songpoint[50] = { 0 };				//Store Song Name Download Form Net ,Unnecessart Now
@@ -28,26 +27,6 @@ ESP8266_DEF __ESP8266_A;				//Define ESP8266 Control Struct
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
 DEV_UART_PTR uart_obj;
-// /***
-// **	Start to Receive File
-// **
-// */
-// inline static void START_REC()
-// {	
-// 	bypass_cnt = 0;
-// 	flag_netpoll = 1;
-// }
-
-// /***
-// **	End Receive File
-// **
-// **/
-// inline static void END_REC()
-// {
-
-// 	bypass_cnt = 0;
-// 	flag_netpoll = 0;
-// }
 
 /**
 ** Deal with Receive Buff and extract Song ID 
@@ -79,7 +58,6 @@ static int get_songid(char *jsonstr)
 		songid[j] = '\0';
 		EMBARC_PRINTF("\r\n%s\r\n",songid);
 
-		/***建议两张表分开写******/
 		filelist_add(NET_LIST,songid,0,0);
 
 	}
@@ -229,12 +207,9 @@ int socket_request(uint8_t option)
 	uint32_t idlen_int;
 	char idlen_char[3] = "";
 
-	TickType_t xLastWakeTime;
-
 	DEV_BUFFER Rxintbuf;
 
 	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);
-
 
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
@@ -279,8 +254,6 @@ int socket_request(uint8_t option)
     _Rtos_Delay(100);
 	esp8266_passthr_write( ESP8266_A, http_cmd,strlen(http_cmd) );
 	_Rtos_Delay(100);
-	// esp8266_normal_write( ESP8266_A, http_cmd,strlen(http_cmd) );
-	//START_REC();				//Set Flag for isr to Receive Buff Directly
 
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
 	xTaskResumeAll();
@@ -290,9 +263,8 @@ int socket_request(uint8_t option)
 
     EMBARC_PRINTF("%s\r\n",(net_buff));
 
-	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
-	//END_REC();
 	
+	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
 	esp8266_passthr_end(ESP8266_A);
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
@@ -334,18 +306,17 @@ int socket_request(uint8_t option)
 
 void download_mp3()
 {
-	uint8_t http_cnt = 0;
 	uint32_t http_sum = 0;
-	// uint32_t cur_time;
 	char http_cmd[500] = {0};
 	uint8_t timeout_cnt = 0;
+	uint32_t bypass_cnt = 0;	
 
 	uint32_t net_time = 0;
 	uint32_t net_time_pre = 0;
 	
-
-
 	DEV_BUFFER Rxintbuf;
+
+
 
 	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);
 	
@@ -371,7 +342,6 @@ void download_mp3()
 	_Rtos_Delay(100);
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
 
-	//START_REC();
 	xTaskResumeAll();
 
 	net_time_pre = xTaskGetTickCount ();
@@ -392,8 +362,6 @@ void download_mp3()
 			EMBARC_PRINTF("received : %d KB/s\r", gui_info.network_speed);
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
-
-
 
 			if ( http_sum > 14*1024*1024 )//protect
 			{
@@ -422,8 +390,6 @@ void download_mp3()
 	esp8266_passthr_end(ESP8266_A);
 	_Rtos_Delay(100);
 	esp8266_transmission_mode(ESP8266_A,ESP8266_NORMALSEND);
-	//END_REC();
-
 	
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, NULL);
 	_Rtos_Delay(100);

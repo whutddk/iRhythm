@@ -59,8 +59,10 @@ extern void filelist_delete(uint8_t list_id);
 extern int32_t error_num ;
 
 /***********define in mem.c ************/
-extern void readout_file(char* music_name);
+extern FATFS fs_p;
 
+extern void readout_file(char* music_name);
+extern void read_dir();
 /***********define in music.c ************/
 extern DEV_SPI_PTR spi;
 extern int8_t file_buff[ BUFF_SPACE ]; 
@@ -86,9 +88,7 @@ extern void net_rst();
 uint8_t flag_netbuff;
 extern char dllink[500];
 extern char songpoint[50];
-extern uint8_t flag_netpoll ;
 extern int8_t net_buff[ BUFF_SPACE ];
-extern uint32_t bypass_cnt;
 extern ESP8266_DEF_PTR ESP8266_A;
 extern void net_init();
 extern int socket_request(uint8_t option);
