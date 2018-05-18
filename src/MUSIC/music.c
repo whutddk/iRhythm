@@ -65,11 +65,17 @@ void play_init()
 	spi =  spi_get_dev(DW_SPI_0_ID);
 	
 /**mount Fatfs**/
-	error_num = f_mount(&fs_p,"0:/",1);
-	if( error_num != FR_OK)
+	while(1)
 	{
-		EMBARC_PRINTF("File f_mount failed!\r\nstop!\r\n");
-		while(1);
+		error_num = f_mount(&fs_p,"0:/",1);
+		if( error_num == FR_OK)
+		{
+			break;		
+		}
+		else
+		{
+			EMBARC_PRINTF("File f_mount failed!\r\nstop!\r\n");
+		}
 	}
 
 /********checkout directory and init song list to play****************/
