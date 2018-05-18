@@ -9,102 +9,26 @@
 
 static DEV_GPIO *io_signal;
 
+/**
+ * \brief       IO interrupt that trigger music event to switch back music task
+ *              
+ */
 void empty_isr()
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	
-
-	/*******No a Suggestion Used Here**************************/
-	// xEventGroupSetBits( evt1_cb, BIT_1 );
 
 	xEventGroupSetBitsFromISR(
 		evt1_cb,	// The event group being updated.
 		BIT_1,   // The bits being set.
 		&xHigherPriorityTaskWoken );
-	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
+	//EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
 }
 
-void key1_isr()//确定键
-{
-	//SWITCH 254 SONG most 
-	uint8_t i;
-	struct filelist *file_pointer = Playlist_HEAD;
 
-	gui_info.delay_cnt = xTaskGetTickCount ();
-
-	if ( gui_info.screen_point == 0 )
-	{
-		gui_info.screen_point ++;
-		gui_info.next_song = file_pointer -> data;
-	}
-	else
-	{
-		gui_info.flag_next = 1;
-
-		if ( gui_info.screen_point != 1 || Playlist_HEAD -> location != IN_BUFF )
-		{
-			flag_netbuff = BUFF_EMPTY;	//protect that break while net_buff was playing and flag net reset
-		}
-
-		//how to stay in the same song?
-		for ( i = gui_info.screen_point - 1; i > 0; i -- )
-		{
-				/***********If it is the last Song in Play List,Play it again and again and Never Delete*******************/
-			if ( Playlist_HEAD -> next != NULL )
-			{
-				filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
-			}
-			else
-			{
-				EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
-			}
-		}
-		gui_info.screen_point = 0;
-		gui_info.network_speed = -1;
-		gui_info.decord_speed = -1;
-		gui_info.main_cycle = -1;
-	}
-	EMBARC_PRINTF("key1_isr!\r\n");
-
-
-	//Now Reflash the Srceen
-	xEventGroupSetBits( GUI_Ev, BIT_0 );
-}
-
-void key2_isr()//右键
-{
-	uint8_t i;
-	struct filelist *file_pointer = Playlist_HEAD;
-
-	gui_info.delay_cnt = xTaskGetTickCount ();
-
-	for ( i = gui_info.screen_point ; i > 0 ;i -- )
-	{
-		file_pointer = file_pointer -> next;
-		if ( file_pointer != NULL )
-		{
-			
-		}
-		else
-		{
-			return;	//超出了没必要刷新画面，刷新了时间即可，如果是0界面，不会出现这种情况
-		}
-	}
-
-	EMBARC_PRINTF("key2_isr!\r\n");
-
-	gui_info.next_song = file_pointer -> data;
-	gui_info.screen_point ++;
-
-	//Now Reflash the Srceen
-	xEventGroupSetBits( GUI_Ev, BIT_0 );
-}
-
-void key3_isr()
-{
-	EMBARC_PRINTF("key3_isr!\r\n");
-}
-
+/**
+ * \brief       IO port initalization 
+ *              
+ */
 void iosignal_init()
 {
 	DEV_GPIO_INT_CFG gpio_int_cfg;
@@ -120,8 +44,7 @@ void iosignal_init()
 
 	io_signal = gpio_get_dev(DEV_GPIO_PORT_A);
 
-	if (io_signal->gpio_open(0xf0000000) == E_OPNED) 
-	{
+	if (io_signal->gpio_open(0xf0000000) == E_OPNED) {
 		io_signal->gpio_control(GPIO_CMD_SET_BIT_DIR_OUTPUT, (void *)(BOARD_SIGNOUT_MASK));
 		io_signal->gpio_control(GPIO_CMD_SET_BIT_DIR_INPUT, (void *)(BOARD_SIGNIN_MASK));
 		io_signal->gpio_control(GPIO_CMD_DIS_BIT_INT, (void *)(BOARD_SIGNOUT_MASK));
@@ -150,8 +73,8 @@ void iosignal_init()
 		io_signal->gpio_control(GPIO_CMD_ENA_BIT_INT, (void *)(BOARD_SIGNIN_MASK));
 	}
 
-	iosignal_ctrl(0,0);
-	iosignal_ctrl(0,1);
+	iosignal_ctrl(0, 0);
+	iosignal_ctrl(0, 1);
 
 	io_signal->gpio_write(0x00000100, 0x00000100);
 	// iosignal_ctrl(0,2);
@@ -160,60 +83,67 @@ error_exit:
 	return;
 }
 
-
-void iosignal_ctrl(uint8_t val,uint8_t num)
+/**
+ * \brief       IO output control
+ * 
+ * \param[in]   val                    1:IO LOGIC HIGH 0:IO LOGIC LOW
+ *
+ * \param[in]   num                    0 or 1 for two special IO for debug popuse
+ *
+ */
+void iosignal_ctrl(uint8_t val, uint8_t num)
 {
-	/** write 1 to light on led bit, else light off led */
-
 	uint32_t temp = 0;
 
-	temp = val?0x10000000:0;
+	temp = val ? 0x10000000 : 0;
 
-	switch(num)
-	{
+	switch (num) {
 		case 0:
-		io_signal->gpio_write(temp<<0, 0x10000000);
-		break;
-		case 1:
-		io_signal->gpio_write(temp<<1, 0x20000000);
-		break;
-		// case 2:
-		// io_signal->gpio_write(temp<<2, 0x40000000);
-		// break;
-		// case 3:
-		// io_signal->gpio_write(temp<<3, 0x80000000);
-		// break;
-		default:
-		break;
-	}
+			io_signal->gpio_write(temp << 0, 0x10000000);
+			break;
 
-	// led_val = (~led_val) & mask;
-	// led_val = led_val << EMSK_LED_OFFSET;
-	// mask = (mask << EMSK_LED_OFFSET) & BOARD_SIGN_MASK;
+		case 1:
+			io_signal->gpio_write(temp << 1, 0x20000000);
+			break;
+
+		default:
+			break;
+	}
 
 	return;
 }
 
+/**
+ * \brief       Read IO logical lever 
+ *
+ * \param[in]   num                    0 or 1 for two special IO
+ *
+ * \retval      0                      Logical LOW
+ *
+ * \retval      1                      Logical HIGH
+ *
+ */
 uint8_t iosignal_read(uint8_t num)
 {
-	uint32_t value = 0,mask;
+	uint32_t value = 0, mask;
 
-	if ( num == 0 )
-	{
+	if ( num == 0 ) {
 		mask = 0x40000000;
 		io_signal->gpio_read(&value, mask);
 		value = (~value) & mask;
-	}
-	else
-	{	
-		mask =0x80000000;
+	} else {
+		mask = 0x80000000;
 		io_signal->gpio_read(&value, mask);
 		value = (~value) & mask;
 	}
 
-	return (value?0:1);
+	return (value ? 0 : 1);
 }
 
+/**
+ * \brief       PULL logical LOW for a period for ESP8266 reset
+ *
+ */
 void net_rst()
 {
 	uint32_t cur_time;
@@ -222,11 +152,10 @@ void net_rst()
 
 	// _Rtos_Delay(100);
 	cur_time = OSP_GET_CUR_MS();
-	while((OSP_GET_CUR_MS()-cur_time) < 1000);
+
+	while ((OSP_GET_CUR_MS() - cur_time) < 1000);
 
 	/***************RST = 1;*****************/
 	io_signal->gpio_write(0x00000100, 0x00000100);
-
-
-} 
+}
 

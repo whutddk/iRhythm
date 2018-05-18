@@ -58,7 +58,7 @@
  */
 #define DEF_NFRACBITS	(DQ_FRACBITS_OUT - 2 - 2 - 15)
 #define CSHIFT	12	/* coefficients have 12 leading sign bits for early-terminating mulitplies */
-#define MOVE_BIT 16 
+
 #define CHECK_BIT 2
 
 /**************************************************************************************

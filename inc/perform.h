@@ -14,6 +14,6 @@ static inline void perf_start(void)
 
 /** performance timer end, and return the time passed */
 static inline uint32_t perf_end(void)
-{	
+{
 	return xTaskGetTickCount() - start;
 }

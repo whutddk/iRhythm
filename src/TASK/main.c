@@ -30,19 +30,11 @@
 
 
 
-/**
- * \file
- * \ingroup	EMBARC_APP_BAREMETAL_BLINKY
- * \brief	main source file for blinky example
- */
-
-/**
- * \addtogroup	EMBARC_APP_BAREMETAL_BLINKY
- * @{
- */
 /* embARC HAL */
 #include "embARC.h"
 #include "embARC_debug.h"
+
+
 #include "include.h"
 #include "inc_task.h"
 
@@ -56,63 +48,72 @@ EventGroupHandle_t evt1_cb;
 EventGroupHandle_t GUI_Ev;
 
 
-/**
- * \brief	Test hardware board without any peripheral
- */
 
 
 int32_t error_num = 0;
 
+/**
+ * \brief       Main function of Application,initialize gui task,music task 
+ *              and net task.Fuction never return
+ *
+ */
 int main(void)
 {
 	// board_init();
 	io_mux_init();
 	emsk_gpio_init();
-	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
+	EMBARC_PRINTF("Application Start\r\n");
 	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
 
 	vTaskSuspendAll();
 
-/**********MP3 Decord Assist IO Init***************************/
+	/**********MP3 Decord Assist IO Init***************************/
 	iosignal_init();
 
-/********IO reset ESP8266************************/
+	/********IO reset ESP8266************************/
 	net_rst();
-/*********init Songid List*****/
-    filelist_init();
-/*******Init Esp8266 and Connect to Wifi***************/
-    net_init();
-    spi_dma_prepare();
-/********************** Create Tasks**************************/
+	/*********init Songid List*****/
+	filelist_init();
+	/*******Init Esp8266 and Connect to Wifi***************/
+	net_init();
 
-	if (xTaskCreate(gui_task, "gui_task", 512, (void *)NULL, configMAX_PRIORITIES-1, &GUI_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+	spi_dma_prepare();
+
+	gui_init();
+	/********************** Create Tasks**************************/
+
+	if (xTaskCreate(gui_task, "gui_task", 512, (void *)NULL, configMAX_PRIORITIES - 1, &GUI_task_handle)
+		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create GUI_task error\r\n");
 		return -1;
 	}
 
-	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-2, &MUSIC_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES - 2, &MUSIC_task_handle)
+		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create music_task error\r\n");
 		return -1;
-	}	
-	if (xTaskCreate(net_task, "net_task", 2048, (void *)NULL, configMAX_PRIORITIES-3, &NET_task_handle)
+	}
+
+	if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES - 3, &NET_task_handle)
 		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create NET_task error\r\n");
 		return -1;
 	}
+
 	//other task
 
 
 	//other task end//
-	
+
 	// Create Events
 
 	evt1_cb = xEventGroupCreate();
 	GUI_Ev = xEventGroupCreate();
 
 	xTaskResumeAll();
-	while(1);
+
+	while (1);
+
 	return E_SYS;
 }
 
