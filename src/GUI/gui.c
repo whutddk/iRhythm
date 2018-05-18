@@ -83,6 +83,9 @@ static void screen2()
 }
 
 
+
+
+
 void gui_init()
 {
 	gui_info.screen_point = 0;

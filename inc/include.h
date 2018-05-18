@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-/********define in playlist.c******/
+/********define in filelist.c******/
 struct filelist
 {
 	char data[50];
@@ -124,6 +124,11 @@ extern struct _gui_info gui_info;
 
 extern void gui_init();
 extern void reflash_screen();
+
+/**********key.c********************/
+extern void key1_isr();
+extern void key2_isr();
+extern void key3_isr();
 
 #endif
 
