@@ -82,7 +82,10 @@ int main(void)
     filelist_init();
 /*******Init Esp8266 and Connect to Wifi***************/
     net_init();
+    
     spi_dma_prepare();
+
+	gui_init();
 /********************** Create Tasks**************************/
 
 	if (xTaskCreate(gui_task, "gui_task", 512, (void *)NULL, configMAX_PRIORITIES-1, &GUI_task_handle)

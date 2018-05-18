@@ -6,8 +6,6 @@
 
 void gui_task()
 {		
-	gui_init();
-
 	while(1)
 	{	
 		reflash_screen();	
