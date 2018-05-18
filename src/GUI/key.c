@@ -3,7 +3,10 @@
 
 #include "include.h"
 
-
+/**
+ * \brief       IO interrupt callback to realize COMFIRM key function
+ *
+ */
 void key1_isr()//确定键
 {
 	//SWITCH 254 SONG most
@@ -48,6 +51,10 @@ void key1_isr()//确定键
 	xEventGroupSetBits( GUI_Ev, BIT_0 );
 }
 
+/**
+ * \brief       IO interrupt callback to realize NEXT key function
+ *
+ */
 void key2_isr()//右键
 {
 	uint8_t i;
@@ -74,6 +81,10 @@ void key2_isr()//右键
 	xEventGroupSetBits( GUI_Ev, BIT_0 );
 }
 
+/**
+ * \brief       IO interrupt callback to realize BACKUP key function
+ *
+ */
 void key3_isr()
 {
 	//EMBARC_PRINTF("key3_isr!\r\n");

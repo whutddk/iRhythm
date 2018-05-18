@@ -14,7 +14,6 @@ FIL fp;
 /**
  * \brief       Read out File Form SD Card to DDR2 15MB buff
  *
- *
  * \param[in]   music_name             Pointer of file name in SD card need to read out
  *
  */

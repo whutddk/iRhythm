@@ -23,9 +23,10 @@ static dma_channel_t dma_chn_tx, dma_chn_rx;
 #define _ICACHE_INVALIDATE_MLINES(addr, size)	icache_invalidate_mlines((uint32_t)(addr), (uint32_t)(size))
 
 typedef struct spi_xfer SPI_XFER, *SPI_XFER_PTR;
+
 /**
  * \brief	spi read and write data structure used by \ref SPI_CMD_TRANSFER
- * 	spi write then read data
+ * 	        spi write then read data
  *
  */
 struct spi_xfer {
@@ -64,6 +65,13 @@ static void invalidate_xfer_data(SPI_XFER *xfer)
 
 }
 
+
+/**
+ * \brief       Send music transfer complete to music task to continue
+ *
+ * \param[in]   param                  Interrupt param transmit by base function
+ *
+ */
 void spi_xfer_callback(void *param)
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -82,7 +90,13 @@ void spi_xfer_callback(void *param)
 		&xHigherPriorityTaskWoken );
 }
 
-
+/**
+ * \brief       Set DMA configration to start DMA transfer
+ *
+ * \param[in]   xfer                   Transfer configration struct
+ *                                     
+ * \retval      0                      Function complete success
+ */
 static int32_t spi_xfer(SPI_XFER *xfer)
 {
 	static __attribute__((aligned(16))) dma_desc_t dma_desc_tx;
@@ -159,6 +173,10 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 	return 0;
 }
 
+/**
+ * \brief       Initialization DMA chnnal
+ *                                     
+ */
 void spi_dma_prepare(void)
 {
 	/** Must init uDMA before use it */

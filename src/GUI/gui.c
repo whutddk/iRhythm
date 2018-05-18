@@ -11,7 +11,10 @@ struct _gui_info gui_info;
 
 
 
-
+/**
+ * \brief       GUI format configuration
+ *
+ */
 static void u8g_prepare(void)
 {
 	u8g_SetFont(&_u8g, u8g_font_6x10);		/* set the current font and reset the font reference position to "Baseline" */
@@ -21,6 +24,10 @@ static void u8g_prepare(void)
 	u8g_SetFontPosTop(&_u8g);			/* set the reference position for the character and string draw procedure */
 }
 
+/**
+ * \brief       GUI screen 1 reflash function to show debug preformace message
+ *
+ */
 static void screen1()
 {
 	u8g_FirstPage(&_u8g);
@@ -60,10 +67,10 @@ static void screen1()
 }
 
 
-/***
-***This function used to show song name to select next song
-***
-*/
+/**
+ * \brief       This function used to show song name to select song
+ *
+ */
 static void screen2()
 {
 	u8g_FirstPage(&_u8g);
@@ -76,7 +83,10 @@ static void screen2()
 
 
 
-
+/**
+ * \brief       This function used to initialize gui configuration
+ *
+ */
 void gui_init()
 {
 	gui_info.screen_point = 0;
@@ -92,6 +102,10 @@ void gui_init()
 	u8g_SetFont(&_u8g, u8g_font_5x7);
 }
 
+/**
+ * \brief       Main Loop function of GUI task 
+ *
+ */
 void reflash_screen()
 {
 	if ( gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 ) ) {

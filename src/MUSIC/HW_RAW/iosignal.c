@@ -9,6 +9,10 @@
 
 static DEV_GPIO *io_signal;
 
+/**
+ * \brief       IO interrupt that trigger music event to switch back music task
+ *              
+ */
 void empty_isr()
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -21,7 +25,10 @@ void empty_isr()
 }
 
 
-
+/**
+ * \brief       IO port initalization 
+ *              
+ */
 void iosignal_init()
 {
 	DEV_GPIO_INT_CFG gpio_int_cfg;
@@ -76,11 +83,16 @@ error_exit:
 	return;
 }
 
-
+/**
+ * \brief       IO output control
+ * 
+ * \param[in]   val                    1:IO LOGIC HIGH 0:IO LOGIC LOW
+ *
+ * \param[in]   num                    0 or 1 for two special IO for debug popuse
+ *
+ */
 void iosignal_ctrl(uint8_t val, uint8_t num)
 {
-	/** write 1 to light on led bit, else light off led */
-
 	uint32_t temp = 0;
 
 	temp = val ? 0x10000000 : 0;
@@ -94,23 +106,23 @@ void iosignal_ctrl(uint8_t val, uint8_t num)
 			io_signal->gpio_write(temp << 1, 0x20000000);
 			break;
 
-		// case 2:
-		// io_signal->gpio_write(temp<<2, 0x40000000);
-		// break;
-		// case 3:
-		// io_signal->gpio_write(temp<<3, 0x80000000);
-		// break;
 		default:
 			break;
 	}
 
-	// led_val = (~led_val) & mask;
-	// led_val = led_val << EMSK_LED_OFFSET;
-	// mask = (mask << EMSK_LED_OFFSET) & BOARD_SIGN_MASK;
-
 	return;
 }
 
+/**
+ * \brief       Read IO logical lever 
+ *
+ * \param[in]   num                    0 or 1 for two special IO
+ *
+ * \retval      0                      Logical LOW
+ *
+ * \retval      1                      Logical HIGH
+ *
+ */
 uint8_t iosignal_read(uint8_t num)
 {
 	uint32_t value = 0, mask;
@@ -128,6 +140,10 @@ uint8_t iosignal_read(uint8_t num)
 	return (value ? 0 : 1);
 }
 
+/**
+ * \brief       PULL logical LOW for a period for ESP8266 reset
+ *
+ */
 void net_rst()
 {
 	uint32_t cur_time;
@@ -141,7 +157,5 @@ void net_rst()
 
 	/***************RST = 1;*****************/
 	io_signal->gpio_write(0x00000100, 0x00000100);
-
-
 }
 

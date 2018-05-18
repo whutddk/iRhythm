@@ -32,14 +32,6 @@ void filelist_init()
 
 }
 
-//每获得一个歌曲id则后面加一个链
-/****
-**	Add data in List
-** LIST_ID :
-** ID_DATA :ID Number or File Name
-** lenth : NO use;File Length
-** location: no use ;File in SD card or Net BUFF
-**/
 
 /**
  * \brief       Add data in List
