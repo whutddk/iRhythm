@@ -13,6 +13,10 @@
 #include <stdlib.h>
 #include <malloc.h>
 
+/*********Global**********************/
+#define BUFF_SPACE 15*1024*1024
+
+
 /********define in filelist.c******/
 struct filelist
 {
@@ -63,7 +67,7 @@ extern void readout_file(char* music_name);
 
 /***********define in music.c ************/
 extern DEV_SPI_PTR spi;
-extern int8_t file_buff[15*1024*1024]; 
+extern int8_t file_buff[ BUFF_SPACE ]; 
 extern volatile uint8_t flag_dma_finish;
 
 extern void play_init();
@@ -94,7 +98,7 @@ uint8_t flag_netbuff;
 extern char dllink[500];
 extern char songpoint[50];
 extern uint8_t flag_netpoll ;
-extern int8_t net_buff[15*1024*1024];
+extern int8_t net_buff[ BUFF_SPACE ];
 extern uint32_t bypass_cnt;
 extern ESP8266_DEF_PTR ESP8266_A;
 extern void net_init();

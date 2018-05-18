@@ -32,7 +32,7 @@ static void screen1()
 		}
 		else
 		{
-			u8g_DrawStr(&_u8g, 80, 0,u8g_u16toa((uint16_t) gui_info.network_speed, 2));
+			u8g_DrawStr(&_u8g, 80, 0,u8g_u16toa((uint16_t) gui_info.network_speed, 3));
 			u8g_DrawStr(&_u8g, 100, 0,"KB/s");
 		}
 

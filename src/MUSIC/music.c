@@ -8,7 +8,7 @@ DEV_SPI_PTR spi;
 
 FATFS fs_p;
 
-int8_t file_buff[15 *1024*1024];			//10MB File Buff to Read out from SD Card
+int8_t file_buff[ BUFF_SPACE ];			//10MB File Buff to Read out from SD Card
 
 /**********************
 **	Read out the Information of  file in SD Card and store in file list
@@ -107,7 +107,7 @@ int32_t Start_playing()
 	
 
 	/********If the Song File is Bigger than 10MB Buff,Play Next one*****************************/
-	if ( file_lenth  > 15 * 1024* 1024 )
+	if ( file_lenth  > BUFF_SPACE )
 	{
 	 	EMBARC_PRINTF("\r\nfile too big,play fail!\r\n");
 	 	return -1;

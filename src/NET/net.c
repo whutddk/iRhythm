@@ -18,7 +18,7 @@
 
 uint8_t flag_netpoll = 0;				//Big Data Receive Flag
 uint8_t flag_netbuff = BUFF_EMPTY;		//Net Buff FULL Flag
-int8_t net_buff[15*1024*1024];			//10MB Net Buff
+int8_t net_buff[BUFF_SPACE];			//10MB Net Buff
 uint32_t bypass_cnt = 0;				//Big Data Receive Count
 
 char dllink[500] = { 0 };				//Store Song Download Url
@@ -179,7 +179,7 @@ void net_init()
 	EMBARC_PRINTF("============================ Init ============================\n");
 	
 	
-	memset( net_buff, 0, sizeof(int8_t) * 15 * 1024 * 1024 );
+	memset( net_buff, 0, sizeof(int8_t) * BUFF_SPACE );
 
 
 
@@ -233,14 +233,14 @@ int socket_request(unsigned char option)
 
 	DEV_BUFFER Rxintbuf;
 
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 15 * 1024 * 1024);
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);
 
 
     EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
 
     memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
+	memset(net_buff, 0, sizeof(int8_t) * BUFF_SPACE);
 
     EMBARC_PRINTF("============================ create http command ============================\r\n");
     switch (option)
@@ -347,14 +347,14 @@ void download_mp3()
 
 	DEV_BUFFER Rxintbuf;
 
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(char) * 15 * 1024 * 1024);
+	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);
 	
 
 	EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
 
     memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(char) * 15 * 1024 * 1024);
+	memset(net_buff, 0, sizeof(int8_t) * BUFF_SPACE);
 
     strcat (http_cmd,"GET ");
     strcat (http_cmd,dllink);

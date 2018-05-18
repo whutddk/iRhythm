@@ -34,7 +34,7 @@ void readout_file(char* music_name)
 	}
 
 	EMBARC_PRINTF("Start To Read file %s !!!\r\n",filename);
-	memset( file_buff, 0, sizeof(int8_t) * 15 * 1024 * 1024 );
+	memset( file_buff, 0, sizeof(int8_t) * BUFF_SPACE );
 	num_read = 1;
 
 	while( num_read != 0 )
