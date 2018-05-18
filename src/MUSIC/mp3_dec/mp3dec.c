@@ -407,7 +407,7 @@ int MP3Decode(HMP3Decoder hMP3Decoder, unsigned char **inbuf, int *bytesLeft, ch
 				MP3ClearBadFrame(mp3DecInfo, outbuf);
 				return ERR_MP3_INVALID_IMDCT;			
 			}
-			iosignal_ctrl(1,0);
+			//iosignal_ctrl(1,0);
 		/* subband transform - if stereo, interleaves pcm LRLRLR */
 		if (Subband(mp3DecInfo, outbuf + gr*mp3DecInfo->nGranSamps*mp3DecInfo->nChans) < 0) {
 			MP3ClearBadFrame(mp3DecInfo, outbuf);

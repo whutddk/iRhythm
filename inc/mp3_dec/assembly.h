@@ -55,7 +55,6 @@
 
 #ifndef _ASSEMBLY_H
 #define _ASSEMBLY_H
-//#include "arc_dsp_mw.h"
 #include "embARC.h"
 #include "embARC_debug.h"
 
@@ -71,47 +70,21 @@ typedef long long Word64;
 static __inline Word64 MADD64(Word64 sum, int x, int y)
 {
 	return (Word64)x*y + sum;
-	// Word64 res;
-	// res = (Word64)x*(Word64)y;
-	// sum = res + sum;
-	// return sum;
-
-	// Word64 res1;
-	// int addr,zero;
-
-	// zero = 0;
-	// addr = ACC0_LO;
-
-	// addr = ACC0_HI;
-	// write_aux_reg(ACC0_LO, 0);
-	// write_aux_reg(ACC0_HI, 0);
-
-	// Asm("MAC %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
-
-
-	// return res1;
-	
 }
 
 static __inline Word64 SHL64(Word64 x, int n)
 {
-	// Word64 res;
-	// res = x << n;
-	// return res;
 	return (x << n);
 }
 
 static __inline Word64 SAR64(Word64 x, int n)
 {
-	// Word64 res;
-	// res = x >> n;
-	// return res;
 	return (x >> n);
 }
 
 static __inline int SAR32(int x, int n)
 {
-	int y;
+	register int y;
 
 	Asm("ASRS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
 
@@ -121,7 +94,7 @@ static __inline int SAR32(int x, int n)
 
 static __inline int SAL32(int x, int n)
 {
-	int y;
+	register int y;
 
 	Asm("ASLS %0, %1, %2" :"=r"(y): "r"(x), "r"(n));
 
@@ -129,60 +102,43 @@ static __inline int SAL32(int x, int n)
 	
 }
 
-
 static __inline int MULSHIFT32(int x, int y)
 {
-	// Word64  res;
-	// res = (Word64)x*(Word64)y;
-	// y = (int)(res>>32);
- // 	return y;
-	// return _arc_mpym(x,y);
 
-	int  res1,res2;
-	// Asm("swape %0, %1" :"=r"(x): "r"(y));
-	Asm("MPYM %0, %1, %2" :"=r"(res1): "r"(x), "r"(y));
-	// Asm("MPYD %0, %2, %3\n\t"
-	// 	"MOV %1,r1"
-	// 	:"=r"(res1),"=r"(res2): "r"(x), "r"(y));
-	return res1;
+	register int z;
+
+	Asm("MPYM %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
+
+	return z;
 }
 
 static __inline int FASTABS(int x)
 {
-	// return _arc_abss(x);
-	// int sign;
-
-	// sign = x >> (sizeof(int) * 8 - 1);
-	// x ^= sign;
-	// x -= sign;
-
-	// return x;
-
-	int y;
+	register int y;
 	Asm("ABSS %0, %1" :"=r"(x):  "r"(y));
 	return y;
 
 }
 
-static __inline int FASSUB32(int x,int y)
-{
-	int z;
+// static __inline int FASSUB32(int x,int y)
+// {
+// 	int z;
 
-	Asm("SUBS %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
+// 	Asm("SUBS %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
 
-	return z;
+// 	return z;
 
-}
+// }
 
-static __inline int FASADD32(int x,int y)
-{
-	int z;
+// static __inline int FASADD32(int x,int y)
+// {
+// 	int z;
 
-	Asm("ADDS %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
+// 	Asm("ADDS %0, %1, %2" :"=r"(z): "r"(x), "r"(y));
 
-	return z;
+// 	return z;
 
-}
+// }
 
 
 static __inline int CLZ(int x)
@@ -203,79 +159,20 @@ static __inline int CLZ(int x)
 
 static __inline int FASMAX( int x,int y )
 {
-	int z;
+	register int z;
 	Asm("MAX %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
 	return z;
 }
 
 static __inline int FASMIN( int x,int y )
 {
-	int z;
+	register int z;
 	Asm("MIN %0, %1, %2" :"=r"(z): "r"(x),"r"(y));
 	return z;
 }
 
 static __inline void MC0S(int * SL1,int * SR1,const int * coef,int * vb1)
 {
-	/**伪代码
-	LD r0，*coef
-	negs r1 ,*(coef+1)
-	LD r2，*coef+2
-	negs r3 ,*coef+3
-	LD r4，*coef+4
-	negs r5 ,*coef+5
-	LD r6，*coef+6
-	negs r7 ,*coef+7
-	LD r8，*coef+8
-	negs r9 ,*coef+9
-	LD r10，*coef+10
-	negs r11 ,*coef+11
-	LD r12，*coef+12
-	negs r13 ,*coef+13
-	LD r14，*coef+14
-	negs r15,*coef+15
-
-	sr ACC0_LO ,0
-	sr ACC0_HI ,0
-	MAC r16 *(vb1+0) r0
-	mac r16 *(vb1+(23-0)) r1
-	MAC r16 *(vb1+1) r2
-	mac r16 *(vb1+(23-1)) r3
-	MAC r16 *(vb1+2) r4
-	mac r16 *(vb1+(23-2)) r5
-	MAC r16 *(vb1+3) r6
-	mac r16 *(vb1+(23-3)) r7
-	MAC r16 *(vb1+4) r8
-	mac r16 *(vb1+(23-4)) r9
-	MAC r16 *(vb1+5) r10
-	mac r16 *(vb1+(23-5)) r11
-	MAC r16 *(vb1+6) r12
-	mac r16 *(vb1+(23-6)) r13
-	MAC r16 *(vb1+7) r14
-	mac r16 *(vb1+(23-7)) r15
-	lr *SL1 ACC0_HI
-
-	sr ACC0_LO ,0
-	sr ACC0_HI ,0
-	MAC r16 *(vb1+32+0) r0
-	mac r16 *(vb1+32+(23-0)) r1
-	MAC r16 *(vb1+32+1) r2
-	mac r16 *(vb1+32+(23-1)) r3
-	MAC r16 *(vb1+32+2) r4
-	mac r16 *(vb1+32+(23-2)) r5
-	MAC r16 *(vb1+32+3) r6
-	mac r16 *(vb1+32+(23-3)) r7
-	MAC r16 *(vb1+32+4) r8
-	mac r16 *(vb1+32+(23-4)) r9
-	MAC r16 *(vb1+32+5) r10
-	mac r16 *(vb1+32+(23-5)) r11
-	MAC r16 *(vb1+32+6) r12
-	mac r16 *(vb1+32+(23-6)) r13
-	MAC r16 *(vb1+32+7) r14
-	mac r16 *(vb1+32+(23-7)) r15
-	lr *SR1 ACC0_HI
-
-	**/
 
 Asm("LD %%r0, %0\n\t"
 	"LD %%r1, %1\n\t"
@@ -433,63 +330,6 @@ Asm("LD %%r17, %0\n\t"
 
 static __inline void MC1S(int * SL1,int * SR1,const int * coef,int * vb1)
 {
-	/*
-		伪代码
-	
-	ld r0, *coef
-	ld r1,*(coef+1)
-	ld r2,*(coef+2)
-	ld r3,*(coef+3)
-	ld r4,*(coef+4)
-	ld r5,*(coef+5)
-	ld r6,*(coef+6)
-	ld r7,*(coef+7)
-
-	ld r8,*(vb1)
-	ld r9,*(vb1+1)
-	ld r10,*(vb1+2)
-	ld r11,*(vb1+3)
-	ld r12,*(vb1+4)
-	ld r13,*(vb1+5)
-	ld r14,*(vb1+6)
-	ld r15,*(vb1+7)
-
-	_arc_aux_write(ACC0_LO, 0);
-	_arc_aux_write(ACC0_HI, 0);
-	mac r16 r8,r0
-	mac r16 r9,r1
-	mac r16 r10,r2
-	mac r16 r11,r3
-	mac r16 r12,r4
-	mac r16 r13,r5
-	mac r16 r14,r6
-	mac r16 r15,r7
-	*SL1 = _arc_aux_read(ACC0_HI);
-
-	_arc_aux_write(ACC0_LO, 0);
-	_arc_aux_write(ACC0_HI, 0);
-
-	ld r8,*(vb1+32)
-	ld r9,*(vb1+32+1)
-	ld r10,*(vb1+32+2)
-	ld r11,*(vb1+32+3)
-	ld r12,*(vb1+32+4)
-	ld r13,*(vb1+32+5)
-	ld r14,*(vb1+32+6)
-	ld r15,*(vb1+32+7)
-
-	mac r16 r8,r0
-	mac r16 r9,r1
-	mac r16 r10,r2
-	mac r16 r11,r3
-	mac r16 r12,r4
-	mac r16 r13,r5
-	mac r16 r14,r6
-	mac r16 r15,r7
-
-	*SR1 = _arc_aux_read(ACC0_HI);
-	*/
-
 
 Asm(
 	"ld %%r0, %0 \n\t"
@@ -567,7 +407,6 @@ Asm(
 	"m"(*(vb1+37)),"m"(*(vb1+38)),"m"(*(vb1+39))
 	:"%r0","%r1","%r2","%r3","%r4","%r5","%r6","%r7","%r8","%r9","%r10","%r11","%r12","%r13","%r14","%r15","%r16","%r17","%r18"
 );
-	// *SR1 = _arc_aux_read(ACC0_HI);
 
 	Asm ( "LR %%r17, [0X582]\n\t "
 		"ST %%r17,%0"
@@ -579,217 +418,7 @@ Asm(
 
 static __inline void MC2S(int* SL1,int* SR1,int* SL2,int* SR2,const int* coef,int * vb1)
 {
-	/*伪代码
-	ld r0, *coef
-	ld r1,	*(coef+1)
-	ld r2,	*(coef+2)
-	ld r3,	*(coef+3)
-	ld r4,	*(coef+4)
-	ld r5,	*(coef+5)
-	ld r6,	*(coef+6)
-	ld r7,	*(coef+7)
-	ld r8,	*(coef+8)
-	ld r9,	*(coef+9)
-	ld r10,	*(coef+10)
-	ld r11,	*(coef+11)
-	ld r12,	*(coef+12)
-	ld r13,	*(coef+13)
-	ld r14,	*(coef+14)
-	ld r15,	*(coef+15)
-
-	ld r16, *(vb1)
-	ld r17, *(vb1+1)
-	ld r18, *(vb1+2)
-	ld r19, *(vb1+3)
-	ld r20, *(vb1+4)
-	ld r21, *(vb1+5)
-	ld r22, *(vb1+6)
-	ld r23, *(vb1+7)
-
-//2L part1
-	_arc_aux_write(ACC0_LO, 0);
-	_arc_aux_write(ACC0_HI, 0);
-
-//vlo*c2
-	mac r25, r16, r1
-	mac r25, r17, r3 
-	mac r25, r18, r5
-	mac r25, r19, r7 
-	mac r25, r20, r9
-	mac r25, r21, r11 
-	mac r25, r22, r13
-	mac r25, r23, r15 	
-
-	lr r24,[0x582]
-
-//1L ALL
-	_arc_aux_write(ACC0_LO, 0);
-	_arc_aux_write(ACC0_HI, 0);
-
-//vlo*c1
-	mac r25,r16,r0
-	mac r25,r17,r2
-	mac r25,r18,r4
-	mac r25,r19,r6
-	mac r25,r20,r8
-	mac r25,r21,r10
-	mac r25,r22,r12
-	mac r25,r23,r14
-
-
-//-c2
-	negs r1,r1
-	negs r3,r3
-	negs r5,r5
-	negs r7,r7
-	megs r9,r9
-	negs r11,r11
-	negs r13,r13
-	megs r15,r15
-
-//vhi
-	ld r16,*(vb1+(23))
-	ld r17,*(vb1+(23-1))
-	ld r18,*(vb1+(23-2))
-	ld r19,*(vb1+(23-3))
-	ld r20,*(vb1+(23-4))
-	ld r21,*(vb1+(23-5))
-	ld r22,*(vb1+(23-6))
-	ld r23,*(vb1+(23-7))
-
-//vhi*-c2
-	mac r25, r16, r1
-	mac r25, r17, r3
-	mac r25, r18, r5
-	mac r25, r19, r7
-	mac r25, r20, r9
-	mac r25, r21, r11
-	mac r25, r22, r13
-	mac r25, r23, r15
-
-	lr r25 [0x582]
-	st r25 *SL1
-
-//2L PART2
-
-	SR r24 [0x582]
-	_arc_aux_write(ACC0_LO, 0);
-
-//vhi *c1
 	
-	mac r25, r16, r0
-	mac r25, r17, r2
-	mac r25, r18, r4
-	mac r25, r19, r6
-	mac r25, r20, r8
-	mac r25, r21, r10
-	mac r25, r22, r12
-	mac r25, r23, r14
-
-	lr r25 [0x582]
-	st r25 *SL2
-
-1R part1
-
-	SR 0 [0x582]
-	_arc_aux_write(ACC0_LO, 0);
-
-//load vhi
-	ld r16,*(vb1+32+(23))
-	ld r17,*(vb1+32+(23-1))
-	ld r18,*(vb1+32+(23-2))
-	ld r19,*(vb1+32+(23-3))
-	ld r20,*(vb1+32+(23-4))
-	ld r21,*(vb1+32+(23-5))
-	ld r22,*(vb1+32+(23-6))
-	ld r23,*(vb1+32+(23-7))
-
-//vHI*-c2
-	mac r25, r16, r1
-	mac r25, r17, r3
-	mac r25, r18, r5
-	mac r25, r19, r7
-	mac r25, r20, r9
-	mac r25, r21, r11
-	mac r25, r22, r13
-	mac r25, r23, r15
-
-	lr r24 ,[0x582]
-
-
-////////////////////////2R all
-	SR 0 [0x582]
-	_arc_aux_write(ACC0_LO, 0);
-
-//vhi*c1
-	mac r25, r16, r0
-	mac r25, r17, r2
-	mac r25, r18, r4
-	mac r25, r19, r6
-	mac r25, r20, r8
-	mac r25, r21, r10
-	mac r25, r22, r12
-	mac r25, r23, r14
-
-//c2
-
-	negs r1, r1
-	negs r3, r3
-	negs r5, r5
-	negs r7, r7
-	negs r9, r9
-	negs r11, r11
-	negs r13, r13
-	negs r15, r15
-
-//load vlo
-
-	ld r16, *(vb1+32)
-	ld r17, *(vb1+32+1)
-	ld r18, *(vb1+32+2)
-	ld r19, *(vb1+32+3)
-	ld r20, *(vb1+32+4)
-	ld r21, *(vb1+32+5)
-	ld r22, *(vb1+32+6)
-	ld r23, *(vb1+32+7)
-
-//vlo*c2
-	
-	mac r25, r16, r1
-	mac r25, r17, r3
-	mac r25, r18, r5
-	mac r25, r19, r7
-	mac r25, r20, r9
-	mac r25, r21, r11
-	mac r25, r22, r13
-	mac r25, r23, r15
-
-	lr r25,[0x582]
-	st r25,*SR2
-
-///////////////////////1R part2
-
-	sr r24,[0x582]
-	sr 0,[0x580]
-
-
-//vlo *c1
-	
-	mac r25, r16, r0
-	mac r25, r17, r2
-	mac r25, r18, r4
-	mac r25, r19, r6
-	mac r25, r20, r8
-	mac r25, r21, r10
-	mac r25, r22, r12
-	mac r25, r23, r14
-
-	lr r25,[0x582]
-	st r25,*SR1
-
-	*/
-
-
 Asm(
 	"LD %%r0, %0\n\t"
 	"LD %%r1, %1\n\t"

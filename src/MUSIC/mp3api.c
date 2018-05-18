@@ -13,8 +13,8 @@
 // volatile bool isFinished = true;
 volatile uint8_t flag_sw = 0; 					//Ping-pong Buff switching Flag
 
-int8_t buf_rec1[2304]={1};						//Ping-pong Buff for DMA Transfer
-int8_t buf_rec2[2304]={1};
+int8_t buf_rec1[2304];						//Ping-pong Buff for DMA Transfer
+int8_t buf_rec2[2304];
 
 
 /***
@@ -55,14 +55,14 @@ int32_t play_mp3(int32_t filelenth,uint8_t location)
 	spi->spi_control(SPI_CMD_MST_SET_FREQ,CONV2VOID(12000000));
 
 	mp3_dec = (MP3DecInfo*)MP3InitDecoder();
-	if ( mp3_dec == NULL )
+	if ( mp3_dec != NULL )
 	{
-		EMBARC_PRINTF("Malloc mp3_dec buff fail!\r\nstop!\r\n");
-		while(1);
+		//EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\n");
 	}
 	else
 	{
-		EMBARC_PRINTF("Malloc mp3_dec buff Pass!\r\n");
+		EMBARC_PRINTF("Malloc mp3_dec buff fail!\r\nstop!\r\n");
+		while(1);
 	}
 
 	EMBARC_PRINTF("Start to Trace\r\n");
@@ -94,27 +94,21 @@ int32_t play_mp3(int32_t filelenth,uint8_t location)
 			read_ptr += offset;         //data start point
 			byte_left -= offset;        //in buffer
 
-
 			// iosignal_ctrl(1,0);			
-			// EMBARC_PRINTF("Cycle Time :%dus!\n\r",cost_cyc);
 			gui_info.main_cycle = perf_end();
 			
 			perf_start();
 			
 			if ( flag_sw == 0 )
-			{
-				
-				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec1, 0);
-				
+			{				
+				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec1, 0);				
 			}
 			else
-			{
-				
-				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec2, 0);
-				
+			{			
+				res_dec = MP3Decode(mp3_dec, &read_ptr, (int *)&byte_left, buf_rec2, 0);			
 			}
 			gui_info.decord_speed = perf_end();
-			iosignal_ctrl(0,0);
+			//iosignal_ctrl(0,0);
 			if (res_dec == ERR_MP3_NONE)
 			{
 				//EMBARC_PRINTF("MP3Decode Time :%dus!\n\r",cost_cyc);
@@ -124,8 +118,7 @@ int32_t play_mp3(int32_t filelenth,uint8_t location)
 				EMBARC_PRINTF("MP3Decode error:%d!\n\r",res_dec);
 				read_ptr += 2;
 				byte_left -= 2;
-				continue;
-				
+				continue;				
 			}
 
 /********************Shedule Here*****************************/
@@ -147,11 +140,6 @@ int32_t play_mp3(int32_t filelenth,uint8_t location)
 				//EMBARC_PRINTF("GPIO Clear BIT1\r\n");
 				uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
 			}
-			/******Can Replace by IO interrupt to Set Event****************/
-			// while(!iosignal_read(0))
-			// {
-			// 	_Rtos_Delay(100);
-			// }
 				
 /********************Shedule End Here*****************************/
 
@@ -179,14 +167,12 @@ int32_t play_mp3(int32_t filelenth,uint8_t location)
 
 	gui_info.decord_speed = -1;
 	gui_info.main_cycle = -1;
+	
 	/********Play Song in NET Buff,should Reset Flag*****************/
 	if ( location == IN_BUFF )
 	{
 		flag_netbuff = BUFF_EMPTY;
 	}
-
-	// EMBARC_PRINTF("Free mp3_dec!\n\r" );
-	// MP3FreeDecoder(mp3_dec);
 
 	EMBARC_PRINTF("MP3 file: decorder is over!\n\r" );
 

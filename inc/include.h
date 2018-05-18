@@ -84,7 +84,7 @@ extern void net_rst();
 
 /*************define in net.c****************/
 
-uint8_t flag_netbuff;
+extern uint8_t flag_netbuff;
 extern char dllink[500];
 extern char songpoint[50];
 extern int8_t net_buff[ BUFF_SPACE ];
