@@ -9,10 +9,11 @@ FATFS fs_p;
 
 int8_t file_buff[ BUFF_SPACE ];			//15MB File Buff to Read out from SD Card
 
-/**********************
-**	Read out the Information of  file in SD Card and store in file list
-**
-***/
+
+/**
+ * \brief       Read out the Information of  file in SD Card and store in file list
+ *
+ */
 static void playlist_init()
 {
 	DIR dir;
@@ -51,11 +52,11 @@ static void playlist_init()
 	f_closedir(&dir);
 }
 
-/***********
-**  Initialization
-**	Malloc 10MB buff to read out File from SD card
-**	Create play list
-*/
+
+/**
+ * \brief       Initialization and perpar all things before music decode start 
+ *              including read out File from SD card Create play list
+ */
 void play_init()
 {
 
@@ -81,6 +82,15 @@ void play_init()
 **	if Song is in SD Card ,Read Out File
 **	Play Song
 */
+/**
+ * \brief       Read Out One Song Information from Play List 
+ *              if Song is in SD Card ,Read Out File Play Song
+ *
+ * \retval      1                      The Function end dure to key break
+ *
+ * \retval      0                      The Function end with misiion complete
+ * 
+ */
 int32_t Start_playing()
 {
 	char music_filename[50] = {0};

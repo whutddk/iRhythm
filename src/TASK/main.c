@@ -30,19 +30,11 @@
 
 
 
-/**
- * \file
- * \ingroup	EMBARC_APP_BAREMETAL_BLINKY
- * \brief	main source file for blinky example
- */
-
-/**
- * \addtogroup	EMBARC_APP_BAREMETAL_BLINKY
- * @{
- */
 /* embARC HAL */
 #include "embARC.h"
 #include "embARC_debug.h"
+
+
 #include "include.h"
 #include "inc_task.h"
 
@@ -56,13 +48,15 @@ EventGroupHandle_t evt1_cb;
 EventGroupHandle_t GUI_Ev;
 
 
-/**
- * \brief	Test hardware board without any peripheral
- */
 
 
 int32_t error_num = 0;
 
+/**
+ * \brief       Main function of Application,initialize gui task,music task 
+ *              and net task.Fuction never return
+ *
+ */
 int main(void)
 {
 	// board_init();

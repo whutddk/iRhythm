@@ -6,7 +6,9 @@
 
 
 
-
+/**
+ * \brief       Main function of Net Task
+ */
 void net_task()
 {
 	EMBARC_PRINTF("NET_TASK START\r\n");

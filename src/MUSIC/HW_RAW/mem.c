@@ -11,13 +11,13 @@
 
 FIL fp;
 
-// uint8_t buf_read[NUM_BYTE_READ];
-
-/***
-*** Read out File Form SD Card to DDR2 10MB buff
-**
-**/
-
+/**
+ * \brief       Read out File Form SD Card to DDR2 15MB buff
+ *
+ *
+ * \param[in]   music_name             Pointer of file name in SD card need to read out
+ *
+ */
 void readout_file(char *music_name)
 {
 	char filename[50] = "0:/music/";

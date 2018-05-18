@@ -29,11 +29,16 @@ ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
 
 DEV_UART_PTR uart_obj;
 
-/**
-** Deal with Receive Buff and extract Song ID
-**
-*/
 
+/**
+ * \brief       Deal with Receive Buff and extract Song ID
+ *
+ * \param[in]   jsonstr                Pointer of str need to parse songid                
+ *
+ * \retval      -1                     Parse Fail
+ * 
+ * \retval      0                      Parse Success
+ */
 static int get_songid(char *jsonstr)
 {
 	char *string = (char *)jsonstr;
@@ -70,11 +75,15 @@ static int get_songid(char *jsonstr)
 	return 0;
 }
 
-/**
-**	Deal with Receive Buff and exract Song Information
-**	Only Download Url useful
-**/
 
+/**
+ * \brief       Deal with Receive Buff and parse Song Information
+ *	            Only Download Url use
+ *
+ * \param[in]   jsonstr                Pointer of str need to parse songid  
+ *
+ * \retval      0                      Parse Success
+ */
 static int get_songinfo(char *jsonstr)
 {
 	char *string = (char *)jsonstr;
@@ -148,10 +157,9 @@ static int get_songinfo(char *jsonstr)
 
 
 /**
-**	 Init ESP8266 and Malloc 10MB net buff and Connect to WIfi
-**
-**/
-
+ * \brief       Init ESP8266 and Malloc 10MB net buff and Connect to WIfi
+ *
+ */
 void net_init()
 {
 	//EMBARC_PRINTF("============================ Init ============================\n");
@@ -196,11 +204,16 @@ void net_init()
 
 }
 
-/***********
-**获取Song ID 或者 下载地址**
-**option：0 SONGID ;1 DOWNLOAD LINK
-***/
 
+/**
+ * \brief       Request Song ID or Download link
+ *
+ * \param[in]   option                 0 for SONG ID 1 for Download Link 
+ *                                     
+ * \retval      -1                     Request Fail
+ * 
+ * \retval      0                      Request Success
+ */
 int socket_request(uint8_t option)
 {
 
@@ -298,14 +311,10 @@ int socket_request(uint8_t option)
 }
 
 
-
-
-/***
-**Download MP3 use Download link
-**
-**/
-
-
+/**
+ * \brief       Download MP3 use Download link
+ *
+ */
 void download_mp3()
 {
 	uint32_t http_sum = 0;

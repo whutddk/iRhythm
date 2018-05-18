@@ -5,7 +5,9 @@
 #include "include.h"
 
 
-
+/**
+ * \brief       Main function of Music Task
+ */
 void music_task()
 {
 

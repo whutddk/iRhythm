@@ -4,6 +4,10 @@
 
 #include "include.h"
 
+
+/**
+ * \brief       Main function of Gui Task
+ */
 void gui_task()
 {
 	while (1) {

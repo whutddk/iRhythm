@@ -17,11 +17,19 @@ int8_t buf_rec1[2304];						//Ping-pong Buff for DMA Transfer
 int8_t buf_rec2[2304];
 
 
-/***
-**	MP3 Decord Core Function
-**  filelenth : BUFF length should be Decord
-**	loction :IF the Data in 10MB FILE BUFF or IN 10MB NET BUFF
-**/
+/**
+ * \brief       MP3 Decord Core Function
+ *
+ * \param[in]   filelenth              BUFF length should be Decord
+ *
+ * \param[in]   loction                IF the Data in 10MB FILE BUFF or IN 15MB NET BUFF
+ *                                     in dma_request_source_t enum
+ *
+ * \retval      1                      The Function end dure to key break
+ *
+ * \retval      0                      The Function end with misiion complete
+ * 
+ */
 int32_t play_mp3(int32_t filelenth, uint8_t location)
 {
 	int32_t offset;
