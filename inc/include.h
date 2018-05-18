@@ -33,12 +33,11 @@
 #define BUFF_FULL 1
 
 /********define in filelist.c******/
-struct filelist
-{
+struct filelist {
 	char data[50];
 	int32_t lenth;
 	uint8_t location;
-	struct filelist* next;
+	struct filelist *next;
 };
 
 
@@ -50,7 +49,7 @@ extern struct filelist *Playlist_HEAD;
 extern struct filelist *Playlist_END;
 
 extern void filelist_init();
-extern void filelist_add(uint8_t list_id,char* id_data,int32_t lenth,uint8_t location);
+extern void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t location);
 extern void filelist_delete(uint8_t list_id);
 
 
@@ -60,11 +59,11 @@ extern int32_t error_num ;
 
 /***********define in mem.c ************/
 
-extern void readout_file(char* music_name);
+extern void readout_file(char *music_name);
 
 /***********define in music.c ************/
 extern DEV_SPI_PTR spi;
-extern int8_t file_buff[ BUFF_SPACE ]; 
+extern int8_t file_buff[ BUFF_SPACE ];
 extern void play_init();
 
 /***********define in dma2spi.c*********/
@@ -73,12 +72,12 @@ extern int32_t spi_writeraw(const void *data);
 extern int32_t Start_playing();
 
 /**************define in mp3api.c************/
-extern int32_t play_mp3(int32_t filelenth,uint8_t location);
+extern int32_t play_mp3(int32_t filelenth, uint8_t location);
 
 /**************define in iosignal.c**********/
 
 extern void iosignal_init();
-extern void iosignal_ctrl(uint8_t val,uint8_t num);
+extern void iosignal_ctrl(uint8_t val, uint8_t num);
 extern uint8_t iosignal_read(uint8_t num);
 extern void net_rst();
 
@@ -94,15 +93,14 @@ extern int socket_request(uint8_t option);
 extern void download_mp3();
 
 /*********define in GUI.c************************/
-struct _gui_info
-{
+struct _gui_info {
 	uint8_t screen_point;
 	int16_t network_speed;
 	int16_t decord_speed;
 	int16_t main_cycle;
 
-	char* song_name;
-	char* next_song;
+	char *song_name;
+	char *next_song;
 
 	// uint8_t KEEP_ID3V2;
 	uint8_t flag_next;
@@ -115,7 +113,7 @@ extern struct _gui_info gui_info;
 extern void gui_init();
 extern void reflash_screen();
 
-/**********key.c********************/
+/**********define in key.c********************/
 extern void key1_isr();
 extern void key2_isr();
 extern void key3_isr();

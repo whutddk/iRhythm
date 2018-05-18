@@ -10,11 +10,10 @@ void music_task()
 {
 
 	EMBARC_PRINTF("MUSIC_TASK START\r\n");
-	
+
 	play_init();
-	
-	while(1)
-	{
+
+	while (1) {
 		Start_playing();
 	}
 }

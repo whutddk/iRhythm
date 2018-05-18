@@ -73,49 +73,53 @@ int main(void)
 
 	vTaskSuspendAll();
 
-/**********MP3 Decord Assist IO Init***************************/
+	/**********MP3 Decord Assist IO Init***************************/
 	iosignal_init();
 
-/********IO reset ESP8266************************/
+	/********IO reset ESP8266************************/
 	net_rst();
-/*********init Songid List*****/
-    filelist_init();
-/*******Init Esp8266 and Connect to Wifi***************/
-    net_init();
-    
-    spi_dma_prepare();
+	/*********init Songid List*****/
+	filelist_init();
+	/*******Init Esp8266 and Connect to Wifi***************/
+	net_init();
+
+	spi_dma_prepare();
 
 	gui_init();
-/********************** Create Tasks**************************/
+	/********************** Create Tasks**************************/
 
-	if (xTaskCreate(gui_task, "gui_task", 512, (void *)NULL, configMAX_PRIORITIES-1, &GUI_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+	if (xTaskCreate(gui_task, "gui_task", 512, (void *)NULL, configMAX_PRIORITIES - 1, &GUI_task_handle)
+		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create GUI_task error\r\n");
 		return -1;
 	}
 
-	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES-2, &MUSIC_task_handle)
-	    != pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES - 2, &MUSIC_task_handle)
+		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create music_task error\r\n");
 		return -1;
-	}	
-	if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES-3, &NET_task_handle)
+	}
+
+	if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES - 3, &NET_task_handle)
 		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create NET_task error\r\n");
 		return -1;
 	}
+
 	//other task
 
 
 	//other task end//
-	
+
 	// Create Events
 
 	evt1_cb = xEventGroupCreate();
 	GUI_Ev = xEventGroupCreate();
 
 	xTaskResumeAll();
-	while(1);
+
+	while (1);
+
 	return E_SYS;
 }
 

@@ -7,7 +7,7 @@ inline void _Rtos_Delay(uint32_t ticks)
 	TickType_t xFrequency;
 
 	xLastWakeTime = xTaskGetTickCount ();
-    xFrequency = ticks;
+	xFrequency = ticks;
 	vTaskDelayUntil( &xLastWakeTime, xFrequency );
 }
 
