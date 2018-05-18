@@ -41,7 +41,7 @@ void filelist_init()
 ** lenth : NO use;File Length
 ** location: no use ;File in SD card or Net BUFF
 **/
-void filelist_add(uint8_t list_id,char* id_data,int lenth,uint8_t location)
+void filelist_add(uint8_t list_id,char* id_data,int32_t lenth,uint8_t location)
 {
 	struct filelist *lists = NULL;
 

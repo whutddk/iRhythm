@@ -13,8 +13,8 @@
 // volatile bool isFinished = true;
 volatile uint8_t flag_sw = 0; 					//Ping-pong Buff switching Flag
 
-char buf_rec1[2304]={1};						//Ping-pong Buff for DMA Transfer
-char buf_rec2[2304]={1};
+int8_t buf_rec1[2304]={1};						//Ping-pong Buff for DMA Transfer
+int8_t buf_rec2[2304]={1};
 
 
 /***
@@ -22,7 +22,7 @@ char buf_rec2[2304]={1};
 **  filelenth : BUFF length should be Decord
 **	loction :IF the Data in 10MB FILE BUFF or IN 10MB NET BUFF
 **/
-int play_mp3(int32_t filelenth,uint8_t location)
+int32_t play_mp3(int32_t filelenth,uint8_t location)
 {
 	int32_t offset;
 	uint8_t *read_ptr;
@@ -136,17 +136,11 @@ int play_mp3(int32_t filelenth,uint8_t location)
 				pdTRUE, 		// Wait for both bits
 				portMAX_DELAY );
 			xEventGroupClearBits( evt1_cb, BIT_0 );
-			// while(flag_dma_finish==0);
-			// flag_dma_finish = 0;
 
 			if ( iosignal_read(0) )
 			{
 				uxBits = 0;
 			}
-			// else if (( uxBits & BIT_1 ) != 0 )
-			// {
-			// 	EMBARC_PRINTF("uxBits & BIT_1  != 0\r\n");
-			// }
 			else
 			{
 				xEventGroupSetBits( GUI_Ev, BIT_0 );

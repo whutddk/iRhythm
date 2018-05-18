@@ -3,7 +3,6 @@
 
 #include "include.h"
 
-volatile uint8_t flag_dma_finish = 0;
 DEV_SPI_PTR spi;
 
 FATFS fs_p;

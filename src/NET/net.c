@@ -223,7 +223,7 @@ void net_init()
 **option：0 SONGID ;1 DOWNLOAD LINK
 ***/
 
-int socket_request(unsigned char option)
+int socket_request(uint8_t option)
 {
 	char http_cmd[500] = {0};
 	uint32_t idlen_int;
