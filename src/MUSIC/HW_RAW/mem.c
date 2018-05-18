@@ -29,7 +29,7 @@ void readout_file(char* music_name)
 	error_num = f_open(&fp,filename,FA_READ);
 	if( error_num != FR_OK)
 	{
-		EMBARC_PRINTF("File %s open failed!\r\nstop!\r\n",filename);
+		EMBARC_PRINTF("File %s open failed!\r\nContinue!\r\n",filename);
 		while(1);
 	}
 

@@ -96,21 +96,21 @@ static int get_songinfo(char *jsonstr)
 	string_p1 = string_p2 + 11;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(queryId,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\n%s\r\n",queryId);
+	EMBARC_PRINTF("\r\nqueryId: %s\r\n",queryId);
 
 	/***********songName****Need Protect********/
 	string_p2 = strstr(string,"\"songName\":");
 	string_p1 = string_p2 + 12;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(songpoint,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\n%s\r\n",songpoint);
+	EMBARC_PRINTF("\r\nsongpoint: %s\r\n",songpoint);
 
 	/***********artistName************/
 	string_p2 = strstr(string,"\"artistName\":");
 	string_p1 = string_p2 + 14;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(artistName,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\n%s\r\n",artistName);
+	EMBARC_PRINTF("\r\nartistName: %s\r\n",artistName);
 
 
 	/***********albumName************/
@@ -118,14 +118,14 @@ static int get_songinfo(char *jsonstr)
 	string_p1 = string_p2 + 13;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(albumName,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\n%s\r\n",albumName);
+	EMBARC_PRINTF("\r\nalbumName: %s\r\n",albumName);
 
 	/***********lrcLink*****unformat*******/
 	string_p2 = strstr(string,"\"lrcLink\":");
 	string_p1 = string_p2 + 11;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(lrcLink,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\n%s\r\n",lrcLink);
+	EMBARC_PRINTF("\r\nlrcLink: %s\r\n",lrcLink);
 
 	/***********songLink****Need proterct********/
 	string_p2 = strstr(string,"\"songLink\":");
@@ -141,7 +141,7 @@ static int get_songinfo(char *jsonstr)
 			j++;
 		}
 	}
-	EMBARC_PRINTF("\r\n%s\r\n",dllink);
+	EMBARC_PRINTF("\r\ndllink: %s\r\n",dllink);
 
 	return 0;
 }
@@ -154,7 +154,7 @@ static int get_songinfo(char *jsonstr)
 
 void net_init()
 {
-	EMBARC_PRINTF("============================ Init ============================\n");
+	//EMBARC_PRINTF("============================ Init ============================\n");
 	
 	
 	memset( net_buff, 0, sizeof(int8_t) * BUFF_SPACE );
@@ -168,7 +168,7 @@ void net_init()
 	_Rtos_Delay(100);
 
     // //Set Mode
-    EMBARC_PRINTF("============================ Set Mode ============================\n");
+    //EMBARC_PRINTF("============================ Set Mode ============================\n");
     esp8266_wifi_mode_get(ESP8266_A, false);
 
     _Rtos_Delay(100);
@@ -178,7 +178,7 @@ void net_init()
 	_Rtos_Delay(100);
 
     //Connect WiFi
-    EMBARC_PRINTF("============================ Connect WiFi ============================\n");
+    //EMBARC_PRINTF("============================ Connect WiFi ============================\n");
 
     while(esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false)!=AT_OK)
     {
@@ -188,7 +188,7 @@ void net_init()
     EMBARC_PRINTF("WIFI %s connect succeed\n", WIFI_SSID);
 
     //Show IP
-    EMBARC_PRINTF("============================ Show IP ============================\n");
+    //EMBARC_PRINTF("============================ Show IP ============================\n");
     esp8266_address_get(ESP8266_A);
     
     uart_obj = uart_get_dev(ESP8266_UART_ID);
@@ -211,13 +211,13 @@ int socket_request(uint8_t option)
 
 	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);
 
-    EMBARC_PRINTF("============================ connect socket ============================\n\r");
+    //EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"180.76.141.217", 80);
 
     memset(http_cmd, 0, sizeof(char) * 500);
 	memset(net_buff, 0, sizeof(int8_t) * BUFF_SPACE);
 
-    EMBARC_PRINTF("============================ create http command ============================\r\n");
+    //EMBARC_PRINTF("============================ create http command ============================\r\n");
     switch (option)
     {
     	case SONG_ID:
@@ -245,7 +245,7 @@ int socket_request(uint8_t option)
 			break;
     }
     
-    EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
+    //EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
 
     vTaskSuspendAll();
 
@@ -258,10 +258,10 @@ int socket_request(uint8_t option)
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void*)(&Rxintbuf));
 	xTaskResumeAll();
 
-	EMBARC_PRINTF("======================== Get all Data Driectly===================\r\n");
+	//EMBARC_PRINTF("======================== Get all Data Driectly===================\r\n");
 	_Rtos_Delay(1000);			//Wait Data to Arrive
 
-    EMBARC_PRINTF("%s\r\n",(net_buff));
+    //EMBARC_PRINTF("%s\r\n",(net_buff));
 
 	
 	/*********Receive Complete , Reset Flag and Disable Passthrough***************/
@@ -321,7 +321,7 @@ void download_mp3()
 	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);
 	
 
-	EMBARC_PRINTF("============================ connect socket ============================\n\r");
+	//EMBARC_PRINTF("============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A,"211.91.125.36", 80);
 
     memset(http_cmd, 0, sizeof(char) * 500);
@@ -331,7 +331,7 @@ void download_mp3()
     strcat (http_cmd,dllink);
     strcat (http_cmd," HTTP/1.1\r\nHost: zhangmenshiting.qianqian.com\r\nConnection: keep-alive\r\n\r\n");
 
-    EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
+    //EMBARC_PRINTF("\r\n%s\r\n",http_cmd);
 
 
 	/*****Enable passthrough to Deal with +IPD flag********/
@@ -358,8 +358,8 @@ void download_mp3()
 			gui_info.network_speed = ( bypass_cnt - http_sum ) * 1000 / 1024 / ( net_time - net_time_pre );
     		xEventGroupSetBits( GUI_Ev, BIT_0 );
 
-    		EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
-			EMBARC_PRINTF("received : %d KB/s\r", gui_info.network_speed);
+    		//EMBARC_PRINTF("received : %d KB\r",bypass_cnt / 1024 );
+			//EMBARC_PRINTF("received : %d KB/s\r", gui_info.network_speed);
 			http_sum = bypass_cnt;
 			timeout_cnt = 0;
 
@@ -375,11 +375,11 @@ void download_mp3()
     		xEventGroupSetBits( GUI_Ev, BIT_0 );
     		
     		timeout_cnt ++;
-    		EMBARC_PRINTF("\r\nTime out\r\n");
+    		//EMBARC_PRINTF("\r\nTime out\r\n");
     		if ( timeout_cnt > 3 )
     		{
 				EMBARC_PRINTF("\r\nreceive end , %d B\r\n",bypass_cnt  );
-				EMBARC_PRINTF("\r\n%s \r\n",net_buff);
+				//EMBARC_PRINTF("\r\n%s \r\n",net_buff);
 	    		break;
     		}
     	}

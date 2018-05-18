@@ -144,7 +144,7 @@ int32_t play_mp3(int32_t filelenth,uint8_t location)
 			else
 			{
 				xEventGroupSetBits( GUI_Ev, BIT_0 );
-				EMBARC_PRINTF("GPIO Clear BIT1\r\n");
+				//EMBARC_PRINTF("GPIO Clear BIT1\r\n");
 				uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );
 			}
 			/******Can Replace by IO interrupt to Set Event****************/
