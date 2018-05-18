@@ -51,9 +51,9 @@ typedef enum {
 	AT_READ,
 	AT_WRITE,
 	AT_EXECUTE
-}AT_MODE;
+} AT_MODE;
 
-typedef char * AT_STRING;
+typedef char *AT_STRING;
 
 /** HM1X object type */
 typedef struct {
@@ -63,8 +63,8 @@ typedef struct {
 
 #define AT_PARSER_DEFINE(NAME, UART_ID) \
 	AT_PARSER_DEF __ ## NAME = { \
-			.uart_id = UART_ID, \
-			.psio = NULL, \
+	.uart_id = UART_ID, \
+	.psio = NULL, \
 	}; \
 	AT_PARSER_DEF_PTR NAME = &__ ## NAME
 
