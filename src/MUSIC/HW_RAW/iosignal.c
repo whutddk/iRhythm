@@ -21,7 +21,7 @@ void empty_isr()
 		evt1_cb,	// The event group being updated.
 		BIT_1,   // The bits being set.
 		&xHigherPriorityTaskWoken );
-	EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
+	//EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
 }
 
 void key1_isr()//确定键
@@ -41,17 +41,22 @@ void key1_isr()//确定键
 	{
 		gui_info.flag_next = 1;
 
-		if ( gui_info.screen_point != 1 || Playlist_HEAD -> location != IN_BUFF )
-		{
-			flag_netbuff = BUFF_EMPTY;	//protect that break while net_buff was playing and flag net reset
-		}
-
 		//how to stay in the same song?
 		for ( i = gui_info.screen_point - 1; i > 0; i -- )
 		{
 				/***********If it is the last Song in Play List,Play it again and again and Never Delete*******************/
 			if ( Playlist_HEAD -> next != NULL )
 			{
+				if ( Playlist_HEAD -> location != IN_BUFF )
+				{
+					;
+				}
+				else
+				{
+					flag_netbuff = BUFF_EMPTY;
+				}
+
+
 				filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
 			}
 			else
@@ -64,7 +69,7 @@ void key1_isr()//确定键
 		gui_info.decord_speed = -1;
 		gui_info.main_cycle = -1;
 	}
-	EMBARC_PRINTF("key1_isr!\r\n");
+	//EMBARC_PRINTF("key1_isr!\r\n");
 
 
 	//Now Reflash the Srceen
@@ -91,7 +96,7 @@ void key2_isr()//右键
 		}
 	}
 
-	EMBARC_PRINTF("key2_isr!\r\n");
+	//EMBARC_PRINTF("key2_isr!\r\n");
 
 	gui_info.next_song = file_pointer -> data;
 	gui_info.screen_point ++;
@@ -102,7 +107,7 @@ void key2_isr()//右键
 
 void key3_isr()
 {
-	EMBARC_PRINTF("key3_isr!\r\n");
+	//EMBARC_PRINTF("key3_isr!\r\n");
 }
 
 void iosignal_init()
