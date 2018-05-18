@@ -34,7 +34,7 @@
 #include "at_parser.h"
 //#include "embARC_error.h"
 
-#define DBG_MORE
+//#define DBG_MORE
 #include "embARC_debug.h"
 
 /* if \r\n is needed to be attached at the end of AT comand, define AT_ADD_POSTFIX

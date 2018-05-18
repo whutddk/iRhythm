@@ -7,7 +7,7 @@ DEV_SPI_PTR spi;
 
 FATFS fs_p;
 
-int8_t file_buff[ BUFF_SPACE ];			//10MB File Buff to Read out from SD Card
+int8_t file_buff[ BUFF_SPACE ];			//15MB File Buff to Read out from SD Card
 
 /**********************
 **	Read out the Information of  file in SD Card and store in file list
