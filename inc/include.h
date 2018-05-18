@@ -59,10 +59,9 @@ extern void filelist_delete(uint8_t list_id);
 extern int32_t error_num ;
 
 /***********define in mem.c ************/
-extern FATFS fs_p;
 
 extern void readout_file(char* music_name);
-extern void read_dir();
+
 /***********define in music.c ************/
 extern DEV_SPI_PTR spi;
 extern int8_t file_buff[ BUFF_SPACE ]; 
