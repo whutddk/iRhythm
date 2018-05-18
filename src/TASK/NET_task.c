@@ -12,7 +12,7 @@ void net_task()
 	EMBARC_PRINTF("NET_TASK START\r\n");
 
 
-	EMBARC_PRINTF("============================ while ============================\n");
+	//EMBARC_PRINTF("============================ while ============================\n");
 
 	while (1)
 	{

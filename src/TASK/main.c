@@ -68,7 +68,7 @@ int main(void)
 	// board_init();
 	io_mux_init();
 	emsk_gpio_init();
-	EMBARC_PRINTF("START to TEST FREERTOS\r\n");
+	EMBARC_PRINTF("Application Start\r\n");
 	EMBARC_PRINTF("Benchmark CPU Frequency: %d Hz\r\n", BOARD_CPU_CLOCK);
 
 	vTaskSuspendAll();
@@ -96,7 +96,7 @@ int main(void)
 		EMBARC_PRINTF("create music_task error\r\n");
 		return -1;
 	}	
-	if (xTaskCreate(net_task, "net_task", 2048, (void *)NULL, configMAX_PRIORITIES-3, &NET_task_handle)
+	if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES-3, &NET_task_handle)
 		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create NET_task error\r\n");
 		return -1;

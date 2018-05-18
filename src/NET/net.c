@@ -22,6 +22,7 @@ int8_t net_buff[BUFF_SPACE];			//10MB Net Buff
 
 char dllink[500] = { 0 };				//Store Song Download Url
 char songpoint[50] = { 0 };				//Store Song Name Download Form Net ,Unnecessart Now
+static char http_cmd[500] = {0};
 
 ESP8266_DEF __ESP8266_A;				//Define ESP8266 Control Struct
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
@@ -38,8 +39,8 @@ static int get_songid(char *jsonstr)
 	char *string = (char*)jsonstr;
 	char songid[12] = "";
 
- /*************Get Id Here only 10 ,Can Change to Get More Song once Request***************************************/
-	uint8_t i = 10,j = 0;
+ /*************Get Id Here only 20 ,Can Change to Get More Song once Request***************************************/
+	uint8_t i = 20,j = 0;
 	while(i--)
 	{
 		string = strstr(string,"\"id\":");
@@ -50,7 +51,6 @@ static int get_songid(char *jsonstr)
 		}
 		string += 5;
 
-/******************Caution "+IPD" May Appear in the string"*****************************************/
 		for (j = 0 ; (*string) != ',' ;j++,string ++ )
 		{
 			songid[j] = *(string);
@@ -80,7 +80,6 @@ static int get_songinfo(char *jsonstr)
 	char *string_p2 ;
 
 	char queryId[20] = { 0 };
-	// char songName[50] = {0};
 	char artistName[50] = { 0 };
 	char albumName[50] = { 0 };
 	char lrcLink[500] = { 0 };
@@ -96,21 +95,21 @@ static int get_songinfo(char *jsonstr)
 	string_p1 = string_p2 + 11;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(queryId,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\nqueryId: %s\r\n",queryId);
+	//EMBARC_PRINTF("\r\nqueryId: %s\r\n",queryId);
 
 	/***********songName****Need Protect********/
 	string_p2 = strstr(string,"\"songName\":");
 	string_p1 = string_p2 + 12;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(songpoint,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\nsongpoint: %s\r\n",songpoint);
+	//EMBARC_PRINTF("\r\nsongpoint: %s\r\n",songpoint);
 
 	/***********artistName************/
 	string_p2 = strstr(string,"\"artistName\":");
 	string_p1 = string_p2 + 14;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(artistName,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\nartistName: %s\r\n",artistName);
+	//EMBARC_PRINTF("\r\nartistName: %s\r\n",artistName);
 
 
 	/***********albumName************/
@@ -118,14 +117,14 @@ static int get_songinfo(char *jsonstr)
 	string_p1 = string_p2 + 13;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(albumName,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\nalbumName: %s\r\n",albumName);
+	//EMBARC_PRINTF("\r\nalbumName: %s\r\n",albumName);
 
 	/***********lrcLink*****unformat*******/
 	string_p2 = strstr(string,"\"lrcLink\":");
 	string_p1 = string_p2 + 11;
 	string_p2 = strstr(string_p1,"\",\"");
 	strncpy(lrcLink,string_p1,(uint8_t)(string_p2 - string_p1));
-	EMBARC_PRINTF("\r\nlrcLink: %s\r\n",lrcLink);
+	//EMBARC_PRINTF("\r\nlrcLink: %s\r\n",lrcLink);
 
 	/***********songLink****Need proterct********/
 	string_p2 = strstr(string,"\"songLink\":");
@@ -141,7 +140,7 @@ static int get_songinfo(char *jsonstr)
 			j++;
 		}
 	}
-	EMBARC_PRINTF("\r\ndllink: %s\r\n",dllink);
+	//EMBARC_PRINTF("\r\ndllink: %s\r\n",dllink);
 
 	return 0;
 }
@@ -203,7 +202,7 @@ void net_init()
 
 int socket_request(uint8_t option)
 {
-	char http_cmd[500] = {0};
+
 	uint32_t idlen_int;
 	char idlen_char[3] = "";
 
@@ -307,7 +306,6 @@ int socket_request(uint8_t option)
 void download_mp3()
 {
 	uint32_t http_sum = 0;
-	char http_cmd[500] = {0};
 	uint8_t timeout_cnt = 0;
 	uint32_t bypass_cnt = 0;	
 
