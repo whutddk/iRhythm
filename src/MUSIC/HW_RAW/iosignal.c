@@ -1,6 +1,11 @@
 #include "embARC.h"
 #include "embARC_debug.h"
 
+
+#include "../../board/emsk/drivers/mux/mux_hal.h"
+#include "../../board/emsk/drivers/mux/mux.h"
+
+
 #include "include.h"
 
 /*****A[31:28]****PMOD6[10:7]*************/
@@ -33,6 +38,11 @@ void iosignal_init()
 {
 	DEV_GPIO_INT_CFG gpio_int_cfg;
 	DEV_GPIO_BIT_ISR gpio_bit_isr;
+
+
+	uint32_t val = get_pmod_mux();
+	val &= ~(PM1_LR_SPI_S);			//change LOW ROW of PM1 to GPIOA
+	set_pmod_mux(val);
 
 	gpio_int_cfg.int_bit_mask = BOARD_SIGNIN_MASK;
 	gpio_int_cfg.int_bit_type = BOARD_SIGNIN_MASK;
