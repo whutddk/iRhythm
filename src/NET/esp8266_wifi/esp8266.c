@@ -35,7 +35,7 @@
 
 #include "include.h"
 
-#define DBG_MORE
+//#define DBG_MORE
 #include "embARC_debug.h"
 
 int32_t esp8266_init(ESP8266_DEF_PTR obj, uint32_t baudrate)

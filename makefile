@@ -29,6 +29,10 @@ APPL_INC_DIR =  ./inc ./inc/mp3_dec
 # include current project makefile
 COMMON_COMPILE_PREREQUISITES += makefile
 
+LINKER_SCRIPT_FILE ?= linker_file.ldf
+ADT_COPT = -mlong-calls
+
+
 ### Options above must be added before include options.mk ###
 # include key embARC build system makefile
 override EMBARC_ROOT := $(strip $(subst \,/,$(EMBARC_ROOT)))
