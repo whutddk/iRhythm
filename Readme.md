@@ -5,9 +5,9 @@ This appilcation is a prototype of Internet Radio designed on ARC EM Starter Kit
 -----------------------------------------
 
 * [Introduction](#Introduction)
-    - [Function](#Function)
-    - [System Architecture](#System Architecture)
-    - [Appearance](#Appearance)
+    - [Function](#function)
+    - [System Architecture](#system-architecture)
+    - [Appearance](#appearance)
 
 
 -------------------------------
