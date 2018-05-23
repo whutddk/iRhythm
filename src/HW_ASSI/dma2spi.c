@@ -1,3 +1,9 @@
+/**
+ * DMA for SPI API CODE
+ * DDK Modify from Spiflash Example
+ * 2018 03 10
+ */
+
 #include "embARC.h"
 #include "embARC_debug.h"
 
@@ -84,6 +90,7 @@ void spi_xfer_callback(void *param)
 
 	// invalidate_xfer_data(&data_xfer);
 
+	/* Set the First Bit of Music Task Event */
 	xEventGroupSetBitsFromISR(
 		evt1_cb,	// The event group being updated.
 		BIT_0 ,   // The bits being set.
@@ -189,9 +196,9 @@ void spi_dma_prepare(void)
 }
 
 /**
- * \brief	write data to SPI to exchange to I2S
+ * \brief       Write Data to SPI to Exchange to I2S by Outside Circuit (FPGA)
  *
- * \param[in]	data	pointer to data
+ * \param[in]	data	Pointer to Data that need be sent
  *
  * \retval	=0		finish
  * \retval 	<0 		error
@@ -204,7 +211,7 @@ int32_t spi_writeraw(const void *data)
 	data_xfer.tx_buf = (uint8_t *)(xfer_buf);
 	data_xfer.len = 2304;
 
-	/*ask dma to send here*/
+	/* Ask Dma to Send Here*/
 	if (spi_xfer(&data_xfer) != 0) {
 		return -1;
 		EMBARC_PRINTF("SPI XFER ERROR!\r\n");

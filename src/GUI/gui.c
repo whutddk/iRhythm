@@ -1,15 +1,19 @@
+/**
+ * GUI API CORE CODE
+ * DDK
+ * 2018 05 10
+ */
+
+
 #include "embARC.h"
 #include "embARC_debug.h"
+
 #include "u8g.h"
 
 #include "include.h"
 
-u8g_t _u8g;
-struct _gui_info gui_info;
-
-
-
-
+u8g_t _u8g;					//GUI Control Struct
+struct _gui_info gui_info;	//GUI Control Infomation
 
 /**
  * \brief       GUI format configuration
@@ -25,7 +29,7 @@ static void u8g_prepare(void)
 }
 
 /**
- * \brief       GUI screen 1 reflash function to show debug preformace message
+ * \brief       Gui Screen 1 Reflash Function to Show Debug Preformace Message
  *
  */
 static void screen1()
@@ -33,6 +37,7 @@ static void screen1()
 	u8g_FirstPage(&_u8g);
 
 	do {
+		/* Display Net Speed */
 		u8g_DrawStr(&_u8g, 0, 0, "Net Speed:");
 
 		if ( gui_info.network_speed < 0) {
@@ -42,6 +47,7 @@ static void screen1()
 			u8g_DrawStr(&_u8g, 100, 0, "KB/s");
 		}
 
+		/* Display Decord time */
 		u8g_DrawStr(&_u8g, 0, 15, "Decord:");
 
 		if ( gui_info.decord_speed < 0) {
@@ -51,21 +57,11 @@ static void screen1()
 			u8g_DrawStr(&_u8g, 100, 15, "ms");
 		}
 
-		u8g_DrawStr(&_u8g, 0, 30, "Cycle:");
-
-		if ( gui_info.main_cycle < 0) {
-			u8g_DrawStr(&_u8g, 80, 30, "None!");
-		} else {
-			u8g_DrawStr(&_u8g, 80, 30, u8g_u16toa((uint16_t) gui_info.main_cycle, 2));
-			u8g_DrawStr(&_u8g, 100, 30, "ms");
-		}
-
+		/* Display Song Name Playing Now */
 		u8g_DrawStr(&_u8g, 0, 45, "SONG:");
 		u8g_DrawStr(&_u8g, 50, 45, gui_info.song_name);
 	} while ( u8g_NextPage(&_u8g) );
-
 }
-
 
 /**
  * \brief       This function used to show song name to select song
@@ -74,14 +70,11 @@ static void screen1()
 static void screen2()
 {
 	u8g_FirstPage(&_u8g);
-
+	/* Display Song Name May be Selected to Play Next*/
 	do {
 		u8g_DrawStr(&_u8g, 20, 20, gui_info.next_song);
 	} while ( u8g_NextPage(&_u8g) );
 }
-
-
-
 
 /**
  * \brief       This function used to initialize gui configuration
@@ -89,6 +82,7 @@ static void screen2()
  */
 void gui_init()
 {
+	/* Initialize Gui Contorl Infomation to Default*/
 	gui_info.screen_point = 0;
 	gui_info.network_speed = -1;
 	gui_info.decord_speed = -1;
@@ -108,6 +102,7 @@ void gui_init()
  */
 void reflash_screen()
 {
+	/* if No Operation Appears in 5 Seconds,then Return to Performance Page */
 	if ( gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 ) ) {
 		gui_info.screen_point = 0;
 	}

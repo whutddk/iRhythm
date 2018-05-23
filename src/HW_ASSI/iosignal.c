@@ -1,3 +1,9 @@
+/**
+ * IO API CODE
+ * DDK
+ * 2018 03 10
+ */
+
 #include "embARC.h"
 #include "embARC_debug.h"
 
@@ -8,30 +14,35 @@
 
 #include "include.h"
 
-/*****A[31:28]****PMOD6[10:7]*************/
+/*       A[31:28]    PMOD6[10:7]    */
 #define BOARD_SIGNOUT_MASK 0x30000100
 #define BOARD_SIGNIN_MASK 0xC0000007
 
 static DEV_GPIO *io_signal;
 
 /**
- * \brief       IO interrupt that trigger music event to switch back music task
+ * \brief       IO Interrupt that Trigger Music Event to Switch back Music Task
  *              
  */
 void empty_isr()
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
+	/* Set the Second Bit of Music Task Event */
 	xEventGroupSetBitsFromISR(
 		evt1_cb,	// The event group being updated.
 		BIT_1,   // The bits being set.
 		&xHigherPriorityTaskWoken );
-	//EMBARC_PRINTF("GPIO INTERRUPT!\r\n");
 }
 
 
 /**
- * \brief       IO port initalization 
+ * \brief       IO Port Initalization 
+ *              3 Key with Interruption\
+ *              2 Output for Performance Test during Debug\
+ *              2 Input IO with interruption:
+ *              One set for Music Task to Monitoring FPGA FIFO State,another is a Backup\
+ *              1 Output IO for Reset Pin of ESP8266
  *              
  */
 void iosignal_init()
@@ -41,7 +52,7 @@ void iosignal_init()
 
 
 	uint32_t val = get_pmod_mux();
-	val &= ~(PM1_LR_SPI_S);			//change LOW ROW of PM1 to GPIOA
+	val &= ~(PM1_LR_SPI_S);					//Change Low Row Function of PM1 to GPIOA
 	set_pmod_mux(val);
 
 	gpio_int_cfg.int_bit_mask = BOARD_SIGNIN_MASK;
@@ -94,7 +105,7 @@ error_exit:
 }
 
 /**
- * \brief       IO output control
+ * \brief       IO Output Control, just Defined For Debug
  * 
  * \param[in]   val                    1:IO LOGIC HIGH 0:IO LOGIC LOW
  *
@@ -124,7 +135,7 @@ void iosignal_ctrl(uint8_t val, uint8_t num)
 }
 
 /**
- * \brief       Read IO logical lever 
+ * \brief       Read IO Logical Lever 
  *
  * \param[in]   num                    0 or 1 for two special IO
  *
@@ -151,21 +162,20 @@ uint8_t iosignal_read(uint8_t num)
 }
 
 /**
- * \brief       PULL logical LOW for a period for ESP8266 reset
+ * \brief       Pull Logical Low for a Period for ESP8266 Reset
  *
  */
 void net_rst()
 {
 	uint32_t cur_time;
-	/***************RST = 0;*****************/
+	/*          RST = 0          */
 	io_signal->gpio_write(0x00000000, 0x00000100);
 
-	// _Rtos_Delay(100);
 	cur_time = OSP_GET_CUR_MS();
 
 	while ((OSP_GET_CUR_MS() - cur_time) < 1000);
 
-	/***************RST = 1;*****************/
+	/*          RST = 1          */
 	io_signal->gpio_write(0x00000100, 0x00000100);
 }
 
