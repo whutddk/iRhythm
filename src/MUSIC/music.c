@@ -1,9 +1,15 @@
+/**
+ * TOP LEVER OF MUSIC TASK
+ * DDK
+ * 2018 03 10
+ */
+
 #include "embARC.h"
 #include "embARC_debug.h"
 
 #include "include.h"
 
-DEV_SPI_PTR spi;
+DEV_SPI_PTR spi;						//Pointer to Configure SPI 
 
 FATFS fs_p;
 
@@ -11,7 +17,8 @@ int8_t file_buff[ BUFF_SPACE ];			//15MB File Buff to Read out from SD Card
 
 
 /**
- * \brief       Read out the Information of  file in SD Card and store in file list
+ * \brief       Read out the Information of File in SD Card and Store 
+ *              their infomation into Playlist List
  *
  */
 static void playlist_init()
@@ -28,7 +35,7 @@ static void playlist_init()
 		EMBARC_PRINTF("\r\nPlay List Init Error!\r\n");
 	}
 
-	/*open and checkout the directory*/
+	/* Open and Checkout the Directory */
 	error_num = f_opendir (&dir, "0:/music");
 
 	if ( error_num != FR_OK ) {
@@ -38,7 +45,7 @@ static void playlist_init()
 	do {
 		error_num = f_readdir (&dir, &fileinfo);
 
-		if ( dir.sect == 0 ) { //end of directory
+		if ( dir.sect == 0 ) { 				//End of Directory
 			break;
 		}
 
@@ -54,15 +61,15 @@ static void playlist_init()
 
 
 /**
- * \brief       Initialization and perpar all things before music decode start 
- *              including read out File from SD card Create play list
+ * \brief       Initialize and Perpar all Things before Music Decode Start 
+ *              including Read out Information of File from SD Card and Create playlist
  */
 void play_init()
 {
 
-	spi =  spi_get_dev(DW_SPI_0_ID);
+	spi = spi_get_dev(DW_SPI_0_ID);		//Initizlize SPI Pointer for later Configuration
 
-	/**mount Fatfs**/
+	/* mount Fatfs */
 	while (1) {
 		error_num = f_mount(&fs_p, "0:/", 1);
 
@@ -73,22 +80,18 @@ void play_init()
 		}
 	}
 
-	/********checkout directory and init song list to play****************/
+	/* checkout directory and init song list to play */
 	playlist_init();
 }
 
-/************
-**	Read Out One Song Information from Play List
-**	if Song is in SD Card ,Read Out File
-**	Play Song
-*/
+
 /**
  * \brief       Read Out One Song Information from Play List 
  *              if Song is in SD Card ,Read Out File Play Song
  *
- * \retval      1                      The Function end dure to key break
+ * \retval      1                      The Function End Dure to Key Break
  *
- * \retval      0                      The Function end with misiion complete
+ * \retval      0                      The Function End with Misiion End
  * 
  */
 int32_t Start_playing()
@@ -102,28 +105,25 @@ int32_t Start_playing()
 	memset( music_filename, 0, sizeof(char) * 50 );
 	strcat( music_filename, Playlist_HEAD -> data );
 
-
-
 	gui_info.song_name = music_filename;
-	xEventGroupSetBits( GUI_Ev, BIT_0 );
-
+	xEventGroupSetBits( GUI_Ev, BIT_0 );		//Reflash Gui to Display Song Name
 	EMBARC_PRINTF("\r\nplay %s\r\n", music_filename);
 
 
-	/********If the Song File is Bigger than 10MB Buff,Play Next one*****************************/
-	if ( file_lenth  > BUFF_SPACE ) {
+	/* If the Song File is Bigger than 15MB Buff,Play Next one */
+	if ( file_lenth > BUFF_SPACE ) {
 		EMBARC_PRINTF("\r\nfile too big,play fail!\r\n");
 		return -1;
 	}
 
 	EMBARC_PRINTF("\r\nfile lenth = %d \r\n", file_lenth);
 
-	/**read out file to DDR2 from SD card ,if Net Buff is EMPTY**/
-
+	/* Read out File to DDR2 from SD Card,if Net Buff is EMPTY */
 	if ( file_location == IN_FILE ) {
+		/* Slow CLK of SPI to Read SD Card */
 		spi->spi_control(SPI_CMD_MST_SET_FREQ, CONV2VOID(2000000));
 
-		readout_file(music_filename);
+		readout_file(music_filename);		//Read out File in SD Card
 
 	} else {
 		;
@@ -131,22 +131,20 @@ int32_t Start_playing()
 
 	if ( gui_info.flag_next != 1 && 0 == play_mp3(file_lenth, file_location)) {
 		EMBARC_PRINTF("\r\nplay complete!!!\r\n");;
-	} else { //play next song?
+	} else { 									//Play Next Song?
 		gui_info.flag_next = 0;
 		return 1;
 	}
 
 
 
-	/***********If it is the last Song in Play List,Play it again and again and Never Delete*******************/
-	cpu_lock();
-
+	/* If it is the last Song in Play List,Play it again and again and Never Delete */
+	cpu_lock();								//Gui Interruption May Happen Here
 	if ( Playlist_HEAD -> next != NULL ) {
 		filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
 	} else {
 		EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
 	}
-
-	cpu_unlock();
+	cpu_unlock();							//Gui Interruption May Cause Error
 	return 0;
 }

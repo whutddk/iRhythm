@@ -1,17 +1,23 @@
+/**
+ * API CODE for 2 List 
+ * DDK
+ * 2018 03 10
+ */
+
 #include "embARC.h"
 #include "embARC_debug.h"
 #include "stdlib.h"
 
 #include "include.h"
 
-struct filelist *Songid_HEAD = NULL ;
-struct filelist *Songid_END = NULL;
+struct filelist *Songid_HEAD = NULL ;			//Head Pointer For Songid List
+struct filelist *Songid_END = NULL;				//Tail Pointer to Protect Songid List
 
-struct filelist *Playlist_HEAD = NULL ;
-struct filelist *Playlist_END = NULL;
+struct filelist *Playlist_HEAD = NULL ;			//Head Pointer For Playlist List
+struct filelist *Playlist_END = NULL;			//Tail Pointer to Protect Playlist List
 
 /**
- * \brief       Init Song ID list and Add Default Song ID
+ * \brief       Initialize Song ID list and Add Default Song ID
  *
  */
 void filelist_init()
@@ -37,18 +43,18 @@ void filelist_init()
  * \brief       Add data in List
  *
  *
- * \param[in]   list_id                0: add data to Song id LIST; 
- *                                     1: add data to Playlist LIST
+ * \param[in]   list_id                (NET_LIST) 0: Add Data to Song Id LIST; 
+ *                                     (FILE_LIST)1: Add Data to Playlist LIST
  *                                     
- * \param[in]   id_data                ID Number to Song id list 
- *                                     or File Name to playlist list
+ * \param[in]   id_data                ID Number to Song Id List 
+ *                                     or File Name to Playlist List
  *                                     
- * \param[in]   lenth                  File lenth add to playlist list 
- *                                     no usage in Song id list
+ * \param[in]   lenth                  File Lenth Add to Playlist List 
+ *                                     No Usage in Song Id List
  *                                     
- * \param[in]   location               File location add to playlist list 
+ * \param[in]   location               File Location Add to Playlist List 
  *                                     IN_BUFF/IN_FILE
- *                                     no usage in Song id list
+ *                                     No Usage in Song Id List
  *
  */
 void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t location)
@@ -65,8 +71,7 @@ void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t locatio
 			}
 
 			strcat(lists -> data, id_data);
-			lists -> next = NULL;//插入到表尾
-
+			lists -> next = NULL;						//Add into the End of List 
 			Songid_END -> next = lists;
 			Songid_END = Songid_END -> next;
 			break;
@@ -84,11 +89,11 @@ void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t locatio
 			lists->location = location;
 
 			if ( location == IN_BUFF ) {
-				lists -> next = Playlist_HEAD -> next; //插入到第二节点上
-				Playlist_HEAD -> next = lists ; //链表头不变
+				lists -> next = Playlist_HEAD -> next; 	//Add as the Second Node
+				Playlist_HEAD -> next = lists ; 		//Head of List No Change
 			} else {
-				lists -> next = Playlist_HEAD ; //插入到第一节点上
-				Playlist_HEAD = lists;			//成为链表头
+				lists -> next = Playlist_HEAD ; 		//Add as the First Node
+				Playlist_HEAD = lists;					//Head of List Point here
 			}
 
 			break;
@@ -99,8 +104,8 @@ void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t locatio
 /**
  * \brief       Delete Head of a list
  *
- * \param[in]   list_id                0 :Delete Song id List
- *                                     1 :Delete Playlist list
+ * \param[in]   list_id                (NET_LIST) 0 :Delete Song Id List
+ *                                     (FILE_LIST)1 :Delete Playlist List
  *
  */
 void filelist_delete(uint8_t list_id)
