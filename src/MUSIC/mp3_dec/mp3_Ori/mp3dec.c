@@ -43,7 +43,6 @@
  **************************************************************************************/
 
 #include "string.h" // J.Sz. 21/04/2006
-// #include "hlxclib/string.h"		/* for memmove, memcpy (can replace with different implementations if desired) */
 #include "mp3common.h"	/* includes mp3dec.h (public API) and internal, platform-independent API */
 
 /**************************************************************************************
@@ -65,28 +64,6 @@ HMP3Decoder MP3InitDecoder(void)
 	mp3DecInfo = AllocateBuffers();
 
 	return (HMP3Decoder)mp3DecInfo;
-}
-
-/**************************************************************************************
- * Function:    MP3FreeDecoder
- *
- * Description: free platform-specific data allocated by InitMP3Decoder
- *              zero out the contents of MP3DecInfo struct
- *
- * Inputs:      valid MP3 decoder instance pointer (HMP3Decoder)
- *
- * Outputs:     none
- *
- * Return:      none
- **************************************************************************************/
-void MP3FreeDecoder(HMP3Decoder hMP3Decoder)
-{
-	MP3DecInfo *mp3DecInfo = (MP3DecInfo *)hMP3Decoder;
-
-	if (!mp3DecInfo)
-		return;
-
-	FreeBuffers(mp3DecInfo);
 }
 
 /**************************************************************************************

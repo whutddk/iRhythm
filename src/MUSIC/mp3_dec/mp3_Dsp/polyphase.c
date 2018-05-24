@@ -49,7 +49,7 @@
 #include "embARC_debug.h"
 
 #include "coder.h"
-#include "assembly.h"
+#include "Dsp_assembly.h"
 
 /* input to Polyphase = Q(DQ_FRACBITS_OUT-2), gain 2 bits in convolution
  *  we also have the implicit bias of 2^15 to add back, so net fraction bits =
@@ -88,7 +88,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	int *vb1;
 	int sum1L, sum2L, sum1R, sum2R;
 
-/*****************Part 1****************************************/
+/*                   Part 1                    */
 	/* special case, output sample 0 */
 	coef = coefBase;
 	vb1 = vbuf;
@@ -97,7 +97,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	*(pcm ) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 1) = (char)(SAR32(sum1R,CHECK_BIT));
 
-/*****************Part 2****************************************/
+/*                   Part 2                    */
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
 	vb1 = vbuf + 1024;
@@ -107,7 +107,7 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	*(pcm + 32) = (char)(SAR32(sum1L,CHECK_BIT));
 	*(pcm + 33) = (char)(SAR32(sum1R,CHECK_BIT));
 
-/*****************Part 3****************************************/
+/*                   Part 3                     */
 
 	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
 	coef = coefBase + 16;
@@ -119,10 +119,10 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 		MC2S(&sum1L,&sum1R,&sum2L,&sum2R,coef,vb1);
 		coef += 16;
 		vb1 += 64;
-		*(pcm )         = (char)(SAR32(sum1L,CHECK_BIT));
-		*(pcm + 1)         = (char)(SAR32(sum1R,CHECK_BIT));
-		*(pcm + 4*i) = (char)(SAR32(sum2L,CHECK_BIT));
-		*(pcm + 4*i + 1) = (char)(SAR32(sum2R,CHECK_BIT));
+		*(pcm )				=		(char)(SAR32(sum1L,CHECK_BIT));
+		*(pcm + 1)			=		(char)(SAR32(sum1R,CHECK_BIT));
+		*(pcm + 4*i)		=		(char)(SAR32(sum2L,CHECK_BIT));
+		*(pcm + 4*i + 1)	=		(char)(SAR32(sum2R,CHECK_BIT));
 		pcm += 2;
 	}
 }

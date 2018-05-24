@@ -38,19 +38,6 @@
  * Jon Recker (jrecker@real.com), Ken Cooke (kenc@real.com)
  * June 2003
  *
- * assembly.h - assembly language functions and prototypes for supported platforms
- *
- * - inline rountines with access to 64-bit multiply results
- * - x86 (_WIN32) and ARM (ARM_ADS, _WIN32_WCE) versions included
- * - some inline functions are mix of asm and C for speed
- * - some functions are in native asm files, so only the prototype is given here
- *
- * MULSHIFT32(x, y)    signed multiply of two 32-bit integers (x and y), returns top 32 bits of 64-bit result
- * FASTABS(x)          branchless absolute value of signed integer x
- * CLZ(x)              count leading zeros in x
- * MADD64(sum, x, y)   (Windows only) sum [64-bit] += x [32-bit] * y [32-bit]
- * SHL64(sum, x, y)    (Windows only) 64-bit left shift using __int64
- * SAR64(sum, x, y)    (Windows only) 64-bit right shift using __int64
  */
 
 #ifndef _ASSEMBLY_H
@@ -150,6 +137,20 @@ static __inline int FASMIN( int x,int y )
 	return z;
 }
 
+/**
+ * \brief       Core Caculate Function of MP3 Decoder,Improve efficiency by 
+ *              using assembly to use more register to decrease the operation 
+ *              times with Memory
+ *              
+ * \param       SL1                 Pointer to Output Caculate Result 1
+ * 
+ * \param       SR1                 Pointer to Output Caculate Result 2
+ *
+ * \param[in]   coef                Pointer of coef Array to Caculate
+ *
+ * \param[in]   vb1                 Pointer of vb1 Array to Caculate
+ * 
+ */
 static __inline void MC0S(int * SL1,int * SR1,const int * coef,int * vb1)
 {
 
@@ -335,7 +336,20 @@ static __inline void MC0S(int * SL1,int * SR1,const int * coef,int * vb1)
 
 }
 
-
+/**
+ * \brief       Core Caculate Function of MP3 Decoder,Improve efficiency by 
+ *              using assembly to use more register to decrease the operation 
+ *              times with Memory
+ *              
+ * \param       SL1                 Pointer to Output Caculate Result 1
+ * 
+ * \param       SR1                 Pointer to Output Caculate Result 2
+ *
+ * \param[in]   coef                Pointer of coef Array to Caculate
+ *
+ * \param[in]   vb1                 Pointer of vb1 Array to Caculate
+ * 
+ */
 static __inline void MC1S(int * SL1,int * SR1,const int * coef,int * vb1)
 {
 
@@ -457,6 +471,24 @@ static __inline void MC1S(int * SL1,int * SR1,const int * coef,int * vb1)
 	);
 }
 
+/**
+ * \brief       Core Caculate Function of MP3 Decoder,Improve efficiency by 
+ *              using assembly to use more register to decrease the operation 
+ *              times with Memory
+ *              
+ * \param       SL1                 Pointer to Output Caculate Result 1
+ * 
+ * \param       SR1                 Pointer to Output Caculate Result 2
+ *
+ * \param       SL2                 Pointer to Output Caculate Result 3
+ * 
+ * \param       SR2                 Pointer to Output Caculate Result 4
+ *
+ * \param[in]   coef                Pointer of coef Array to Caculate
+ *
+ * \param[in]   vb1                 Pointer of vb1 Array to Caculate
+ * 
+ */
 static __inline void MC2S(int* SL1,int* SR1,int* SL2,int* SR2,const int* coef,int * vb1)
 {
 	
