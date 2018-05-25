@@ -28,14 +28,14 @@ Through an amplifier outside,the online music can be play out from two big speak
 ![System Architecture][1]
 
 ### Appearance
-* System Top View -- Control Part
+* **System Top View -- Control Part**
 ![Control Part][2]
 
-* System Middle View -- Signal Processing Part
-![Signal Processing Part][2]
+* **System Middle View -- Signal Processing Part**
+![Signal Processing Part][3]
 
-* System Bottom View -- Output Part
-![Output Part][3]
+* **System Bottom View -- Output Part**
+![Output Part][4]
 
 
 
