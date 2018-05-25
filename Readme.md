@@ -25,9 +25,24 @@ Through an amplifier outside,the online music can be play out from two big speak
 * Performance data display
 
 ### System Architecture
+    ![System Architecture][1]
 
 ### Appearance
+* System Top View -- Control Part
+    ![Control Part][2]
 
+* System Middle View -- Signal Processing Part
+    ![Signal Processing Part][2]
+
+* System Bottom View -- Output Part
+    ![Output Part][3]
+
+
+
+[1]: ./doc/pic/sysarch.png
+[2]: ./doc/pic/top.jpg
+[3]: ./doc/pic/mid.jpg
+[4]: ./docpic/bottom.kpg
 
 
 
