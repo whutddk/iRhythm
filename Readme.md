@@ -42,7 +42,7 @@ Through an amplifier outside,the online music can be play out from two big speak
 [1]: ./doc/pic/sysarch.png
 [2]: ./doc/pic/top.jpg
 [3]: ./doc/pic/mid.jpg
-[4]: ./docpic/bottom.jpg
+[4]: ./doc/pic/bottom.jpg
 
 
 
