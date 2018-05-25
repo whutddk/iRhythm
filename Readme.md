@@ -1,6 +1,6 @@
 # iRhythm Internet MP3 Radio
 
-This appilcation is a prototype of Internet Radio designed on ARC EM Starter Kit,which could find music from online audition websites,like douban FM,Baidu FM,KuWo,Download mp3 file among the music,and decode them by using ARC DSP Instruction and optimized code for mp3 decode.
+This appilcation is a prototype of **Internet Radio** designed on ARC EM Starter Kit,which could find music from online audition websites,like *douban FM*,*Baidu FM*,*KuWo*,Download mp3 file among the music,and decode them by using **ARC DSP Instruction** and **optimized code** for mp3 decode.
 
 -----------------------------------------
 
@@ -25,24 +25,24 @@ Through an amplifier outside,the online music can be play out from two big speak
 * Performance data display
 
 ### System Architecture
-    ![System Architecture][1]
+![System Architecture][1]
 
 ### Appearance
 * System Top View -- Control Part
-    ![Control Part][2]
+![Control Part][2]
 
 * System Middle View -- Signal Processing Part
-    ![Signal Processing Part][2]
+![Signal Processing Part][2]
 
 * System Bottom View -- Output Part
-    ![Output Part][3]
+![Output Part][3]
 
 
 
 [1]: ./doc/pic/sysarch.png
 [2]: ./doc/pic/top.jpg
 [3]: ./doc/pic/mid.jpg
-[4]: ./docpic/bottom.kpg
+[4]: ./docpic/bottom.jpg
 
 
 
