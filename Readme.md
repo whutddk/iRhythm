@@ -223,7 +223,7 @@ Placing the HEADER source file.
 [3]: ./doc/pic/mid.jpg
 [4]: ./doc/pic/bottom.jpg
 [5]: ./doc/pic/necessaryhw.png
-[6]: ./doc/pic/addhw/png
+[6]: ./doc/pic/addhw.png
 [7]: http://www.freertos.org/a00106.html   "FreeRTOS API"
 [8]: http://embarc.org/embarc_osp/doc/embARC_Document/html/page_example.html   " embARC Example User Guide"
 
