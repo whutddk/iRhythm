@@ -40,11 +40,13 @@ Through an amplifier outside,the online music can be play out from two big speak
 
 * **System Middle View -- Signal Processing Part**
 ![Signal Processing Part][3]
+![Signal Processing Part][4]
 
 * **System Bottom View -- Output Part**
-![Output Part][4]
+![Output Part][5]
 
-
+* **System View**
+![iRhythm][6]
 
 ## Hardware and Software Setup
 
@@ -59,7 +61,7 @@ Through an amplifier outside,the online music can be play out from two big speak
     - OLED(12864)                                *1
     - Headphone                                  *1
 
-![Necessary Hardware][5]
+![Necessary Hardware][7]
 --------------------------------
 
 * Additional Hardware:
@@ -68,11 +70,12 @@ Through an amplifier outside,the online music can be play out from two big speak
     - Audio Amplifiers                           *1
     - Speaker                                    *1
 
-![Additional Hardware][6]
+![Additional Hardware][8]
 
 ---------------------------------
 
 ### Required Software
+* embarc_ops **newest** commit:976b8ed3b24b061df91f78bcc71a726dd2a63fae
 * Metaware or ARC GNU Toolset
 * Serial port terminal, such as putty, tera-term or minicom
 * Any bitstream file can config your FPGA as a SPI to I2S protocol interface
@@ -93,7 +96,7 @@ Through an amplifier outside,the online music can be play out from two big speak
 * Make sure all connection is correct again.
 * Make sure iRhythm is in the Wifi environment,which is matching with the setting in the code,including wifi name and wifi password.
 * Check the switch 1 and 2 of EMSK are in off state to boot as ARCem_7d core.
-* 
+
 ### Run This Application
 * Download with USB-JTAG or use bootloader to boot the program.
 * After iRhythm connect the wifi,initialization will complete very fast and OLED may light to show the song reading from SD card.
@@ -102,7 +105,7 @@ Through an amplifier outside,the online music can be play out from two big speak
 
 #### Makefile
 
-- Selected FreeRTOS here, then you can use [FreeRTOS API][7] in your application:
+- Selected FreeRTOS here, then you can use [FreeRTOS API][9] in your application:
 
 >>     # Selected OS
 >>     OS_SEL ?= freertos
@@ -134,11 +137,11 @@ Through an amplifier outside,the online music can be play out from two big speak
 
 - Directories of Linker Script File,to use CCM
 
->>      # linker script file
+>>        # linker script file
 >>        LINKER_SCRIPT_FILE ?= linker_file.ldf
 >>
 
-See [ embARC Example User Guide][8], **"Options to Hard-Code in the Application Makefile"** for more detailed information about **Makefile Options**.
+See [ embARC Example User Guide][10], **"Options to Hard-Code in the Application Makefile"** for more detailed information about **Makefile Options**.
 
 #### GUI
 
@@ -221,9 +224,11 @@ Placing the HEADER source file.
 [1]: ./doc/pic/sysarch.png
 [2]: ./doc/pic/top.jpg
 [3]: ./doc/pic/mid.jpg
-[4]: ./doc/pic/bottom.jpg
-[5]: ./doc/pic/necessaryhw.png
-[6]: ./doc/pic/addhw.png
-[7]: http://www.freertos.org/a00106.html   "FreeRTOS API"
-[8]: http://embarc.org/embarc_osp/doc/embARC_Document/html/page_example.html   " embARC Example User Guide"
+[4]: ./doc/pic/mid2.png
+[5]: ./doc/pic/bottom.jpg
+[6]: ./doc/pic/main3.jpg
+[7]: ./doc/pic/necessaryhw.png
+[8]: ./doc/pic/addhw.png
+[9]: http://www.freertos.org/a00106.html   "FreeRTOS API"
+[10]: http://embarc.org/embarc_osp/doc/embARC_Document/html/page_example.html   " embARC Example User Guide"
 

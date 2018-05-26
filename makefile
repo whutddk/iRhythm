@@ -1,3 +1,11 @@
+# Attention!!!
+# Attention!!!
+# embarc_ops newest commit:976b8ed3b24b061df91f78bcc71a726dd2a63fae 
+# is necessary to compile!!!
+# 
+# 		
+
+
 TOOLCHAIN=gnu
 BOARD=emsk
 BD_VER=23
