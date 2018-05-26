@@ -224,7 +224,7 @@ Placing the HEADER source file.
 [1]: ./doc/pic/sysarch.png
 [2]: ./doc/pic/top.jpg
 [3]: ./doc/pic/mid.jpg
-[4]: ./doc/pic/mid2.png
+[4]: ./doc/pic/mid2.jpg
 [5]: ./doc/pic/bottom.jpg
 [6]: ./doc/pic/main3.jpg
 [7]: ./doc/pic/necessaryhw.png
