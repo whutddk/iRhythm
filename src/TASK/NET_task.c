@@ -9,9 +9,6 @@
 
 #include "include.h"
 
-
-
-
 /**
  * \brief       Main function of Net Task
  */
