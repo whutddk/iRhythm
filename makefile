@@ -5,7 +5,6 @@
 # because EZ_SIO has become a part of Middleware in resent update!!!
 # 
 
-
 TOOLCHAIN=gnu
 BOARD=emsk
 BD_VER=23
