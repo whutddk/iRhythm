@@ -5,10 +5,14 @@
  */
 
 #include "embARC.h"
+
+//#define DBG_MORE
 #include "embARC_debug.h"
+
 #include "stdlib.h"
 
 #include "include.h"
+
 
 struct filelist *Songid_HEAD = NULL ;			//Head Pointer For Songid List
 struct filelist *Songid_END = NULL;				//Tail Pointer to Protect Songid List
@@ -28,7 +32,7 @@ void filelist_init()
 	memset(lists, 0, sizeof(struct filelist));
 
 	if ( NULL == lists ) {
-		EMBARC_PRINTF("\r\nSong Id List Init Error!\r\n");
+		dbg_printf(DBG_LESS_INFO,"\r\nSong Id List Init Error!\r\n");
 	}
 
 	strcat(lists -> data, "15368282"); //14950804//244200//1271193
@@ -67,7 +71,7 @@ void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t locatio
 			memset(lists, 0, sizeof(struct filelist));
 
 			if ( NULL == lists ) {
-				EMBARC_PRINTF("\r\nSong Id List Malloc Error!\r\n");
+				dbg_printf(DBG_LESS_INFO,"\r\nSong Id List Malloc Error!\r\n");
 			}
 
 			strcat(lists -> data, id_data);
@@ -81,7 +85,7 @@ void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t locatio
 			memset(lists, 0, sizeof(struct filelist));
 
 			if ( NULL == lists ) {
-				EMBARC_PRINTF("\r\nPlay List Malloc Error!\r\n");
+				dbg_printf(DBG_LESS_INFO,"\r\nPlay List Malloc Error!\r\n");
 			}
 
 			strcat(lists -> data, id_data);

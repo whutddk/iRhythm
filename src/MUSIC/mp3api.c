@@ -5,7 +5,10 @@
  */
 
 #include "embARC.h"
+
+//#define DBG_MORE
 #include "embARC_debug.h"
+
 #include "stdlib.h"
 
 #include "mp3dec.h"
@@ -63,7 +66,7 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 
 	mp3_dec = (MP3DecInfo *)MP3InitDecoder();
 
-	EMBARC_PRINTF("Start to Trace\r\n");
+	dbg_printf(DBG_LESS_INFO,"Start to Trace\r\n");
 
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
 
@@ -100,9 +103,9 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 			gui_info.decord_speed = perf_end();				//Get Decode Performance
 
 			if (res_dec == ERR_MP3_NONE) {					//Decode End Successfully
-				//EMBARC_PRINTF("MP3Decode Time :%dus!\n\r",cost_cyc);
+				dbg_printf(DBG_MORE_INFO,"MP3Decode Time :%dus!\n\r",gui_info.decord_speed);
 			} else {
-				EMBARC_PRINTF("MP3Decode error:%d!\n\r", res_dec);
+				dbg_printf(DBG_LESS_INFO,"MP3Decode error:%d!\n\r", res_dec);
 				read_ptr += 2;
 				byte_left -= 2;
 				continue;
@@ -121,7 +124,7 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 				uxBits = 0;
 			} else {
 				xEventGroupSetBits( GUI_Ev, BIT_0 );				//Reflash Gui Once
-				//EMBARC_PRINTF("GPIO Clear BIT1\r\n");
+				dbg_printf(DBG_MORE_INFO,"GPIO Clear BIT1\r\n");
 				uxBits = xEventGroupClearBits( evt1_cb, BIT_1 );	//Clear BIT_1 and Wait Outsize FIFO Empty
 			}
 
@@ -138,7 +141,7 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 
 		} else {
 			/* Scan Whole File Buff,No Start is End **********/
-			EMBARC_PRINTF("Decorder Complete!\n\r" );
+			dbg_printf(DBG_MORE_INFO,"Decorder Complete!\n\r" );
 			break;
 
 		}
@@ -152,7 +155,7 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 		flag_netbuff = BUFF_EMPTY;
 	}
 
-	EMBARC_PRINTF("MP3 file: decorder is over!\n\r" );
+	dbg_printf(DBG_LESS_INFO,"MP3 file: decorder is over!\n\r" );
 
 	return 0;
 }

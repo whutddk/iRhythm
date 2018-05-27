@@ -5,9 +5,12 @@
  */
 
 #include "embARC.h"
+
+//#define DBG_MORE
 #include "embARC_debug.h"
 
 #include "include.h"
+
 
 DEV_SPI_PTR spi;						//Pointer to Configure SPI 
 
@@ -26,13 +29,13 @@ static void playlist_init()
 	DIR dir;
 	FILINFO fileinfo;
 
-	EMBARC_PRINTF("\r\nCreate Play List\r\n");
+	dbg_printf(DBG_LESS_INFO,"\r\nCreate Play List\r\n");
 
 	struct filelist *lists = NULL;
 	lists = (struct filelist *)malloc(sizeof(struct filelist));
 
 	if ( NULL == lists ) {
-		EMBARC_PRINTF("\r\nPlay List Init Error!\r\n");
+		dbg_printf(DBG_LESS_INFO,"\r\nPlay List Init Error!\r\n");
 	}
 
 	/* Open and Checkout the Directory */
@@ -51,11 +54,11 @@ static void playlist_init()
 
 		if ( fileinfo.fattrib == 32 ) {		//Check File Style
 			filelist_add(FILE_LIST, &(fileinfo.fname[0]), fileinfo.fsize, IN_FILE);
-			EMBARC_PRINTF("File name: %s  File size:%d   \r\n", fileinfo.fname, fileinfo.fsize);
+			dbg_printf(DBG_LESS_INFO,"File name: %s  File size:%d   \r\n", fileinfo.fname, fileinfo.fsize);
 		}
 	} while ( 1 );
 
-	EMBARC_PRINTF("\r\nCloseing root directory. \r\n");
+	dbg_printf(DBG_LESS_INFO,"\r\nCloseing root directory. \r\n");
 	f_closedir(&dir);
 }
 
@@ -76,7 +79,7 @@ void play_init()
 		if ( error_num == FR_OK) {
 			break;
 		} else {
-			EMBARC_PRINTF("File f_mount failed!\r\nstop!\r\n");
+			dbg_printf(DBG_LESS_INFO,"File f_mount failed!\r\nstop!\r\n");
 		}
 	}
 
@@ -107,16 +110,16 @@ int32_t Start_playing()
 
 	gui_info.song_name = music_filename;
 	xEventGroupSetBits( GUI_Ev, BIT_0 );		//Reflash Gui to Display Song Name
-	EMBARC_PRINTF("\r\nplay %s\r\n", music_filename);
+	dbg_printf(DBG_LESS_INFO,"\r\nplay %s\r\n", music_filename);
 
 
 	/* If the Song File is Bigger than 15MB Buff,Play Next one */
 	if ( file_lenth > BUFF_SPACE ) {
-		EMBARC_PRINTF("\r\nfile too big,play fail!\r\n");
+		dbg_printf(DBG_LESS_INFO,"\r\nfile too big,play fail!\r\n");
 		return -1;
 	}
 
-	EMBARC_PRINTF("\r\nfile lenth = %d \r\n", file_lenth);
+	dbg_printf(DBG_LESS_INFO,"\r\nfile lenth = %d \r\n", file_lenth);
 
 	/* Read out File to DDR2 from SD Card,if Net Buff is EMPTY */
 	if ( file_location == IN_FILE ) {
@@ -130,7 +133,7 @@ int32_t Start_playing()
 	}
 
 	if ( gui_info.flag_next != 1 && 0 == play_mp3(file_lenth, file_location)) {
-		EMBARC_PRINTF("\r\nplay complete!!!\r\n");;
+		dbg_printf(DBG_LESS_INFO,"\r\nplay complete!!!\r\n");;
 	} else { 									//Play Next Song?
 		gui_info.flag_next = 0;
 		return 1;
@@ -143,7 +146,7 @@ int32_t Start_playing()
 	if ( Playlist_HEAD -> next != NULL ) {
 		filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
 	} else {
-		EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
+		dbg_printf(DBG_LESS_INFO,"\r\nNo Song Left!!!\r\n");
 	}
 	cpu_unlock();							//Gui Interruption May Cause Error
 	return 0;

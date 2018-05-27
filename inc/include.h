@@ -2,7 +2,6 @@
 #define _INCLUDE_H_
 
 #include "embARC.h"
-#include "embARC_debug.h"
 
 #include "inc_task.h"
 
