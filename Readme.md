@@ -8,6 +8,7 @@ This appilcation is a prototype of **Internet Radio** designed on ARC EM Starter
     - [Function](#function)
     - [System Architecture](#system-architecture)
     - [Appearance](#appearance)
+    - [Video](#video)
 * [Hardware and Software Setup](#hardware-and-software-setup)
     - [Required Hardware](#required-hardware)
     - [Required Software](#required-software)
@@ -48,6 +49,9 @@ Through an amplifier outside,the online music can be play out from two big speak
 * **System View**
 ![iRhythm][6]
 
+### Video
+[ iRhythm demo video ][7]
+
 ## Hardware and Software Setup
 
 -------------------------------
@@ -61,7 +65,7 @@ Through an amplifier outside,the online music can be play out from two big speak
     - OLED(12864)                                *1
     - Headphone                                  *1
 
-![Necessary Hardware][7]
+![Necessary Hardware][8]
 --------------------------------
 
 * Additional Hardware:
@@ -70,7 +74,7 @@ Through an amplifier outside,the online music can be play out from two big speak
     - Audio Amplifiers                           *1
     - Speaker                                    *1
 
-![Additional Hardware][8]
+![Additional Hardware][9]
 
 ---------------------------------
 
@@ -105,7 +109,7 @@ Through an amplifier outside,the online music can be play out from two big speak
 
 #### Makefile
 
-- Selected FreeRTOS here, then you can use [FreeRTOS API][9] in your application:
+- Selected FreeRTOS here, then you can use [FreeRTOS API][10] in your application:
 
 >>     # Selected OS
 >>     OS_SEL ?= freertos
@@ -141,7 +145,7 @@ Through an amplifier outside,the online music can be play out from two big speak
 >>        LINKER_SCRIPT_FILE ?= linker_file.ldf
 >>
 
-See [ embARC Example User Guide][10], **"Options to Hard-Code in the Application Makefile"** for more detailed information about **Makefile Options**.
+See [ embARC Example User Guide][11], **"Options to Hard-Code in the Application Makefile"** for more detailed information about **Makefile Options**.
 
 #### GUI
 
@@ -227,8 +231,9 @@ Placing the HEADER source file.
 [4]: ./doc/pic/mid2.jpg
 [5]: ./doc/pic/bottom.jpg
 [6]: ./doc/pic/main3.jpg
-[7]: ./doc/pic/necessaryhw.png
-[8]: ./doc/pic/addhw.png
-[9]: http://www.freertos.org/a00106.html   "FreeRTOS API"
-[10]: http://embarc.org/embarc_osp/doc/embARC_Document/html/page_example.html   " embARC Example User Guide"
+[7]: http://www.youku.com/   "iRhythm demo video"
+[8]: ./doc/pic/necessaryhw.png
+[9]: ./doc/pic/addhw.png
+[10]: http://www.freertos.org/a00106.html   "FreeRTOS API"
+[11]: http://embarc.org/embarc_osp/doc/embARC_Document/html/page_example.html   " embARC Example User Guide"
 
