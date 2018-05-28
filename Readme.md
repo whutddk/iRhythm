@@ -231,7 +231,7 @@ Placing the HEADER source file.
 [4]: ./doc/pic/mid2.jpg
 [5]: ./doc/pic/bottom.jpg
 [6]: ./doc/pic/main3.jpg
-[7]: http://v.youku.com/v_show/id_XMzYzMTA0MjAyOA==.html?spm=a2h3j.8428770.3416059.1   "iRhythm demo video"
+[7]: http://v.youku.com/v_show/id_XMzYzMTM0MDM3Ng==.html?spm=a2h3j.8428770.3416059.1&qq-pf-to=pcqq.c2c   "iRhythm demo video"
 [8]: ./doc/pic/necessaryhw.png
 [9]: ./doc/pic/addhw.png
 [10]: http://www.freertos.org/a00106.html   "FreeRTOS API"
