@@ -28,6 +28,12 @@
  *
 --------------------------------------------- */
 
+//Attention!!!
+//Attention!!!
+//the newest embarc osp commit:976b8ed3b24b061df91f78bcc71a726dd2a63fae
+//is necessary to compile!!!
+//because EZ_SIO has become a part of Middleware in resent update!!!
+ 
 
 
 /* embARC HAL */
@@ -59,7 +65,6 @@ int32_t error_num = 0;
  */
 int main(void)
 {
-	// board_init();
 	io_mux_init();
 	emsk_gpio_init();
 	EMBARC_PRINTF("Application Start\r\n");
@@ -67,21 +72,25 @@ int main(void)
 
 	vTaskSuspendAll();
 
-	/**********MP3 Decord Assist IO Init***************************/
+	/* MP3 Decord Assist IO,KEY,ESP8266 Reset Pin Initialization */
 	iosignal_init();
 
-	/********IO reset ESP8266************************/
+	/* IO Reset ESP8266 */
 	net_rst();
-	/*********init Songid List*****/
+
+	/* Initialization of Songid List */
 	filelist_init();
-	/*******Init Esp8266 and Connect to Wifi***************/
+
+	/* Initialization of Esp8266 and Connect to Wifi */
 	net_init();
 
+	/* Initialization of DMA */
 	spi_dma_prepare();
 
+	/* Initialization of U8glib */
 	gui_init();
-	/********************** Create Tasks**************************/
 
+	/********************** Create Tasks**************************/
 	if (xTaskCreate(gui_task, "gui_task", 512, (void *)NULL, configMAX_PRIORITIES - 1, &GUI_task_handle)
 		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create GUI_task error\r\n");
@@ -99,11 +108,6 @@ int main(void)
 		EMBARC_PRINTF("create NET_task error\r\n");
 		return -1;
 	}
-
-	//other task
-
-
-	//other task end//
 
 	// Create Events
 

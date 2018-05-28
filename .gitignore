@@ -4,4 +4,7 @@
 !makefile
 !.gitignore
 !Readme.md
-!/diff in ops/
+!linker_file.ldf
+!LICENSE
+!/doc
+

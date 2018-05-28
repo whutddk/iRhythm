@@ -45,7 +45,7 @@
 #define _CODER_H
 
 #include "mp3common.h"
-#include "assembly.h"
+#include "Dsp_assembly.h"
 
 #if defined(ASSERT)
 #undef ASSERT

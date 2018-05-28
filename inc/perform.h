@@ -1,7 +1,13 @@
+/**
+ * API to Get Performance Data
+ */
+
 #include "embARC.h"
 #include "embARC_debug.h"
 
 #include "include.h"
+
+
 
 uint32_t cost_cyc;
 static volatile uint32_t start = 0;
