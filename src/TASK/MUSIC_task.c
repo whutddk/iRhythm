@@ -1,3 +1,9 @@
+/**
+ * MUSIC TASK
+ * DDK
+ * 2018 03 10
+ */
+
 #include "embARC.h"
 #include "embARC_debug.h"
 #include "stdlib.h"

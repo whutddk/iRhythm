@@ -1,3 +1,8 @@
+/**
+ * GUI TASK HERE
+ * DDK
+ * 2018 05 10
+ */
 #include "embARC.h"
 #include "embARC_debug.h"
 #include "u8g.h"
@@ -15,9 +20,9 @@ void gui_task()
 
 		xEventGroupWaitBits(
 			GUI_Ev,
-			BIT_0 , 	//Wait BIT0 to reflash
-			pdTRUE, 		//BIT_0 should be cleared before returning.
-			pdFALSE, 		// Wait for both bits
+			BIT_0 , 		//Wait BIT0 to reflash
+			pdTRUE, 		//BIT_0 Should be cleared after Returning.
+			pdFALSE, 		
 			portMAX_DELAY );
 	}
 

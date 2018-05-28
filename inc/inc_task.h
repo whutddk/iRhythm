@@ -1,6 +1,12 @@
 #ifndef _INC_TASK_H_
 #define _INC_TASK_H_
 
+/**
+ * \brief       Task Dealy For a Period
+ *
+ * \param[in]   ticks                  ticks Need to Delay,1 ms Every Tick
+ */
+
 inline void _Rtos_Delay(uint32_t ticks)
 {
 	TickType_t xLastWakeTime;
@@ -11,15 +17,15 @@ inline void _Rtos_Delay(uint32_t ticks)
 	vTaskDelayUntil( &xLastWakeTime, xFrequency );
 }
 
-// Events
-extern EventGroupHandle_t evt1_cb;
-extern EventGroupHandle_t GUI_Ev;
+
+extern EventGroupHandle_t evt1_cb;		//Event For Music Task
+extern EventGroupHandle_t GUI_Ev;		//Event For Gui Task
 
 
-extern void music_task();
-extern void net_task();
-extern void gui_task();
+extern void music_task();				//Declare Music Task
+extern void net_task();					//Declare Net Task
+extern void gui_task();					//Declare Gui Task
 
 
-#endif
+#endif /*_INC_TASK_H_*/
 

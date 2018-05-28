@@ -1,88 +1,90 @@
+/**
+ * Key API CORE CODE
+ * DDK
+ * 2018 05 10
+ */
+
 #include "embARC.h"
 #include "embARC_debug.h"
 
 #include "include.h"
 
 /**
- * \brief       IO interrupt callback to realize COMFIRM key function
+ * \brief       IO Interrupt Callback to Realize COMFIRM Key Function
  *
  */
 void key1_isr()//确定键
 {
-	//SWITCH 254 SONG most
+	//SWITCH 254 SONG Most
 	uint8_t i;
 	struct filelist *file_pointer = Playlist_HEAD;
 
-	gui_info.delay_cnt = xTaskGetTickCount ();
+	gui_info.delay_cnt = xTaskGetTickCount ();			//Update to Get Another 5 Seconds
 
+	/* In Performance Page,Goto Page 1 */
 	if ( gui_info.screen_point == 0 ) {
 		gui_info.screen_point ++;
 		gui_info.next_song = file_pointer -> data;
 	} else {
+		/* Not in Performance Page,Restart Playing Decided by pointer */
 		gui_info.flag_next = 1;
 
-		//how to stay in the same song?
+		/* Delete Playlist List before the Song Need to Play  */
 		for ( i = gui_info.screen_point - 1; i > 0; i -- ) {
-			/***********If it is the last Song in Play List,Play it again and again and Never Delete*******************/
+			/* If it is the last Song in Play List,Play it again and again and Never Delete */
 			if ( Playlist_HEAD -> next != NULL ) {
+				/* Check if an Online Song in Playlist,then Net Buff should be Reset */
 				if ( Playlist_HEAD -> location != IN_BUFF ) {
 					;
 				} else {
 					flag_netbuff = BUFF_EMPTY;
 				}
-
-
-				filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
+				filelist_delete(FILE_LIST);				//delete it from Playlist
 			} else {
 				EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
 			}
 		}
 
+		/* Reset Gui Control Infomation */
 		gui_info.screen_point = 0;
 		gui_info.network_speed = -1;
 		gui_info.decord_speed = -1;
 		gui_info.main_cycle = -1;
 	}
 
-	//EMBARC_PRINTF("key1_isr!\r\n");
-
-
-	//Now Reflash the Srceen
-	xEventGroupSetBits( GUI_Ev, BIT_0 );
+	xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
 }
 
 /**
- * \brief       IO interrupt callback to realize NEXT key function
+ * \brief       IO Interrupt Callback to Realize NEXT Key Function
  *
  */
-void key2_isr()//右键
+void key2_isr()
 {
 	uint8_t i;
 	struct filelist *file_pointer = Playlist_HEAD;
 
-	gui_info.delay_cnt = xTaskGetTickCount ();
+	gui_info.delay_cnt = xTaskGetTickCount ();			//Update to Get Another 5 Seconds
 
 	for ( i = gui_info.screen_point ; i > 0 ; i -- ) {
-		file_pointer = file_pointer -> next;
+		file_pointer = file_pointer -> next;			//Update Song Pointer 
 
 		if ( file_pointer != NULL ) {
 
 		} else {
-			return;	//超出了没必要刷新画面，刷新了时间即可，如果是0界面，不会出现这种情况
+			return;										//Unnecessary to Reflash in this Case
 		}
 	}
 
-	//EMBARC_PRINTF("key2_isr!\r\n");
+	gui_info.next_song = file_pointer -> data;			//Update Song Name to Display
+	gui_info.screen_point ++;							//Increase Song Pointer
 
-	gui_info.next_song = file_pointer -> data;
-	gui_info.screen_point ++;
-
-	//Now Reflash the Srceen
-	xEventGroupSetBits( GUI_Ev, BIT_0 );
+	xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
 }
 
 /**
- * \brief       IO interrupt callback to realize BACKUP key function
+ * \brief       IO Interrupt Callback to Realize BACKUP Key Function
+ *              Has been Initialized but No Useage Now
  *
  */
 void key3_isr()
