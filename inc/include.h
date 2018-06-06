@@ -125,6 +125,8 @@ struct _gui_info {
 	int16_t decord_speed;				//Pass Decoder Time From Music Task to Gui Task
 	int16_t main_cycle;
 
+	bool perf_update;					//Comfirm to update a part of screen
+
 	char *song_name;					//Pass Song Name From Music Task to Gui Task
 	char *next_song;					//Pass Next Song Name From Music Task to Gui Task
 
@@ -132,6 +134,7 @@ struct _gui_info {
 	uint8_t flag_next;					//Ask Music Task to Play Next Song
 
 	uint32_t delay_cnt;					//Count Delay Tick to Reset Screen Pointer
+
 };
 
 extern struct _gui_info gui_info;

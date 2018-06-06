@@ -4,9 +4,6 @@
 
 #include "OLED.h"
 
-
-#include "oledfont.h"
-
 #include "stdio.h"
 
 #include "include.h"
@@ -15,32 +12,7 @@
 
 DEV_IIC *OLED_I2C;
 
-/**
- * \brief       This function used to initialize gui configuration
- *
- */
-void gui_init()
-{
-	uint32_t point = (OLED_ADDRESS >> 1);
-	/* Initialize Gui Contorl Infomation to Default*/
-	gui_info.screen_point = 0;
-	gui_info.network_speed = -1;
-	gui_info.decord_speed = -1;
-	gui_info.main_cycle = -1;
-	gui_info.flag_next = 0;
-	gui_info.song_name = NULL;
-	gui_info.next_song = NULL;
 
-	OLED_I2C = iic_get_dev(DW_IIC_0_ID);
-	OLED_I2C -> iic_open(DEV_MASTER_MODE, IIC_SPEED_ULTRA);
-
-	OLED_I2C -> iic_control(IIC_CMD_MST_SET_TAR_ADDR, (void *)point);
-	OLED_I2C -> iic_control(IIC_CMD_ENA_DEV, (void *)point);
-
-	OLED_init();
-	OLED_CLS();
-
-}
 
 
 /**********************************************
@@ -72,7 +44,7 @@ inline void Write_IIC_Data(uint8_t IIC_Data)
 	OLED_I2C->iic_write((void *)send_data, 2);
 }
 
-void OLED_init()
+inline static void OLED_init()
 {
 	Write_IIC_Command(0xae);				/* display off, sleep mode */
 	Write_IIC_Command(0xd5); Write_IIC_Command(0x80);		/* clock divide ratio (0x00=1) and oscillator frequency (0x8) */
@@ -106,7 +78,8 @@ inline void OLED_Set_Pos(uint8_t x, uint8_t y)
 	Write_IIC_Command(((x & 0xf0) >> 4) | 0x10);
 	Write_IIC_Command((x & 0x0f) | 0x01);
 }
-void OLED_Fill(uint8_t bmp_data)
+
+inline void OLED_Fill(uint8_t bmp_data)
 {
 	uint8_t y, x;
 
@@ -120,7 +93,8 @@ void OLED_Fill(uint8_t bmp_data)
 		}
 	}
 }
-void OLED_CLS(void)
+
+inline void OLED_CLS(void)
 {
 	uint8_t y, x;
 
@@ -412,16 +386,42 @@ void OLED_PrintInt16(uint8_t ucIdxX, uint8_t ucIdxY, int16_t sData)
 
 
 	//十位
-
-	OLED_P6x8Char(ucIdxX + 8, ucIdxY, (uint8_t)j + 48);
+	OLED_P6x8Char(ucIdxX , ucIdxY, (uint8_t)0 + 48);
+	OLED_P6x8Char(ucIdxX + 6, ucIdxY, (uint8_t)j + 48);
 
 
 	//个位
-	OLED_P6x8Char(ucIdxX + 16, ucIdxY, (uint8_t)k + 48);
+	OLED_P6x8Char(ucIdxX + 12, ucIdxY, (uint8_t)k + 48);
 
 
 	return;
 }
 
 
+/**
+ * \brief       This function used to initialize gui configuration
+ *
+ */
+void gui_init()
+{
+	uint32_t point = (OLED_ADDRESS >> 1);
+	/* Initialize Gui Contorl Infomation to Default*/
+	gui_info.screen_point = 0;
+	gui_info.network_speed = -1;
+	gui_info.decord_speed = -1;
+	gui_info.main_cycle = -1;
+	gui_info.flag_next = 0;
+	gui_info.song_name = NULL;
+	gui_info.next_song = NULL;
+	gui_info.perf_update = 0;
 
+	OLED_I2C = iic_get_dev(DW_IIC_0_ID);
+	OLED_I2C -> iic_open(DEV_MASTER_MODE, IIC_SPEED_ULTRA);
+
+	OLED_I2C -> iic_control(IIC_CMD_MST_SET_TAR_ADDR, (void *)point);
+	OLED_I2C -> iic_control(IIC_CMD_ENA_DEV, (void *)point);
+
+	OLED_init();
+	OLED_CLS();
+
+}

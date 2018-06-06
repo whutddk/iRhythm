@@ -109,6 +109,7 @@ int32_t Start_playing()
 	strcat( music_filename, Playlist_HEAD -> data );
 
 	gui_info.song_name = music_filename;
+	gui_info.perf_update = 0;
 	xEventGroupSetBits( GUI_Ev, BIT_0 );		//Reflash Gui to Display Song Name
 	dbg_printf(DBG_LESS_INFO,"\r\nplay %s\r\n", music_filename);
 

@@ -116,6 +116,9 @@ int main(void)
 
 	xTaskResumeAll();
 
+	
+	vTaskSuspend(NULL);
+	vTaskSuspend(NULL);
 	while (1);
 
 	return E_SYS;
