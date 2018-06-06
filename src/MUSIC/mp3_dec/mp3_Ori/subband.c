@@ -45,6 +45,7 @@
 
 #include "coder.h"
 
+#include "include.h"
 /**************************************************************************************
  * Function:    Subband
  *
@@ -71,6 +72,12 @@ int Subband(MP3DecInfo *mp3DecInfo, char *pcmBuf)
 	//hi = (HuffmanInfo *)mp3DecInfo->HuffmanInfoPS;
 	mi = (IMDCTInfo *)(mp3DecInfo->IMDCTInfoPS);
 	sbi = (SubbandInfo*)(mp3DecInfo->SubbandInfoPS);
+
+	for ( b = 0;b<7;b++ )
+	{
+		gui_info.fft[b] = mi->outBuf[0][1][4*b];
+	}
+
 
 	if (mp3DecInfo->nChans == 2) {
 		/* stereo */

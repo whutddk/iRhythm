@@ -397,6 +397,41 @@ void OLED_PrintInt16(uint8_t ucIdxX, uint8_t ucIdxY, int16_t sData)
 	return;
 }
 
+/**
+ * 画7个频谱条 0-128
+ */
+
+void draw_fft()
+{
+	uint8_t i = 0;
+
+	for ( i = 0;i<7;i++ )
+	{
+		if ( gui_info.fft[i] > 127 )
+		{
+			gui_info.fft[i] = 127;
+		}
+		if ( gui_info.fft[i] < gui_info.fft_show[i] )			//下降条
+		{
+			gui_info.fft_show[i] -= 1;
+			OLED_Set_Pos(gui_info.fft_show[i], i);
+			Write_IIC_Data(0x00);			
+		}
+		else
+		{
+			gui_info.fft_show[i] ++;
+			OLED_Set_Pos(gui_info.fft_show[i], i);
+			while( gui_info.fft_show[i] < gui_info.fft[i] )
+			{				
+				Write_IIC_Data(0xff);
+				gui_info.fft_show[i] ++;
+			}
+		}
+	}
+}
+
+
+
 
 /**
  * \brief       This function used to initialize gui configuration

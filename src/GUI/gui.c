@@ -88,10 +88,12 @@ static void perform_screen()
  * \brief       This function used to show song name to select song
  *
  */
+
 static void FFT_screen()
 {
 	gui_info.perf_update = 0;
 
+	draw_fft();
 
 }
 
@@ -110,11 +112,12 @@ void reflash_screen()
 
 	switch (gui_info.screen_point) {
 		case (0):
-			perform_screen();
+		FFT_screen();
+			
 			break;
 
 		default:
-			FFT_screen();
+			perform_screen();
 			break;
 	}
 
