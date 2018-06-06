@@ -133,6 +133,8 @@ int32_t Start_playing()
 		;
 	}
 
+	xEventGroupSetBits( GUI_Ev, BIT_1 );
+	
 	if ( gui_info.flag_next != 1 && 0 == play_mp3(file_lenth, file_location)) {
 		dbg_printf(DBG_LESS_INFO,"\r\nplay complete!!!\r\n");;
 	} else { 									//Play Next Song?

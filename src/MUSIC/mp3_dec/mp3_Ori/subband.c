@@ -75,7 +75,7 @@ int Subband(MP3DecInfo *mp3DecInfo, char *pcmBuf)
 
 	for ( b = 0;b<7;b++ )
 	{
-		gui_info.fft[b] = mi->outBuf[0][1][4*b];
+		gui_info.fft[b] = (uint8_t)(mi->outBuf[0][1][4*b+2] / 100000) ;
 	}
 
 
