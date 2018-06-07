@@ -6,6 +6,7 @@
 #include "inc_task.h"
 
 #include "esp8266.h"
+#include "fft.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -150,6 +151,12 @@ extern void reflash_screen();
 extern void key1_isr();
 extern void key2_isr();
 extern void key3_isr();
+
+
+/* fft data input */
+extern uint8_t fft_in[fft_N];
+/* fft data output */
+extern uint8_t fft_out[fft_N / 2];
 
 #endif
 

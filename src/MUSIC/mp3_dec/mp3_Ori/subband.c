@@ -65,6 +65,8 @@ int Subband(MP3DecInfo *mp3DecInfo, char *pcmBuf)
 	IMDCTInfo *mi;
 	SubbandInfo *sbi;
 
+	uint16_t i = 0;
+
 	/* validate pointers */
 	if (!mp3DecInfo || !mp3DecInfo->HuffmanInfoPS || !mp3DecInfo->IMDCTInfoPS || !mp3DecInfo->SubbandInfoPS)
 		return -1;
@@ -87,6 +89,15 @@ int Subband(MP3DecInfo *mp3DecInfo, char *pcmBuf)
 		EMBARC_PRINTF("Mono Has been Cut out! Not Support Now!\n\r" );
 	}
 
+
+/****FFT FUNCTION*****/
+	for ( i = 0;i < fft_N; i++ )
+	{
+		fft_in[i] = *(pcmBuf + 2*i);
+	}
+	fft_cal();
+
+	
 	return 0;
 }
 

@@ -117,7 +117,7 @@ void fft_powerMag(compx *fftData, uint8_t *fftOut)
 }
 
 /* fft data input */
-uint16_t fft_in[fft_N];
+uint8_t fft_in[fft_N];
 /* fft data output */
 uint8_t fft_out[fft_N / 2];
 
