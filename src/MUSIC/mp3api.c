@@ -68,6 +68,15 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 
 	dbg_printf(DBG_LESS_INFO,"Start to Trace\r\n");
 
+/*
+reset gui fft bar
+ */
+	gui_info.fft_show[0] = 0;
+	gui_info.fft_show[1] = 0;
+	gui_info.fft_show[2] = 0;
+	gui_info.fft_show[3] = 0;
+
+
 	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
 
 	/* Start to Decord MP3 */
@@ -143,6 +152,13 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 		} else {
 			/* Scan Whole File Buff,No Start is End **********/
 			dbg_printf(DBG_MORE_INFO,"Decorder Complete!\n\r" );
+
+			xEventGroupWaitBits(
+				evt1_cb,
+				BIT_0 | BIT_1 , 						//Regard BIT0 as Dma Transfer Finish,Regard BIT1 as Outside FIFO Full Flag
+				pdFALSE, 								//BIT_0 and BIT_1 Should Not be Cleared manually.
+				pdTRUE, 								// Wait for both Bits
+				portMAX_DELAY );
 			break;
 
 		}
