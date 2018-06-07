@@ -46,7 +46,16 @@
 #ifdef fft_16
 /* list table of 16 points for butterfly algorithm of fft */
 const int List[16] = {
-	0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15
+	0, 8, 4, 12, 2, 10, 6, 14,
+	1, 9, 5, 13, 3, 11, 7, 15
+};
+#endif
+
+#ifdef fft_32
+/* list table of 16 points for butterfly algorithm of fft */
+const int List[32] = {
+	0, 16, 8, 24,4,20,12,28,2,18,10,26,6,22,14,30,
+	1, 17, 9, 25,5,21,13,29,3,19,11,27,7,23,15,31
 };
 #endif
 

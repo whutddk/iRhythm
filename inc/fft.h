@@ -53,6 +53,7 @@ typedef struct {
 
 /* choose the number of fast fourier transform channel number */
 #define fft_16
+// #define fft_32
 // #define fft_64
 //#define fft_128
 //#define fft_256
@@ -62,6 +63,11 @@ typedef struct {
 #ifdef fft_16
 	#define fft_N 16
 	#define M 4
+#endif
+
+#ifdef fft_32
+	#define fft_N 32
+	// #define M 4
 #endif
 
 #ifdef fft_64
