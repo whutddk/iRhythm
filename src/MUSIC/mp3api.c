@@ -74,14 +74,6 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 	perf_start();
 
 	while (1) {
-		/* End this Song,and Play Next Song */
-		if ( gui_info.flag_next != 1) {
-			;
-		} else { 
-			gui_info.decord_speed = -1;
-			gui_info.main_cycle = -1;
-			return 1;
-		}
 
 		offset = MP3FindSyncWord(read_ptr, byte_left);		//Find the Location of Start
 
@@ -119,6 +111,15 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 				pdTRUE, 								// Wait for both Bits
 				portMAX_DELAY );
 			xEventGroupClearBits( evt1_cb, BIT_0 );
+
+			/* End this Song,and Play Next Song make sure spi-dma has completed*/
+			if ( gui_info.flag_next != 1) {
+				;
+			} else { 
+				gui_info.decord_speed = -1;
+				gui_info.main_cycle = -1;
+				return 1;
+			}
 
 			if ( iosignal_read(0) ) {								//Outsize FIFO Not Full ?
 				uxBits = 0;

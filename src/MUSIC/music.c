@@ -128,7 +128,7 @@ int32_t Start_playing()
 	/* Read out File to DDR2 from SD Card,if Net Buff is EMPTY */
 	if ( file_location == IN_FILE ) {
 		/* Slow CLK of SPI to Read SD Card */
-		spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_SDCARD));
+		//spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_SDCARD));
 		spi->spi_control(SPI_CMD_MST_SET_FREQ, CONV2VOID(2000000));
 
 		readout_file(music_filename);		//Read out File in SD Card
