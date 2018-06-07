@@ -52,8 +52,8 @@ typedef struct {
 }compx;
 
 /* choose the number of fast fourier transform channel number */
-#define fft_1024
-//#define fft_64
+#define fft_16
+// #define fft_64
 //#define fft_128
 //#define fft_256
 //#define fft_512

@@ -407,17 +407,16 @@ void draw_fft()
 
 	for ( i = 0;i<4;i++ )
 	{
-		if ( gui_info.fft[i] > 127 )
-		{
-			gui_info.fft[i] = 127;
-		}
+		gui_info.fft[i] /= 2;
+
 		if ( gui_info.fft[i] < gui_info.fft_show[i] )			//下降条
 		{
-			gui_info.fft_show[i] -= 5;
+			
+			if ( gui_info.fft_show[i] > 2; )
+			{
+				gui_info.fft_show[i] -= 2;
+			}
 			OLED_Set_Pos(gui_info.fft_show[i], i);
-			Write_IIC_Data(0x00);
-			Write_IIC_Data(0x00);
-			Write_IIC_Data(0x00);
 			Write_IIC_Data(0x00);
 			Write_IIC_Data(0x00);
 			Write_IIC_Data(0x00);		
@@ -453,6 +452,7 @@ void gui_init()
 	gui_info.song_name = NULL;
 	gui_info.next_song = NULL;
 	gui_info.perf_update = 0;
+	gui_info.fft = fft_out;
 
 	OLED_I2C = iic_get_dev(DW_IIC_0_ID);
 	OLED_I2C -> iic_open(DEV_MASTER_MODE, IIC_SPEED_ULTRA);

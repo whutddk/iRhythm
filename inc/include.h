@@ -134,7 +134,7 @@ struct _gui_info {
 	// uint8_t KEEP_ID3V2;
 	uint8_t flag_next;					//Ask Music Task to Play Next Song
 
-	uint8_t fft[7];
+	uint8_t *fft;
 	uint8_t fft_show[7];
 	uint32_t delay_cnt;					//Count Delay Tick to Reset Screen Pointer
 

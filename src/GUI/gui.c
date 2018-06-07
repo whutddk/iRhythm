@@ -112,7 +112,7 @@ void reflash_screen()
 
 	switch (gui_info.screen_point) {
 		case (0):
-		FFT_screen();
+			FFT_screen();
 			
 			break;
 
