@@ -6,7 +6,7 @@
 
 #include "embARC.h"
 
-#define DBG_MORE
+// #define DBG_MORE
 #include "embARC_debug.h"
 
 #include "stdlib.h"

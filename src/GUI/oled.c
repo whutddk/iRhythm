@@ -94,7 +94,7 @@ inline void OLED_Fill(uint8_t bmp_data)
 	}
 }
 
-inline void OLED_CLS(void)
+void OLED_CLS(void)
 {
 	uint8_t y, x;
 

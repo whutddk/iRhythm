@@ -52,6 +52,7 @@ static void perform_screen()
 
 	if ( 0 == gui_info.perf_update ) {
 		/* Display Net Speed */
+		OLED_CLS();
 		OLED_P6x8Str(0, 0, "Net Speed:");
 		// Draw_BMP( 0, 0, 16, 1, bitmap_xia);
 		// Draw_BMP( 17, 0, 32, 1, bitmap_zai);
@@ -106,8 +107,14 @@ static void FFT_screen()
 void reflash_screen()
 {
 	/* if No Operation Appears in 5 Seconds,then Return to Performance Page */
-	if ( gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 ) ) {
-		gui_info.screen_point = 0;
+	if ( (gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 )) 
+		&& ( 0 != gui_info.screen_point ) ) {
+			gui_info.screen_point = 0;
+			gui_info.fft_show[0] = 0;
+			gui_info.fft_show[1] = 0;
+			gui_info.fft_show[2] = 0;
+			gui_info.fft_show[3] = 0;
+			OLED_CLS();
 	}
 
 	switch (gui_info.screen_point) {
