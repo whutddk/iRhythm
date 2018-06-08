@@ -110,6 +110,10 @@ int32_t Start_playing()
 
 	gui_info.song_name = music_filename;
 	gui_info.perf_update = 0;
+	gui_info.screen_point = 1;
+	gui_info.delay_cnt = xTaskGetTickCount ();			//Update to Get Another 5 Seconds
+	_Rtos_Delay(100);
+
 	xEventGroupSetBits( GUI_Ev, BIT_0 );		//Reflash Gui to Display Song Name
 	dbg_printf(DBG_LESS_INFO,"\r\nplay %s\r\n", music_filename);
 
