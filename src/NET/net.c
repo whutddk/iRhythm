@@ -173,7 +173,7 @@ static int get_songinfo(char *jsonstr)
  * \brief       Init ESP8266 and Malloc 10MB net buff and Connect to WIfi
  *
  */
-void net_init()
+int net_init()
 {
 	dbg_printf(DBG_LESS_INFO,"============================ Init ============================\n");
 	// memset( net_buff, 0, sizeof(int8_t) * BUFF_SPACE );
@@ -190,9 +190,10 @@ void net_init()
 	_Block_Delay(100);
 
 	dbg_printf(DBG_LESS_INFO,"============================ Connect WiFi ============================\n");
-	while (esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false) != AT_OK) {
+	if (esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false) != AT_OK) {
 		dbg_printf(DBG_LESS_INFO,"WIFI %s connect failed\n", WIFI_SSID);
 		_Block_Delay(1000);
+		return -1;
 	}
 	dbg_printf(DBG_LESS_INFO,"WIFI %s connect succeed\n", WIFI_SSID);
 
@@ -202,7 +203,7 @@ void net_init()
 
 	uart_obj = uart_get_dev(ESP8266_UART_ID);	//Get Uart Pointer
 	// _Block_Delay(100);
-
+	return 0;
 }
 
 
