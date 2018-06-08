@@ -94,7 +94,7 @@ int Subband(MP3DecInfo *mp3DecInfo, char *pcmBuf)
 			pcmBuf += (2 * NBANDS);
 		}
 
-		//EMBARC_PRINTF("Mono Mode Now!\n\r" );
+		EMBARC_PRINTF("Mono Mode Now!\n\r" );
 	}
 
 
