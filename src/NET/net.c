@@ -347,7 +347,7 @@ void download_mp3()
 
 
 	net_time_pre = xTaskGetTickCount ();		//Record System to Caculate Net Speed
-	while (flag_netend == false) {
+	while (1) {
 		_Rtos_Delay(1000);						//Wait **AT LEAST** 1 second
 
 		net_time = xTaskGetTickCount ();		//Record System to Caculate Net Speed
@@ -382,7 +382,8 @@ void download_mp3()
 				dbg_printf(DBG_LESS_INFO,"\r\nreceive end , %d B\r\n", bypass_cnt  );
 				dbg_printf(DBG_MORE_INFO,"\r\n%s \r\n",file_buff);
 				
-				flag_netend = true;			// break;
+				flag_netend = true;			
+				break;
 
 				
 			}

@@ -146,7 +146,7 @@ reset gui fft bar
 				} else { 
 					gui_info.decord_speed = -1;
 					gui_info.main_cycle = -1;
-					flag_netend = true;
+					// flag_netend = true;
 					return 1;
 				}
 
