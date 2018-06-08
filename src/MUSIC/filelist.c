@@ -71,15 +71,14 @@ void filelist_add(char *id_data, int32_t lenth, uint8_t location)
 	linklists->lenth = lenth;
 	linklists->location = location;
 	
-	if ( location == IN_BUFF ) {
+	if ( location == IN_NET ) {
 		linklists -> next = Playlist_HEAD -> next; 	//Add as the Second Node
 		Playlist_HEAD -> next = linklists ; 		//Head of List No Change
 	} else {
 		linklists -> next = Playlist_HEAD ; 		//Add as the First Node
-		Playlist_HEAD = lists;					//Head of List Point here
+		Playlist_HEAD = linklists;					//Head of List Point here
 	}
 
-	break;
 }
 
 

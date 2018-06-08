@@ -78,8 +78,8 @@ int main(void)
 	/* IO Reset ESP8266 */
 	net_rst();
 
-	/* Initialization of Songid List */
-	filelist_init();
+	//  Initialization of Songid List 
+	// filelist_init();
 
 	/* Initialization of Esp8266 and Connect to Wifi */
 	net_init();

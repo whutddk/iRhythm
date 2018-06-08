@@ -34,12 +34,12 @@ void key1_isr()//确定键
 			/* If it is the last Song in Play List,Play it again and again and Never Delete */
 			if ( Playlist_HEAD -> next != NULL ) {
 				/* Check if an Online Song in Playlist,then Net Buff should be Reset */
-				if ( Playlist_HEAD -> location != IN_BUFF ) {
-					;
-				} else {
-					flag_netbuff = BUFF_EMPTY;
-				}
-				filelist_delete(FILE_LIST);				//delete it from Playlist
+				// if ( Playlist_HEAD -> location != IN_NET ) {
+				// 	;
+				// } else {
+				// 	flag_netbuff = BUFF_EMPTY;
+				// }
+				filelist_delete();				//delete it from Playlist
 			} else {
 				EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
 			}
