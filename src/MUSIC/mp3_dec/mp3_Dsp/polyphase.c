@@ -61,6 +61,138 @@
 
 #define CHECK_BIT 2
 
+
+// #define MC0M(x)	{ \
+// 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
+// 		vLo = *(vb1+(x));			vHi = *(vb1+(23-(x))); \
+// 		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT));  cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
+// 		sum1L += cal_temp0 - cal_temp1; \
+// 	}
+
+// #define MC0M(x)	{ \
+// 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
+// 	vLo = *(vb1+(x));			vHi = *(vb1+(23-(x))); \
+// 	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT));  cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
+// 	sum1L += cal_temp0 - cal_temp1; \
+// }
+
+// #define MC1M(x)	{ \
+// 		c1 = *coef;		coef++; \
+// 		vLo = *(vb1+(x)); \
+// 		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT)); \
+// 		sum1L += cal_temp0; \
+// 	}
+
+// #define MC1M(x)	{ \
+// 	c1 = *coef;		coef++; \
+// 	vLo = *(vb1+(x)); \
+// 	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT)); \
+// 	sum1L += cal_temp0; \
+// }
+
+// #define MC2M(x)	{ \
+// 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
+// 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
+// 		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT));  cal_temp1 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
+// 		cal_temp2 = (short)(SAR32(vHi,MOVE_BIT)) * (short)(SAR32(c2,MOVE_BIT));  cal_temp3 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
+// 		sum1L += cal_temp0 - cal_temp2; \
+// 		sum2L += cal_temp1 + cal_temp3; \
+// 	}
+
+// #define MC2M(x)	{ \
+// 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
+// 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
+// 		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT));  cal_temp1 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
+// 		cal_temp2 = (short)(SAR32(vHi,MOVE_BIT)) * (short)(SAR32(c2,MOVE_BIT));  cal_temp3 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
+// 		sum1L += cal_temp0 - cal_temp2; \
+// 		sum2L += cal_temp1 + cal_temp3; \
+// }
+
+void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
+{
+	int i;
+	const int *coef;
+	int *vb1;
+	// int vLo, vHi, c1, c2;
+
+// Word64 sum1L, sum2L, rndVal;
+	int sum1L, sum2L;
+	// int cal_temp0, cal_temp1, cal_temp2, cal_temp3;
+// rndVal = (Word64)( 1 << (DEF_NFRACBITS - 1 + (32 - CSHIFT)) );
+	// rndVal = 0;
+	/* special case, output sample 0 */
+	coef = coefBase;
+	vb1 = vbuf;
+
+	MC0M(&sum1L, coef, vb1);
+	// MC0M(0)
+	// MC0M(1)
+	// MC0M(2)
+	// MC0M(3)
+	// MC0M(4)
+	// MC0M(5)
+	// MC0M(6)
+	// MC0M(7)
+
+// *(pcm + 0) = (short)SAR64(sum1L, 32-CSHIFT + DEF_NFRACBITS);
+	*(pcm + 0) = (char)(SAR32(sum1L, CHECK_BIT));
+	*(pcm + 1) = (char)(SAR32(sum1L, CHECK_BIT));
+	// *(pcm + 0) = (char)(sum1L >> CHECK_BIT);
+
+	/* special case, output sample 16 */
+	coef = coefBase + 256;
+	vb1 = vbuf + 64 * 16;
+
+
+	// sum1L = rndVal;
+
+	// MC1M(0)
+	// MC1M(1)
+	// MC1M(2)
+	// MC1M(3)
+	// MC1M(4)
+	// MC1M(5)
+	// MC1M(6)
+	// MC1M(7)
+	
+	MC1M(&sum1L, coef, vb1);
+
+// *(pcm + 16) = (short)SAR64(sum1L, (32 - CSHIFT + DEF_NFRACBITS));
+	*(pcm + 2*16) =  (char)(SAR32(sum1L, CHECK_BIT));
+	*(pcm + 2*16 +1)=(char)(SAR32(sum1L, CHECK_BIT));
+	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
+	coef = coefBase + 16;
+	vb1 = vbuf + 64;
+	pcm+=2;
+
+	/* right now, the compiler creates bad asm from this... */
+	for (i = 15; i > 0; i--) {
+		// sum1L = sum2L = rndVal;
+		// MC2M(0)
+		// MC2M(1)
+		// MC2M(2)
+		// MC2M(3)
+		// MC2M(4)
+		// MC2M(5)
+		// MC2M(6)
+		// MC2M(7)
+
+	MC2M(&sum1L, &sum2L, coef, vb1);
+
+		vb1 += 64;
+// *(pcm)       = (short)SAR64(sum1L, (32-CSHIFT + DEF_NFRACBITS));
+// *(pcm + 2*i) = (short)SAR64(sum2L, (32-CSHIFT + DEF_NFRACBITS));
+		*(pcm) =  (char)(SAR32(sum1L, CHECK_BIT));
+		*(pcm+1) = (char)(SAR32(sum1L, CHECK_BIT));
+		*(pcm + 2*2 * i) = (char)(SAR32(sum2L, CHECK_BIT));
+		*(pcm + 2*2 * i + 1 ) = (char)(SAR32(sum2L, CHECK_BIT));
+		pcm += 2;
+	}
+
+}
+
+
+
 /**************************************************************************************
  * Function:    PolyphaseStereo
  *
@@ -88,26 +220,26 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	int *vb1;
 	int sum1L, sum2L, sum1R, sum2R;
 
-/*                   Part 1                    */
+	/*                   Part 1                    */
 	/* special case, output sample 0 */
 	coef = coefBase;
 	vb1 = vbuf;
-	MC0S(&sum1L,&sum1R,coef,vb1);
+	MC0S(&sum1L, &sum1R, coef, vb1);
 
-	*(pcm ) = (char)(SAR32(sum1L,CHECK_BIT));
-	*(pcm + 1) = (char)(SAR32(sum1R,CHECK_BIT));
+	*(pcm ) = (char)(SAR32(sum1L, CHECK_BIT));
+	*(pcm + 1) = (char)(SAR32(sum1R, CHECK_BIT));
 
-/*                   Part 2                    */
+	/*                   Part 2                    */
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
 	vb1 = vbuf + 1024;
 
-	MC1S(&sum1L,&sum1R,coef,vb1);
+	MC1S(&sum1L, &sum1R, coef, vb1);
 
-	*(pcm + 32) = (char)(SAR32(sum1L,CHECK_BIT));
-	*(pcm + 33) = (char)(SAR32(sum1R,CHECK_BIT));
+	*(pcm + 32) = (char)(SAR32(sum1L, CHECK_BIT));
+	*(pcm + 33) = (char)(SAR32(sum1R, CHECK_BIT));
 
-/*                   Part 3                     */
+	/*                   Part 3                     */
 
 	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
 	coef = coefBase + 16;
@@ -116,13 +248,13 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	/* right now, the compiler creates bad asm from this... */
 	for (i = 15; i > 0; i--) {
-		MC2S(&sum1L,&sum1R,&sum2L,&sum2R,coef,vb1);
+		MC2S(&sum1L, &sum1R, &sum2L, &sum2R, coef, vb1);
 		coef += 16;
 		vb1 += 64;
-		*(pcm )				=		(char)(SAR32(sum1L,CHECK_BIT));
-		*(pcm + 1)			=		(char)(SAR32(sum1R,CHECK_BIT));
-		*(pcm + 4*i)		=		(char)(SAR32(sum2L,CHECK_BIT));
-		*(pcm + 4*i + 1)	=		(char)(SAR32(sum2R,CHECK_BIT));
+		*(pcm )				=		(char)(SAR32(sum1L, CHECK_BIT));
+		*(pcm + 1)			=		(char)(SAR32(sum1R, CHECK_BIT));
+		*(pcm + 4 * i)		=		(char)(SAR32(sum2L, CHECK_BIT));
+		*(pcm + 4 * i + 1)	=		(char)(SAR32(sum2R, CHECK_BIT));
 		pcm += 2;
 	}
 }
