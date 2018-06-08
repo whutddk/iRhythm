@@ -23,10 +23,10 @@ STACKSZ ?= 2097152
 # root dir of embARC
 #
 EMBARC_ROOT = ../..
-MID_SEL = common fatfs u8glib
+MID_SEL = common fatfs
 OS_SEL = freertos
 # application source dirs
-APPL_CSRC_DIR = ./src/GUI ./src/MUSIC ./src/MUSIC/mp3_dec ./src/MUSIC/mp3_dec/mp3_Ori ./src/MUSIC/mp3_dec/mp3_Dsp ./src/HW_ASSI ./src/NET ./src/NET/esp8266_wifi ./src/TASK 
+APPL_CSRC_DIR = ./src/GUI ./src/MUSIC ./src/FFT ./src/MUSIC/mp3_dec ./src/MUSIC/mp3_dec/mp3_Ori ./src/MUSIC/mp3_dec/mp3_Dsp ./src/HW_ASSI ./src/NET ./src/NET/esp8266_wifi ./src/TASK 
 
 APPL_ASMSRC_DIR = .
 

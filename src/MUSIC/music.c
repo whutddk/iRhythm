@@ -6,7 +6,7 @@
 
 #include "embARC.h"
 
-//#define DBG_MORE
+#define DBG_MORE
 #include "embARC_debug.h"
 
 #include "include.h"
@@ -109,6 +109,11 @@ int32_t Start_playing()
 	strcat( music_filename, Playlist_HEAD -> data );
 
 	gui_info.song_name = music_filename;
+	gui_info.perf_update = 0;
+	gui_info.screen_point = 1;
+	gui_info.delay_cnt = xTaskGetTickCount ();			//Update to Get Another 5 Seconds
+	_Rtos_Delay(100);
+
 	xEventGroupSetBits( GUI_Ev, BIT_0 );		//Reflash Gui to Display Song Name
 	dbg_printf(DBG_LESS_INFO,"\r\nplay %s\r\n", music_filename);
 
@@ -121,9 +126,13 @@ int32_t Start_playing()
 
 	dbg_printf(DBG_LESS_INFO,"\r\nfile lenth = %d \r\n", file_lenth);
 
+
+	xEventGroupClearBits( GUI_Ev, BIT_1 );
+
 	/* Read out File to DDR2 from SD Card,if Net Buff is EMPTY */
 	if ( file_location == IN_FILE ) {
 		/* Slow CLK of SPI to Read SD Card */
+		//spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_SDCARD));
 		spi->spi_control(SPI_CMD_MST_SET_FREQ, CONV2VOID(2000000));
 
 		readout_file(music_filename);		//Read out File in SD Card
@@ -132,6 +141,8 @@ int32_t Start_playing()
 		;
 	}
 
+	xEventGroupSetBits( GUI_Ev, BIT_1 );
+	
 	if ( gui_info.flag_next != 1 && 0 == play_mp3(file_lenth, file_location)) {
 		dbg_printf(DBG_LESS_INFO,"\r\nplay complete!!!\r\n");;
 	} else { 									//Play Next Song?

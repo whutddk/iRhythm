@@ -6,6 +6,7 @@
 #include "inc_task.h"
 
 #include "esp8266.h"
+#include "fft.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -125,13 +126,18 @@ struct _gui_info {
 	int16_t decord_speed;				//Pass Decoder Time From Music Task to Gui Task
 	int16_t main_cycle;
 
+	bool perf_update;					//Comfirm to update a part of screen
+
 	char *song_name;					//Pass Song Name From Music Task to Gui Task
 	char *next_song;					//Pass Next Song Name From Music Task to Gui Task
 
 	// uint8_t KEEP_ID3V2;
 	uint8_t flag_next;					//Ask Music Task to Play Next Song
 
+	uint8_t *fft;
+	uint8_t fft_show[7];
 	uint32_t delay_cnt;					//Count Delay Tick to Reset Screen Pointer
+
 };
 
 extern struct _gui_info gui_info;
@@ -145,6 +151,12 @@ extern void reflash_screen();
 extern void key1_isr();
 extern void key2_isr();
 extern void key3_isr();
+
+
+/* fft data input */
+extern uint8_t fft_in[fft_N];
+/* fft data output */
+extern uint8_t fft_out[fft_N / 2];
 
 #endif
 

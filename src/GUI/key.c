@@ -46,7 +46,7 @@ void key1_isr()//确定键
 		}
 
 		/* Reset Gui Control Infomation */
-		gui_info.screen_point = 0;
+		gui_info.screen_point = 1;
 		gui_info.network_speed = -1;
 		gui_info.decord_speed = -1;
 		gui_info.main_cycle = -1;
