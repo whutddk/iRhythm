@@ -61,53 +61,6 @@
 
 #define CHECK_BIT 2
 
-
-// #define MC0M(x)	{ \
-// 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
-// 		vLo = *(vb1+(x));			vHi = *(vb1+(23-(x))); \
-// 		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT));  cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
-// 		sum1L += cal_temp0 - cal_temp1; \
-// 	}
-
-// #define MC0M(x)	{ \
-// 	c1 = *coef;		coef++;		c2 = *coef;		coef++; \
-// 	vLo = *(vb1+(x));			vHi = *(vb1+(23-(x))); \
-// 	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT));  cal_temp1 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
-// 	sum1L += cal_temp0 - cal_temp1; \
-// }
-
-// #define MC1M(x)	{ \
-// 		c1 = *coef;		coef++; \
-// 		vLo = *(vb1+(x)); \
-// 		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT)); \
-// 		sum1L += cal_temp0; \
-// 	}
-
-// #define MC1M(x)	{ \
-// 	c1 = *coef;		coef++; \
-// 	vLo = *(vb1+(x)); \
-// 	cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT)); \
-// 	sum1L += cal_temp0; \
-// }
-
-// #define MC2M(x)	{ \
-// 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
-// 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
-// 		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT));  cal_temp1 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
-// 		cal_temp2 = (short)(SAR32(vHi,MOVE_BIT)) * (short)(SAR32(c2,MOVE_BIT));  cal_temp3 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
-// 		sum1L += cal_temp0 - cal_temp2; \
-// 		sum2L += cal_temp1 + cal_temp3; \
-// 	}
-
-// #define MC2M(x)	{ \
-// 		c1 = *coef;		coef++;		c2 = *coef;		coef++; \
-// 		vLo = *(vb1+(x));	vHi = *(vb1+(23-(x))); \
-// 		cal_temp0 = (short)(SAR32(vLo,MOVE_BIT)) * (short)(SAR32(c1,MOVE_BIT));  cal_temp1 = (short)(SAR32(vLo,MOVE_BIT))*(short)(SAR32(c2,MOVE_BIT)); \
-// 		cal_temp2 = (short)(SAR32(vHi,MOVE_BIT)) * (short)(SAR32(c2,MOVE_BIT));  cal_temp3 = (short)(SAR32(vHi,MOVE_BIT))*(short)(SAR32(c1,MOVE_BIT)); \
-// 		sum1L += cal_temp0 - cal_temp2; \
-// 		sum2L += cal_temp1 + cal_temp3; \
-// }
-
 void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 {
 	int i;
@@ -125,14 +78,6 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	vb1 = vbuf;
 
 	MC0M(&sum1L, coef, vb1);
-	// MC0M(0)
-	// MC0M(1)
-	// MC0M(2)
-	// MC0M(3)
-	// MC0M(4)
-	// MC0M(5)
-	// MC0M(6)
-	// MC0M(7)
 
 // *(pcm + 0) = (short)SAR64(sum1L, 32-CSHIFT + DEF_NFRACBITS);
 	*(pcm + 0) = (char)(SAR32(sum1L, CHECK_BIT));
@@ -143,17 +88,6 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	coef = coefBase + 256;
 	vb1 = vbuf + 64 * 16;
 
-
-	// sum1L = rndVal;
-
-	// MC1M(0)
-	// MC1M(1)
-	// MC1M(2)
-	// MC1M(3)
-	// MC1M(4)
-	// MC1M(5)
-	// MC1M(6)
-	// MC1M(7)
 	
 	MC1M(&sum1L, coef, vb1);
 
@@ -167,18 +101,9 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 
 	/* right now, the compiler creates bad asm from this... */
 	for (i = 15; i > 0; i--) {
-		// sum1L = sum2L = rndVal;
-		// MC2M(0)
-		// MC2M(1)
-		// MC2M(2)
-		// MC2M(3)
-		// MC2M(4)
-		// MC2M(5)
-		// MC2M(6)
-		// MC2M(7)
 
-	MC2M(&sum1L, &sum2L, coef, vb1);
-
+		MC2M(&sum1L, &sum2L, coef, vb1);
+		coef += 16;
 		vb1 += 64;
 // *(pcm)       = (short)SAR64(sum1L, (32-CSHIFT + DEF_NFRACBITS));
 // *(pcm + 2*i) = (short)SAR64(sum2L, (32-CSHIFT + DEF_NFRACBITS));

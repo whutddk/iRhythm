@@ -91,7 +91,7 @@ int Subband(MP3DecInfo *mp3DecInfo, char *pcmBuf)
 			FDCT32(mi->outBuf[0][b], sbi->vbuf + 0 * 32, sbi->vindex, (b & 0x01), mi->gb[0]);
 			PolyphaseMono(pcmBuf, sbi->vbuf + sbi->vindex + VBUF_LENGTH * (b & 0x01), polyCoef);
 			sbi->vindex = (sbi->vindex - (b & 0x01)) & 7;
-			pcmBuf += NBANDS;
+			pcmBuf += (2 * NBANDS);
 		}
 
 		EMBARC_PRINTF("Mono Mode Now!\n\r" );
