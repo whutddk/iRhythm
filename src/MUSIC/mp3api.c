@@ -62,7 +62,7 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 	if ( location == IN_FILE ) {
 		read_ptr = file_buff;
 	} else {
-		read_ptr = net_buff;
+		read_ptr = file_buff;
 		flag_netend = false;
 		dec_sum = 0;
 	}
@@ -92,10 +92,13 @@ reset gui fft bar
 	perf_start();
 
 	while (1) {
-		buff_ofs = uart_obj -> uart_info.rx_buf.ofs;  		//网络下载的缓冲区大小
-		
+		if ( location == IN_NET )
+		{
+			buff_ofs = uart_obj -> uart_info.rx_buf.ofs;  		//网络下载的缓冲区大小
+		}
 		if ( buff_ofs  > (int32_t)(dec_sum) + ( 20 * 1024 ) 
-		|| flag_netend == true )	//如果接收到的量比解压完的多20KB或者下载完毕
+		|| flag_netend == true 
+		|| location == IN_FILE )	//如果接收到的量比解压完的多20KB或者下载完毕
 		{
 
 			offset = MP3FindSyncWord(read_ptr, byte_left);		//Find the Location of Start
@@ -164,7 +167,7 @@ reset gui fft bar
 					spi_writeraw((uint8_t *)buf_rec2);
 					flag_sw = 0;
 				}
-			}else if ( flag_netend == false ) 	//offset < 0 
+			}else if ( flag_netend == false && location == IN_NET ) 	//offset < 0 
 			{
 				dbg_printf(DBG_MORE_INFO,"offset overflow!!!\n\r" );
 				_Rtos_Delay(1000);
@@ -183,12 +186,13 @@ reset gui fft bar
 				break;
 			}
 
-		}else if( flag_netend == false )
+		}
+		else if( flag_netend == false )
 		{
 			dbg_printf(DBG_MORE_INFO,"No data wait!\n\r" );
 			_Rtos_Delay(1000);
 		} 
-		 else {
+		else {
 			/* Scan Whole File Buff,No Start is End **********/
 			dbg_printf(DBG_MORE_INFO,"Decorder Complete!\n\r" );
 
@@ -199,7 +203,6 @@ reset gui fft bar
 				pdTRUE, 								// Wait for both Bits
 				portMAX_DELAY );
 			break;
-
 		}
 	}
 

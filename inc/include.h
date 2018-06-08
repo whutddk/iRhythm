@@ -108,7 +108,7 @@ extern void net_rst();
 extern bool flag_net;
 extern char dllink[500];
 extern char songpoint[50];
-extern int8_t net_buff[ BUFF_SPACE ];
+// extern int8_t net_buff[ BUFF_SPACE ];
 extern ESP8266_DEF_PTR ESP8266_A;
 extern void net_init();
 extern int socket_request(uint8_t option);

@@ -80,7 +80,7 @@ int main(void)
 
 	//  Initialization of Songid List 
 	// filelist_init();
-
+	_Block_Delay( 1000 );
 	/* Initialization of Esp8266 and Connect to Wifi */
 	net_init();
 
@@ -96,18 +96,21 @@ int main(void)
 		EMBARC_PRINTF("create GUI_task error\r\n");
 		return -1;
 	}
+	EMBARC_PRINTF("create GUI_task Created\r\n");
 
 	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES - 2, &MUSIC_task_handle)
 		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create music_task error\r\n");
 		return -1;
 	}
+	EMBARC_PRINTF("create Music_task Created\r\n");
 
 	if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES - 3, &NET_task_handle)
 		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create NET_task error\r\n");
 		return -1;
 	}
+	EMBARC_PRINTF("create Net_task Created\r\n");
 
 	// Create Events
 

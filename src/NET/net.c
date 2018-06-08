@@ -7,7 +7,7 @@
 
 #include "embARC.h"
 
-//#define DBG_MORE
+#define DBG_MORE
 #include "embARC_debug.h"
 
 #include "include.h"
@@ -25,7 +25,7 @@
 
 bool flag_net = IN_NET;					//Net Song flag
 bool flag_netend = false;
-int8_t net_buff[BUFF_SPACE];			//15MB Net Buff
+// int8_t net_buff[BUFF_SPACE];			//15MB Net Buff
 uint8_t songid_cnt = 0;
 
 char dllink[500] = { 0 };				//Store Song Download Url
@@ -180,19 +180,19 @@ void net_init()
 
 	esp8266_init(ESP8266_A, 3125000);
 	at_test(ESP8266_A->p_at);
-	_Rtos_Delay(100);
+	_Block_Delay(100);
 
 	dbg_printf(DBG_LESS_INFO,"============================ Set Mode ============================\n");
 	esp8266_wifi_mode_get(ESP8266_A, false);
-	_Rtos_Delay(100);
+	_Block_Delay(100);
 
 	esp8266_wifi_mode_set(ESP8266_A, 3, false);
-	_Rtos_Delay(100);
+	_Block_Delay(100);
 
 	dbg_printf(DBG_LESS_INFO,"============================ Connect WiFi ============================\n");
 	while (esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false) != AT_OK) {
 		dbg_printf(DBG_LESS_INFO,"WIFI %s connect failed\n", WIFI_SSID);
-		_Rtos_Delay(1000);
+		_Block_Delay(1000);
 	}
 	dbg_printf(DBG_LESS_INFO,"WIFI %s connect succeed\n", WIFI_SSID);
 
@@ -201,7 +201,7 @@ void net_init()
 
 
 	uart_obj = uart_get_dev(ESP8266_UART_ID);	//Get Uart Pointer
-	// _Rtos_Delay(100);
+	// _Block_Delay(100);
 
 }
 
@@ -319,14 +319,14 @@ void download_mp3()
 
 	DEV_BUFFER Rxintbuf;
 
-	//Initalize net_buff as Uart FIFO for Receiving,Disable Now
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);
+	//Initalize file_buff as Uart FIFO for Receiving,Disable Now
+	DEV_BUFFER_INIT(&Rxintbuf, file_buff, sizeof(int8_t) * BUFF_SPACE);
 
 	dbg_printf(DBG_LESS_INFO,"============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A, "211.91.125.36", 80);
 
 	memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(int8_t) * BUFF_SPACE);
+	memset(file_buff, 0, sizeof(int8_t) * BUFF_SPACE);
 
 	/*****Create HTTP Command directly**********/
 	strcat (http_cmd, "GET ");
@@ -340,7 +340,7 @@ void download_mp3()
 	_Rtos_Delay(100);
 	esp8266_passthr_write( ESP8266_A, http_cmd, strlen(http_cmd) );
 	_Rtos_Delay(100);
-	/*****Enable net_buff as FIFO for receiving********/
+	/*****Enable file_buff as FIFO for receiving********/
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void *)(&Rxintbuf));
 	flag_netend = false;
 	xTaskResumeAll();
@@ -380,7 +380,7 @@ void download_mp3()
 			dbg_printf(DBG_MORE_INFO,"\r\nTime out\r\n");
 			if ( timeout_cnt > 3 ) {
 				dbg_printf(DBG_LESS_INFO,"\r\nreceive end , %d B\r\n", bypass_cnt  );
-				dbg_printf(DBG_MORE_INFO,"\r\n%s \r\n",net_buff);
+				dbg_printf(DBG_MORE_INFO,"\r\n%s \r\n",file_buff);
 				flag_netend = true;
 
 				break;
