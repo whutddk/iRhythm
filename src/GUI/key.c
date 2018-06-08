@@ -51,8 +51,8 @@ void key1_isr()//确定键
 		gui_info.decord_speed = -1;
 		gui_info.main_cycle = -1;
 	}
-
-	xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
+	gui_info.perf_update = 0;
+	// xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
 }
 
 /**
@@ -78,8 +78,8 @@ void key2_isr()
 
 	gui_info.next_song = file_pointer -> data;			//Update Song Name to Display
 	gui_info.screen_point ++;							//Increase Song Pointer
-
-	xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
+	gui_info.perf_update = 0;
+	// xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
 }
 
 /**

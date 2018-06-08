@@ -128,12 +128,15 @@ int32_t Start_playing()
 
 
 	xEventGroupClearBits( GUI_Ev, BIT_1 );
-
+	_Rtos_Delay(2000);
 	/* Read out File to DDR2 from SD Card,if Net Buff is EMPTY */
 	if ( file_location == IN_FILE ) {
 		/* Slow CLK of SPI to Read SD Card */
 		//spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_SDCARD));
+		cpu_lock();
 		spi->spi_control(SPI_CMD_MST_SET_FREQ, CONV2VOID(2000000));
+		cpu_unlock();
+		_Rtos_Delay(1000);
 		flag_net = IN_FILE;
 		readout_file(music_filename);		//Read out File in SD Card
 
@@ -149,8 +152,6 @@ int32_t Start_playing()
 		gui_info.flag_next = 0;
 		return 1;
 	}
-
-
 
 	/* If it is the last Song in Play List,Play it again and again and Never Delete */
 	cpu_lock();								//Gui Interruption May Happen Here

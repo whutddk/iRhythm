@@ -26,7 +26,7 @@
 bool flag_net = IN_NET;					//Net Song flag
 bool flag_netend = false;
 // int8_t net_buff[BUFF_SPACE];			//15MB Net Buff
-uint8_t songid_cnt = 0;
+
 
 char dllink[500] = { 0 };				//Store Song Download Url
 char songpoint[50] = { 0 };				//Store Song Name Download Form Net ,Unnecessart Now
@@ -251,7 +251,7 @@ int socket_request(uint8_t option)
 
 			if ( Playlist_HEAD->next != NULL ) {
 				filelist_delete();
-				songid_cnt --;
+				
 			} else {
 				dbg_printf(DBG_LESS_INFO,"Playlist linkList Empty\r\n");
 			}
@@ -347,7 +347,7 @@ void download_mp3()
 
 
 	net_time_pre = xTaskGetTickCount ();		//Record System to Caculate Net Speed
-	while (1) {
+	while (flag_netend == false) {
 		_Rtos_Delay(1000);						//Wait **AT LEAST** 1 second
 
 		net_time = xTaskGetTickCount ();		//Record System to Caculate Net Speed
@@ -381,9 +381,10 @@ void download_mp3()
 			if ( timeout_cnt > 3 ) {
 				dbg_printf(DBG_LESS_INFO,"\r\nreceive end , %d B\r\n", bypass_cnt  );
 				dbg_printf(DBG_MORE_INFO,"\r\n%s \r\n",file_buff);
-				flag_netend = true;
+				
+				flag_netend = true;			// break;
 
-				break;
+				
 			}
 		}
 

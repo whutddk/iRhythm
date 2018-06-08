@@ -19,7 +19,7 @@
 
 struct filelist *Playlist_HEAD = NULL ;			//Head Pointer For Playlist List
 struct filelist *Playlist_END = NULL;			//Tail Pointer to Protect Playlist List
-
+uint8_t songid_cnt = 0;
 // /**
 //  * \brief       Initialize Song ID list and Add Default Song ID
 //  *
@@ -94,6 +94,10 @@ void filelist_delete()
 	struct filelist *linklists = NULL;
 
 	linklists = Playlist_HEAD;
+	if ( Playlist_HEAD -> location == IN_NET )
+	{
+		songid_cnt --;
+	}
 	Playlist_HEAD = Playlist_HEAD -> next;
 	free (linklists);
 
