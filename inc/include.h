@@ -53,15 +53,15 @@ struct filelist {
 	struct filelist *next;		//Pointer of Linked List to Find Next Node
 };
 
-extern struct filelist *Songid_HEAD ;
-extern struct filelist *Songid_END ;
+// extern struct filelist *Songid_HEAD ;
+// extern struct filelist *Songid_END ;
 
 extern struct filelist *Playlist_HEAD;
 extern struct filelist *Playlist_END;
 
-extern void filelist_init();
-extern void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t location);
-extern void filelist_delete(uint8_t list_id);
+// extern void filelist_init();
+extern void filelist_add(char *id_data, int32_t lenth, uint8_t location);
+extern void filelist_delete();
 
 /**
  * Define in main.c
