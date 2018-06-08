@@ -17,6 +17,16 @@ inline void _Rtos_Delay(uint32_t ticks)
 	vTaskDelayUntil( &xLastWakeTime, xFrequency );
 }
 
+inline void _Block_Delay( uint32_t ticks )
+{
+	uint32_t cur_time;
+	
+	cur_time = OSP_GET_CUR_MS();
+
+	while ((OSP_GET_CUR_MS() - cur_time) < ticks);
+}
+
+
 
 extern EventGroupHandle_t evt1_cb;		//Event For Music Task
 extern EventGroupHandle_t GUI_Ev;		//Event For Gui Task

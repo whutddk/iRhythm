@@ -53,7 +53,7 @@ static void playlist_init()
 		}
 
 		if ( fileinfo.fattrib == 32 ) {		//Check File Style
-			filelist_add(FILE_LIST, &(fileinfo.fname[0]), fileinfo.fsize, IN_FILE);
+			filelist_add(&(fileinfo.fname[0]), fileinfo.fsize, IN_FILE);
 			dbg_printf(DBG_LESS_INFO,"File name: %s  File size:%d   \r\n", fileinfo.fname, fileinfo.fsize);
 		}
 	} while ( 1 );
@@ -114,7 +114,7 @@ int32_t Start_playing()
 	gui_info.delay_cnt = xTaskGetTickCount ();			//Update to Get Another 5 Seconds
 	_Rtos_Delay(100);
 
-	xEventGroupSetBits( GUI_Ev, BIT_0 );		//Reflash Gui to Display Song Name
+	// xEventGroupSetBits( GUI_Ev, BIT_0 );		//Reflash Gui to Display Song Name
 	dbg_printf(DBG_LESS_INFO,"\r\nplay %s\r\n", music_filename);
 
 
@@ -128,17 +128,20 @@ int32_t Start_playing()
 
 
 	xEventGroupClearBits( GUI_Ev, BIT_1 );
-
+	_Rtos_Delay(2000);
 	/* Read out File to DDR2 from SD Card,if Net Buff is EMPTY */
 	if ( file_location == IN_FILE ) {
 		/* Slow CLK of SPI to Read SD Card */
 		//spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_SDCARD));
+		cpu_lock();
 		spi->spi_control(SPI_CMD_MST_SET_FREQ, CONV2VOID(2000000));
-
+		cpu_unlock();
+		_Rtos_Delay(1000);
+		flag_net = IN_FILE;
 		readout_file(music_filename);		//Read out File in SD Card
 
 	} else {
-		;
+		flag_net = IN_NET;
 	}
 
 	xEventGroupSetBits( GUI_Ev, BIT_1 );
@@ -150,12 +153,10 @@ int32_t Start_playing()
 		return 1;
 	}
 
-
-
 	/* If it is the last Song in Play List,Play it again and again and Never Delete */
 	cpu_lock();								//Gui Interruption May Happen Here
 	if ( Playlist_HEAD -> next != NULL ) {
-		filelist_delete(FILE_LIST);				//Once Play a Song, delete it from Playlist
+		filelist_delete();				//Once Play a Song, delete it from Playlist
 	} else {
 		dbg_printf(DBG_LESS_INFO,"\r\nNo Song Left!!!\r\n");
 	}

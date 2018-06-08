@@ -65,6 +65,8 @@ int32_t error_num = 0;
  */
 int main(void)
 {
+	int flag_netava;
+
 	io_mux_init();
 	emsk_gpio_init();
 	EMBARC_PRINTF("Application Start\r\n");
@@ -78,11 +80,11 @@ int main(void)
 	/* IO Reset ESP8266 */
 	net_rst();
 
-	/* Initialization of Songid List */
-	filelist_init();
-
+	//  Initialization of Songid List 
+	// filelist_init();
+	_Block_Delay( 1000 );
 	/* Initialization of Esp8266 and Connect to Wifi */
-	net_init();
+	flag_netava = net_init();
 
 	/* Initialization of DMA */
 	spi_dma_prepare();
@@ -96,19 +98,24 @@ int main(void)
 		EMBARC_PRINTF("create GUI_task error\r\n");
 		return -1;
 	}
+	EMBARC_PRINTF("create GUI_task Created\r\n");
 
 	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES - 2, &MUSIC_task_handle)
 		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 		EMBARC_PRINTF("create music_task error\r\n");
 		return -1;
 	}
+	EMBARC_PRINTF("create Music_task Created\r\n");
 
-	if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES - 3, &NET_task_handle)
-		!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
-		EMBARC_PRINTF("create NET_task error\r\n");
-		return -1;
+	if ( flag_netava == 0 )
+	{
+		if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES - 3, &NET_task_handle)
+			!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
+			EMBARC_PRINTF("create NET_task error\r\n");
+			return -1;
+		}
+		EMBARC_PRINTF("create Net_task Created\r\n");
 	}
-
 	// Create Events
 
 	evt1_cb = xEventGroupCreate();

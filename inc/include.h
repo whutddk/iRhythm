@@ -26,15 +26,11 @@
 
 /* Package Option */
 #define IN_FILE 0
-#define IN_BUFF 1
+#define IN_NET 1
 
 /* Package Option */
 #define SONG_ID 0
 #define SONG_INFO 1
-
-/* Package Option */
-#define BUFF_EMPTY 0
-#define BUFF_FULL 1
 
 /* Package Events Bit */
 #define BIT_0	( 1 << 0 )
@@ -53,15 +49,15 @@ struct filelist {
 	struct filelist *next;		//Pointer of Linked List to Find Next Node
 };
 
-extern struct filelist *Songid_HEAD ;
-extern struct filelist *Songid_END ;
+// extern struct filelist *Songid_HEAD ;
+// extern struct filelist *Songid_END ;
 
 extern struct filelist *Playlist_HEAD;
 extern struct filelist *Playlist_END;
 
-extern void filelist_init();
-extern void filelist_add(uint8_t list_id, char *id_data, int32_t lenth, uint8_t location);
-extern void filelist_delete(uint8_t list_id);
+// extern void filelist_init();
+extern void filelist_add(char *id_data, int32_t lenth, uint8_t location);
+extern void filelist_delete();
 
 /**
  * Define in main.c
@@ -94,6 +90,7 @@ extern int32_t Start_playing();
  * Define in mp3api.c
  * 
  */
+// extern bool flag_songend;
 extern int32_t play_mp3(int32_t filelenth, uint8_t location);
 
 /**
@@ -108,14 +105,20 @@ extern void net_rst();
 /**
  * Define in net.c
  */
-extern uint8_t flag_netbuff;
+extern bool flag_net;
 extern char dllink[500];
 extern char songpoint[50];
-extern int8_t net_buff[ BUFF_SPACE ];
+// extern int8_t net_buff[ BUFF_SPACE ];
 extern ESP8266_DEF_PTR ESP8266_A;
-extern void net_init();
+extern int net_init();
 extern int socket_request(uint8_t option);
 extern void download_mp3();
+
+extern bool flag_netend;
+extern uint8_t songid_cnt;
+extern DEV_UART_PTR uart_obj;					//Pointer to Get UART State in Task 
+
+
 
 /**
  * Define in GUI.c

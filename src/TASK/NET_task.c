@@ -6,7 +6,7 @@
 
 #include "embARC.h"
 
-//#define DBG_MORE
+#define DBG_MORE
 #include "embARC_debug.h"
 
 #include "include.h"
@@ -19,21 +19,18 @@ void net_task()
 {
 	EMBARC_PRINTF("NET_TASK START\r\n");
 
-	while (1) {
-
-		/* There is No Song in Buff ? */
-		if ( BUFF_EMPTY == flag_netbuff ) {
+	while (1) {		
 			/* Check Song ID List is not Empty ?*/
-			if ( Songid_HEAD == Songid_END ) {
-
-				/* Request Song ID to Request Download Url */
-				dbg_printf(DBG_MORE_INFO,"\r\nrequest songid\r\n");
-				if ( -1 == socket_request(SONG_ID) ) {
-					dbg_printf(DBG_LESS_INFO,"\r\nRequest Songid Fail,Continue!\r\n");
-					continue;
-				}
+		if ( songid_cnt == 0 ) {
+			/* Request Song ID to Request Download Url */
+			dbg_printf(DBG_MORE_INFO,"\r\nrequest songid\r\n");
+			if ( -1 == socket_request(SONG_ID) ) {
+				dbg_printf(DBG_LESS_INFO,"\r\nRequest Songid Fail,Continue!\r\n");
+				continue;
 			}
+		}
 
+		if ( IN_NET == flag_net ) {
 			/* Request Song Information Including Download Url */
 			dbg_printf(DBG_MORE_INFO,"\r\nRequest Songurl\r\n");
 			if ( -1 == socket_request(SONG_INFO)) {

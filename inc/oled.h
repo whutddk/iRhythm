@@ -35,7 +35,13 @@ extern const uint8_t bitmap_shou[];
 extern const uint8_t bitmap_ting[];
 extern const uint8_t bitmap_zhi[];
 
-
+extern void OLED_CLS();
+extern void OLED_P6x8Char(uint8_t ucIdxX, uint8_t ucIdxY, uint8_t ucData);
+extern void OLED_P8x16Char(uint8_t x, uint8_t y, uint8_t ch);
+extern void OLED_P6x8Str(uint8_t x, uint8_t y, uint8_t ch[]);
+extern void OLED_P8x16Str(uint8_t x, uint8_t y, uint8_t ch[]);
+extern void OLED_P14x16Str(uint8_t x, uint8_t y, uint8_t ch[]);
+extern void draw_fft();
 
 #endif  
 
