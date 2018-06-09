@@ -101,7 +101,7 @@ extern void iosignal_init();
 extern void iosignal_ctrl(uint8_t val, uint8_t num);
 extern uint8_t iosignal_read(uint8_t num);
 extern void net_rst();
-
+extern void led_row_ctl(uint8_t rows,uint32_t data);
 /**
  * Define in net.c
  */

@@ -130,4 +130,21 @@ void reflash_screen()
 
 }
 
+uint8_t led_fft_show[8];
+void LED_FFT()
+{
+	uint8_t i = 0;
+	for ( i = 0;i < 7;i++ )
+	{
+		if ( led_fft_show[i] < gui_info.fft[i] / 32)
+		{
+			led_fft_show[i] = gui_info.fft[i] / 32;
+		}
+		else
+		{
+			led_fft_show[i] --;
+		}
 
+		led_row_ctl( i+1,( 0x0002<<led_fft_show[i] ) - 1);
+	}
+}
