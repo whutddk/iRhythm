@@ -100,6 +100,38 @@ static void FFT_screen()
 
 
 
+
+
+uint8_t led_fft_show[8];
+void LED_FFT()
+{
+	uint8_t i = 0;
+	uint8_t real_val;
+	uint8_t val;
+
+	for ( i = 0;i < 8;i++ )
+	{
+		real_val = gui_info.fft[i] / 8 ;
+		if ( led_fft_show[i] <= real_val )
+		{
+			led_fft_show[i] = real_val;
+		}
+		else
+		{
+			led_fft_show[i] --;
+		}
+		
+		if ( led_fft_show[i] > 8 )
+		{
+			led_fft_show[i] = 8;
+		}
+
+		val = (uint8_t)(( 0x01<<led_fft_show[i]  ) - 1);
+		led_row_ctl( i+1,val);
+		// EMBARC_PRINTF("led_fft_show[%d]=%x\n\r",i,led_fft_show[i] );
+	}
+}
+
 /**
  * \brief       Main Loop function of GUI task
  *
@@ -127,24 +159,7 @@ void reflash_screen()
 			perform_screen();
 			break;
 	}
-
+	LED_FFT();
 }
 
-uint8_t led_fft_show[8];
-void LED_FFT()
-{
-	uint8_t i = 0;
-	for ( i = 0;i < 7;i++ )
-	{
-		if ( led_fft_show[i] < gui_info.fft[i] / 32)
-		{
-			led_fft_show[i] = gui_info.fft[i] / 32;
-		}
-		else
-		{
-			led_fft_show[i] --;
-		}
 
-		led_row_ctl( i+1,( 0x0002<<led_fft_show[i] ) - 1);
-	}
-}

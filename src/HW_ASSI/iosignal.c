@@ -200,12 +200,15 @@ inline void set_LE(uint8_t rows)
 	io_signal->gpio_write(val, LED_PIX_MASK);
 }
 
-inline void set_LED(uint32_t data)
+inline void set_LED(uint8_t data)
 {
-	LED_signal->gpio_write(data, LED_PIX_MASK);
+	// EMBARC_PRINTF("DATA = %d\r\n",data);
+	uint32_t val = ((uint32_t)(data)) << 16;
+	LED_signal->gpio_write(val, LED_PIX_MASK);
+	// EMBARC_PRINTF("VAL = %d\r\n",val);
 }
 
-void led_row_ctl(uint8_t rows,uint32_t data)
+void led_row_ctl(uint8_t rows,uint8_t data)
 {
 	set_LED(data);
 	set_LE(rows);

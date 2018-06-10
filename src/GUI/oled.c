@@ -463,4 +463,13 @@ void gui_init()
 	OLED_init();
 	OLED_CLS();
 
+	// led_row_ctl( 1,0xff );
+	// led_row_ctl( 2,0xff );
+	// led_row_ctl( 3,0xff );
+	// led_row_ctl( 4,0xff );
+	// led_row_ctl( 5,0xff );
+	// led_row_ctl( 6,0xff );
+	// led_row_ctl( 7,0xff );
+	// led_row_ctl( 8,0xff );
+
 }
