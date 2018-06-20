@@ -13,19 +13,19 @@ SECTIONS
   KEEP (*(.init_vector))
   KEEP (*(.init_bootstrap))
   _e_init = .;
- } > ICCM
+ } > EXT_RAM
  .vector : ALIGN(1024)
  {
   _f_vector = .;
   *(.vector)
   _e_vector = .;
- } > ICCM
+ } > EXT_RAM
  .text : ALIGN(4)
  {
   _f_text = .;
   *(.text .text.* .gnu.linkonce.t.*)
   _e_text = .;
- } > ICCM
+ } > EXT_RAM
  .rodata : ALIGN(4)
  {
   _f_rodata = .;
