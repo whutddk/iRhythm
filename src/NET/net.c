@@ -228,7 +228,7 @@ int socket_request(uint8_t option)
 	DEV_BUFFER_INIT(&Rxintbuf, net_info, sizeof(int8_t) * 102400);	
 
 	dbg_printf(DBG_LESS_INFO,"============================ connect socket ============================\n\r");
-	esp8266_tcp_connect(ESP8266_A, "180.76.141.217", 80);
+	esp8266_tcp_connect(ESP8266_A, "180.76.152.222", 80);
 
 	memset(http_cmd, 0, sizeof(char) * 500);
 	memset(net_info, 0, sizeof(int8_t) * 102400);
@@ -237,12 +237,12 @@ int socket_request(uint8_t option)
 	switch (option) {
 		case SONG_ID:
 			strcat (http_cmd,
-					"GET http://fm.baidu.com/dev/api/?tn=playlist&id=public_tuijian_rege&hashcode=&_=1519727783752 HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\n\r\n");
+					"GET http://fm.taihe.com/dev/api/?tn=playlist&id=public_tuijian_rege&hashcode=&_=1519727783752 HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\n\r\n");
 			break;
 
 		case SONG_INFO:
 			strcat (http_cmd,
-					"POST http://fm.baidu.com/data/music/songlink HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\nContent-Length: ");
+					"POST http://fm.taihe.com/data/music/songlink HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\nContent-Length: ");
 			idlen_int = strlen(Playlist_HEAD->data);
 			idlen_int += 8;
 			itoa(idlen_int, idlen_char, 10);

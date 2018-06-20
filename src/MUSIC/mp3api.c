@@ -6,7 +6,7 @@
 
 #include "embARC.h"
 
-#define DBG_MORE
+// #define DBG_MORE
 #include "embARC_debug.h"
 
 #include "stdlib.h"
@@ -86,7 +86,7 @@ reset gui fft bar
 	gui_info.fft_show[3] = 0;
 
 
-	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 );
+	xEventGroupSetBits( evt1_cb, BIT_0 | BIT_1 | BIT_2 );
 
 	/* Start to Decord MP3 */
 	perf_start();
@@ -134,7 +134,7 @@ reset gui fft bar
 				/* Shedule Here */
 				xEventGroupWaitBits(
 					evt1_cb,
-					BIT_0 | BIT_1 , 						//Regard BIT0 as Dma Transfer Finish,Regard BIT1 as Outside FIFO Full Flag
+					BIT_0 | BIT_1 | BIT_2 , 						//Regard BIT0 as Dma Transfer Finish,Regard BIT1 as Outside FIFO Full Flag
 					pdFALSE, 								//BIT_0 and BIT_1 Should Not be Cleared manually.
 					pdTRUE, 								// Wait for both Bits
 					portMAX_DELAY );
@@ -180,7 +180,7 @@ reset gui fft bar
 
 				xEventGroupWaitBits(
 				evt1_cb,
-				BIT_0 | BIT_1 , 						//Regard BIT0 as Dma Transfer Finish,Regard BIT1 as Outside FIFO Full Flag
+				BIT_0 | BIT_1 | BIT_2, 						//Regard BIT0 as Dma Transfer Finish,Regard BIT1 as Outside FIFO Full Flag
 				pdFALSE, 								//BIT_0 and BIT_1 Should Not be Cleared manually.
 				pdTRUE, 								// Wait for both Bits
 				portMAX_DELAY );
@@ -199,7 +199,7 @@ reset gui fft bar
 
 			xEventGroupWaitBits(
 				evt1_cb,
-				BIT_0 | BIT_1 , 						//Regard BIT0 as Dma Transfer Finish,Regard BIT1 as Outside FIFO Full Flag
+				BIT_0 | BIT_1 | BIT_2, 						//Regard BIT0 as Dma Transfer Finish,Regard BIT1 as Outside FIFO Full Flag
 				pdFALSE, 								//BIT_0 and BIT_1 Should Not be Cleared manually.
 				pdTRUE, 								// Wait for both Bits
 				portMAX_DELAY );
