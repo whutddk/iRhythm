@@ -45,6 +45,7 @@
 
 #include "coder.h"
 
+#include "include.h"
 /**************************************************************************************
  * Function:    Subband
  *
@@ -64,13 +65,16 @@ int Subband(MP3DecInfo *mp3DecInfo, char *pcmBuf)
 	IMDCTInfo *mi;
 	SubbandInfo *sbi;
 
+	uint16_t i = 0;
+
 	/* validate pointers */
-	if (!mp3DecInfo || !mp3DecInfo->HuffmanInfoPS || !mp3DecInfo->IMDCTInfoPS || !mp3DecInfo->SubbandInfoPS)
+	if (!mp3DecInfo || !mp3DecInfo->HuffmanInfoPS || !mp3DecInfo->IMDCTInfoPS || !mp3DecInfo->SubbandInfoPS) {
 		return -1;
+	}
 
 	//hi = (HuffmanInfo *)mp3DecInfo->HuffmanInfoPS;
 	mi = (IMDCTInfo *)(mp3DecInfo->IMDCTInfoPS);
-	sbi = (SubbandInfo*)(mp3DecInfo->SubbandInfoPS);
+	sbi = (SubbandInfo *)(mp3DecInfo->SubbandInfoPS);
 
 	if (mp3DecInfo->nChans == 2) {
 		/* stereo */
@@ -83,8 +87,24 @@ int Subband(MP3DecInfo *mp3DecInfo, char *pcmBuf)
 		}
 	} else {
 		/* mono */
-		EMBARC_PRINTF("Mono Has been Cut out! Not Support Now!\n\r" );
+		for (b = 0; b < BLOCK_SIZE; b++) {
+			FDCT32(mi->outBuf[0][b], sbi->vbuf , sbi->vindex, (b & 0x01), mi->gb[0]);
+			PolyphaseMono(pcmBuf, sbi->vbuf + sbi->vindex + VBUF_LENGTH * (b & 0x01), polyCoef);
+			sbi->vindex = (sbi->vindex - (b & 0x01)) & 7;
+			pcmBuf += (2 * NBANDS);
+		}
+
+		EMBARC_PRINTF("Mono Mode Now!\n\r" );
 	}
+
+
+	/****FFT FUNCTION*****/
+	for ( i = 0; i < fft_N; i++ ) {
+		fft_in[i] = *(pcmBuf + 2 * i);
+	}
+
+	fft_cal();
+
 
 	return 0;
 }

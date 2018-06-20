@@ -61,6 +61,55 @@
 
 #define CHECK_BIT 2
 
+void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
+{
+	int i;
+	const int *coef;
+	int *vb1;
+	int sum1L, sum2L;
+
+	/* special case, output sample 0 */
+	coef = coefBase;
+	vb1 = vbuf;
+
+	MC0M(&sum1L, coef, vb1);
+
+	*(pcm    ) = (char)(SAR32(sum1L, CHECK_BIT));
+	*(pcm + 1) = (char)(SAR32(sum1L, CHECK_BIT));
+
+	/* special case, output sample 16 */
+	coef = coefBase + 256;
+	vb1 = vbuf + 1024;
+
+	
+	MC1M(&sum1L, coef, vb1);
+
+	*( pcm + 32 ) = (char)(SAR32(sum1L, CHECK_BIT));
+	*( pcm + 33 ) = (char)(SAR32(sum1L, CHECK_BIT));
+
+	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
+	coef = coefBase + 16;
+	vb1 = vbuf + 64;
+	pcm += 2;
+
+	/* right now, the compiler creates bad asm from this... */
+	for (i = 15; i > 0; i--) {
+
+		MC2M(&sum1L, &sum2L, coef, vb1);
+		coef += 16;
+		vb1 += 64;
+		
+		*( pcm ) =  (char)(SAR32(sum1L, CHECK_BIT));
+		*( pcm + 1 ) = (char)(SAR32(sum1L, CHECK_BIT));
+		*( pcm + 4*i) = (char)(SAR32(sum2L, CHECK_BIT));
+		*( pcm + 4*i + 1 ) = (char)(SAR32(sum2L, CHECK_BIT));
+		pcm += 2;
+	}
+
+}
+
+
+
 /**************************************************************************************
  * Function:    PolyphaseStereo
  *
@@ -88,26 +137,26 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 	int *vb1;
 	int sum1L, sum2L, sum1R, sum2R;
 
-/*                   Part 1                    */
+	/*                   Part 1                    */
 	/* special case, output sample 0 */
 	coef = coefBase;
 	vb1 = vbuf;
-	MC0S(&sum1L,&sum1R,coef,vb1);
+	MC0S(&sum1L, &sum1R, coef, vb1);
 
-	*(pcm ) = (char)(SAR32(sum1L,CHECK_BIT));
-	*(pcm + 1) = (char)(SAR32(sum1R,CHECK_BIT));
+	*(pcm ) = (char)(SAR32(sum1L, CHECK_BIT));
+	*(pcm + 1) = (char)(SAR32(sum1R, CHECK_BIT));
 
-/*                   Part 2                    */
+	/*                   Part 2                    */
 	/* special case, output sample 16 */
 	coef = coefBase + 256;
 	vb1 = vbuf + 1024;
 
-	MC1S(&sum1L,&sum1R,coef,vb1);
+	MC1S(&sum1L, &sum1R, coef, vb1);
 
-	*(pcm + 32) = (char)(SAR32(sum1L,CHECK_BIT));
-	*(pcm + 33) = (char)(SAR32(sum1R,CHECK_BIT));
+	*(pcm + 32) = (char)(SAR32(sum1L, CHECK_BIT));
+	*(pcm + 33) = (char)(SAR32(sum1R, CHECK_BIT));
 
-/*                   Part 3                     */
+	/*                   Part 3                     */
 
 	/* main convolution loop: sum1L = samples 1, 2, 3, ... 15   sum2L = samples 31, 30, ... 17 */
 	coef = coefBase + 16;
@@ -116,13 +165,13 @@ void PolyphaseStereo(char *pcm, int *vbuf, const int *coefBase)
 
 	/* right now, the compiler creates bad asm from this... */
 	for (i = 15; i > 0; i--) {
-		MC2S(&sum1L,&sum1R,&sum2L,&sum2R,coef,vb1);
+		MC2S(&sum1L, &sum1R, &sum2L, &sum2R, coef, vb1);
 		coef += 16;
 		vb1 += 64;
-		*(pcm )				=		(char)(SAR32(sum1L,CHECK_BIT));
-		*(pcm + 1)			=		(char)(SAR32(sum1R,CHECK_BIT));
-		*(pcm + 4*i)		=		(char)(SAR32(sum2L,CHECK_BIT));
-		*(pcm + 4*i + 1)	=		(char)(SAR32(sum2R,CHECK_BIT));
+		*(pcm )				=		(char)(SAR32(sum1L, CHECK_BIT));
+		*(pcm + 1)			=		(char)(SAR32(sum1R, CHECK_BIT));
+		*(pcm + 4 * i)		=		(char)(SAR32(sum2L, CHECK_BIT));
+		*(pcm + 4 * i + 1)	=		(char)(SAR32(sum2R, CHECK_BIT));
 		pcm += 2;
 	}
 }

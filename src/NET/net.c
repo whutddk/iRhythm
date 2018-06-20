@@ -7,7 +7,7 @@
 
 #include "embARC.h"
 
-//#define DBG_MORE
+#define DBG_MORE
 #include "embARC_debug.h"
 
 #include "include.h"
@@ -17,19 +17,23 @@
 
 
 
-#define WIFI_SSID   "\"Andrew_Sun\""
-#define WIFI_PWD    "\"smartcar\""
-// #define WIFI_SSID   "\"WUT-test\""
-// #define WIFI_PWD    "\"DDK123456\""
+// #define WIFI_SSID   "\"Andrew_Sun\""
+// #define WIFI_PWD    "\"smartcar\""
+#define WIFI_SSID   "\"WUT-test\""
+#define WIFI_PWD    "\"DDK123456\""
 
 
-uint8_t flag_netbuff = BUFF_EMPTY;		//Net Buff FULL Flag
-int8_t net_buff[BUFF_SPACE];			//10MB Net Buff
+bool flag_net = IN_NET;					//Net Song flag
+bool flag_netend = false;
+// int8_t net_buff[BUFF_SPACE];			//15MB Net Buff
 
 
 char dllink[500] = { 0 };				//Store Song Download Url
 char songpoint[50] = { 0 };				//Store Song Name Download Form Net ,Unnecessart Now
 static char http_cmd[500] = {0};		//Structure HTTP Command
+
+static char net_info[102400] = { 0 };	//存放网络临时信息和解析
+
 
 ESP8266_DEF __ESP8266_A;				//Define ESP8266 Control Struct
 ESP8266_DEF_PTR ESP8266_A = &__ESP8266_A;
@@ -48,6 +52,7 @@ DEV_UART_PTR uart_obj;					//Pointer to Get UART State in Task
  */
 static int get_songid(char *jsonstr)
 {
+
 	char *string = (char *)jsonstr;
 	char songid[12] = "";
 
@@ -71,12 +76,12 @@ static int get_songid(char *jsonstr)
 		songid[j] = '\0';
 		dbg_printf(DBG_MORE_INFO,"\r\n%s\r\n", songid);
 
-		filelist_add(NET_LIST, songid, 0, 0);	//Add Song ID into Song Id List
-
+		filelist_add(songid, BUFF_SPACE, IN_NET);	//Add Song ID into Song Id List
+		songid_cnt ++;
 	}
 
 	/* No Song Id Found in a Respond */
-	if ( Songid_HEAD == Songid_END ) {
+	if ( songid_cnt == 0 ) {
 		return -1;
 	}
 
@@ -168,26 +173,27 @@ static int get_songinfo(char *jsonstr)
  * \brief       Init ESP8266 and Malloc 10MB net buff and Connect to WIfi
  *
  */
-void net_init()
+int net_init()
 {
 	dbg_printf(DBG_LESS_INFO,"============================ Init ============================\n");
-	memset( net_buff, 0, sizeof(int8_t) * BUFF_SPACE );
+	// memset( net_buff, 0, sizeof(int8_t) * BUFF_SPACE );
 
 	esp8266_init(ESP8266_A, 3125000);
 	at_test(ESP8266_A->p_at);
-	_Rtos_Delay(100);
+	_Block_Delay(100);
 
 	dbg_printf(DBG_LESS_INFO,"============================ Set Mode ============================\n");
 	esp8266_wifi_mode_get(ESP8266_A, false);
-	_Rtos_Delay(100);
+	_Block_Delay(100);
 
 	esp8266_wifi_mode_set(ESP8266_A, 3, false);
-	_Rtos_Delay(100);
+	_Block_Delay(100);
 
 	dbg_printf(DBG_LESS_INFO,"============================ Connect WiFi ============================\n");
-	while (esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false) != AT_OK) {
+	if (esp8266_wifi_connect(ESP8266_A, WIFI_SSID, WIFI_PWD, false) != AT_OK) {
 		dbg_printf(DBG_LESS_INFO,"WIFI %s connect failed\n", WIFI_SSID);
-		_Rtos_Delay(1000);
+		_Block_Delay(1000);
+		return -1;
 	}
 	dbg_printf(DBG_LESS_INFO,"WIFI %s connect succeed\n", WIFI_SSID);
 
@@ -196,8 +202,8 @@ void net_init()
 
 
 	uart_obj = uart_get_dev(ESP8266_UART_ID);	//Get Uart Pointer
-	// _Rtos_Delay(100);
-
+	// _Block_Delay(100);
+	return 0;
 }
 
 
@@ -218,36 +224,37 @@ int socket_request(uint8_t option)
 	char idlen_char[3] = "";
 	DEV_BUFFER Rxintbuf;
 
-	//Initalize net_buff as Uart FIFO for Receiving,Disable Now
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);	
+	//Initalize net_info as Uart FIFO for Receiving,Disable Now
+	DEV_BUFFER_INIT(&Rxintbuf, net_info, sizeof(int8_t) * 102400);	
 
 	dbg_printf(DBG_LESS_INFO,"============================ connect socket ============================\n\r");
-	esp8266_tcp_connect(ESP8266_A, "180.76.141.217", 80);
+	esp8266_tcp_connect(ESP8266_A, "180.76.152.222", 80);
 
 	memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(int8_t) * BUFF_SPACE);
+	memset(net_info, 0, sizeof(int8_t) * 102400);
 
 	dbg_printf(DBG_LESS_INFO,"============================ create http command ============================\r\n");
 	switch (option) {
 		case SONG_ID:
 			strcat (http_cmd,
-					"GET http://fm.baidu.com/dev/api/?tn=playlist&id=public_tuijian_rege&hashcode=&_=1519727783752 HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\n\r\n");
+					"GET http://fm.taihe.com/dev/api/?tn=playlist&id=public_tuijian_rege&hashcode=&_=1519727783752 HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\n\r\n");
 			break;
 
 		case SONG_INFO:
 			strcat (http_cmd,
-					"POST http://fm.baidu.com/data/music/songlink HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\nContent-Length: ");
-			idlen_int = strlen(Songid_HEAD->data);
+					"POST http://fm.taihe.com/data/music/songlink HTTP/1.1\r\nHost: fm.baidu.com\r\nConnection: keep-alive\r\nContent-Length: ");
+			idlen_int = strlen(Playlist_HEAD->data);
 			idlen_int += 8;
 			itoa(idlen_int, idlen_char, 10);
 			strcat(http_cmd, idlen_char);
 			strcat(http_cmd, "\r\n\r\nsongIds=");
-			strcat (http_cmd, Songid_HEAD->data);
+			strcat (http_cmd, Playlist_HEAD->data);
 
-			if ( Songid_HEAD->next != NULL ) {
-				filelist_delete(NET_LIST);
+			if ( Playlist_HEAD->next != NULL ) {
+				filelist_delete();
+				
 			} else {
-				dbg_printf(DBG_LESS_INFO,"Net List Empty\r\n");
+				dbg_printf(DBG_LESS_INFO,"Playlist linkList Empty\r\n");
 			}
 
 			break;
@@ -260,13 +267,13 @@ int socket_request(uint8_t option)
 	_Rtos_Delay(100);
 	esp8266_passthr_write( ESP8266_A, http_cmd, strlen(http_cmd) );
 	_Rtos_Delay(100);
-	/*****Enable net_buff as FIFO for receiving********/
+	/*****Enable net_info as FIFO for receiving********/
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void *)(&Rxintbuf));
 	xTaskResumeAll();
 
 	dbg_printf(DBG_LESS_INFO,"======================== Get all Data Driectly===================\r\n");
 	_Rtos_Delay(1000);			//Wait Data to Arrive,only 1 second is enough to parse
-	dbg_printf(DBG_MORE_INFO,"%s\r\n",(net_buff));
+	dbg_printf(DBG_MORE_INFO,"%s\r\n",(net_info));
 
 	/*********Receive Complete,Disable Passthrough and Disable Uart FIFO***************/
 	esp8266_passthr_end(ESP8266_A);
@@ -280,20 +287,17 @@ int socket_request(uint8_t option)
 	/*********Exract Data From Buff******************************/
 	switch (option) {
 		case SONG_ID :
-			if (-1 == get_songid(net_buff)) {
+			if (-1 == get_songid(net_info)) {
 				return -1;
 			}
-
 			break;
 
 		case SONG_INFO:
-			if (-1 == get_songinfo(net_buff)) {
+			if (-1 == get_songinfo(net_info)) {
 				return -1;
 			}
-
 			break;
 	}
-
 	dbg_printf(DBG_LESS_INFO,"Recv Done.\r\n");
 	esp8266_CIPCLOSE(ESP8266_A);
 
@@ -316,14 +320,14 @@ void download_mp3()
 
 	DEV_BUFFER Rxintbuf;
 
-	//Initalize net_buff as Uart FIFO for Receiving,Disable Now
-	DEV_BUFFER_INIT(&Rxintbuf, net_buff, sizeof(int8_t) * BUFF_SPACE);
+	//Initalize file_buff as Uart FIFO for Receiving,Disable Now
+	DEV_BUFFER_INIT(&Rxintbuf, file_buff, sizeof(int8_t) * BUFF_SPACE);
 
 	dbg_printf(DBG_LESS_INFO,"============================ connect socket ============================\n\r");
 	esp8266_tcp_connect(ESP8266_A, "211.91.125.36", 80);
 
 	memset(http_cmd, 0, sizeof(char) * 500);
-	memset(net_buff, 0, sizeof(int8_t) * BUFF_SPACE);
+	memset(file_buff, 0, sizeof(int8_t) * BUFF_SPACE);
 
 	/*****Create HTTP Command directly**********/
 	strcat (http_cmd, "GET ");
@@ -337,8 +341,9 @@ void download_mp3()
 	_Rtos_Delay(100);
 	esp8266_passthr_write( ESP8266_A, http_cmd, strlen(http_cmd) );
 	_Rtos_Delay(100);
-	/*****Enable net_buff as FIFO for receiving********/
+	/*****Enable file_buff as FIFO for receiving********/
 	uart_obj->uart_control(UART_CMD_SET_RXINT_BUF, (void *)(&Rxintbuf));
+	flag_netend = false;
 	xTaskResumeAll();
 
 
@@ -376,8 +381,12 @@ void download_mp3()
 			dbg_printf(DBG_MORE_INFO,"\r\nTime out\r\n");
 			if ( timeout_cnt > 3 ) {
 				dbg_printf(DBG_LESS_INFO,"\r\nreceive end , %d B\r\n", bypass_cnt  );
-				dbg_printf(DBG_MORE_INFO,"\r\n%s \r\n",net_buff);
+				dbg_printf(DBG_MORE_INFO,"\r\n%s \r\n",file_buff);
+				
+				flag_netend = true;			
 				break;
+
+				
 			}
 		}
 
@@ -393,8 +402,9 @@ void download_mp3()
 
 	if ( http_sum > 1024 ) {
 		/*****Net BUff is Big enough,there must be a Song in It ***********/
-		filelist_add(FILE_LIST, "online song", http_sum, IN_BUFF);
-		flag_netbuff = BUFF_FULL;
+		// filelist_add(FILE_LIST, "online song", http_sum, IN_BUFF);
+		// flag_netbuff = BUFF_FULL;
+		flag_net = IN_FILE;
 	} else {
 		/*****Net BUff is too Small,a 302 or 404 Error may Happen***********/
 		dbg_printf(DBG_LESS_INFO,"Receive Fail!\r\n");
