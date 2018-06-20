@@ -8,11 +8,10 @@
 #include "embARC.h"
 #include "embARC_debug.h"
 
-#include "u8g.h"
-
 #include "include.h"
 
-u8g_t _u8g;					//GUI Control Struct
+#include "oled.h"
+
 struct _gui_info gui_info;	//GUI Control Infomation
 
 /**
@@ -24,203 +23,113 @@ struct _gui_info gui_info;	//GUI Control Infomation
 
 
 /**
- * --  文字:  速  --
-*/
-const uint8_t bitmap_su[] = {
-	0x00, 0x40, 0x20, 0x40, 0x17, 0xFC, 0x10, 0x40, 0x03, 0xF8, 0x02, 0x48, 0xF2, 0x48, 0x13, 0xF8,
-	0x10, 0xE0, 0x11, 0x50, 0x12, 0x48, 0x14, 0x44, 0x10, 0x40, 0x28, 0x00, 0x47, 0xFE, 0x00, 0x00
-};
-
-/**
- * --  文字:  度  --
- */
-const uint8_t bitmap_du[] = {
-	0x01, 0x00, 0x00, 0x80, 0x3F, 0xFE, 0x22, 0x20, 0x22, 0x20, 0x3F, 0xFC, 0x22, 0x20, 0x22, 0x20,
-	0x23, 0xE0, 0x20, 0x00, 0x2F, 0xF0, 0x24, 0x10, 0x42, 0x20, 0x41, 0xC0, 0x86, 0x30, 0x38, 0x0E
-};
-
-/**
- * --  文字:  下  --
- */
-const uint8_t bitmap_xia[] = {
-	0x00, 0x00, 0xFF, 0xFE, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00, 0x02, 0x40, 0x02, 0x20,
-	0x02, 0x10, 0x02, 0x08, 0x02, 0x08, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00, 0x02, 0x00
-};
-
-/**
- * --  文字:  载  --
- */
-const uint8_t bitmap_zai[] = {
-	0x08, 0x20, 0x08, 0x28, 0x7F, 0x24, 0x08, 0x20, 0xFF, 0xFE, 0x10, 0x20, 0x10, 0x24, 0xFF, 0x24,
-	0x20, 0x24, 0x48, 0x28, 0x7F, 0x28, 0x08, 0x10, 0x0F, 0x12, 0xF8, 0x2A, 0x08, 0x46, 0x08, 0x82
-};
-
-/**
- * --  文字:  解  --
- */
-const uint8_t bitmap_jie[] = {
-	0x10, 0x00, 0x10, 0xFC, 0x3C, 0x24, 0x24, 0x24, 0x48, 0x54, 0xBE, 0x88, 0x2A, 0x10, 0x2A, 0x50,
-	0x3E, 0x7C, 0x2A, 0x90, 0x2A, 0x10, 0x3E, 0xFE, 0x2A, 0x10, 0x4A, 0x10, 0x42, 0x10, 0x86, 0x10
-};
-
-/**
- * --  文字:  码  --
- */
-const uint8_t bitmap_ma[] = {
-	0x00, 0x00, 0x01, 0xF8, 0xFC, 0x08, 0x10, 0x08, 0x10, 0x88, 0x20, 0x88, 0x3C, 0x88, 0x64, 0xFE,
-	0x64, 0x02, 0xA4, 0x02, 0x24, 0x02, 0x25, 0xFA, 0x3C, 0x02, 0x24, 0x02, 0x20, 0x14, 0x00, 0x08
-};
-
-/**
- * --  文字:  歌  --
- */
-const uint8_t bitmap_ge[] = {
-	0x00, 0x20, 0xFF, 0x20, 0x02, 0x20, 0x7A, 0x7E, 0x4A, 0x42, 0x7A, 0x84, 0x00, 0x10, 0xFF, 0x10,
-	0x02, 0x10, 0x7A, 0x10, 0x4A, 0x28, 0x4A, 0x28, 0x7A, 0x28, 0x02, 0x44, 0x0A, 0x44, 0x04, 0x82
-};
-
-/**
- * --  文字:  曲  --
- */
-const uint8_t bitmap_qu[] = {
-	0x04, 0x40, 0x04, 0x40, 0x04, 0x40, 0x04, 0x40, 0x7F, 0xFC, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44,
-	0x44, 0x44, 0x7F, 0xFC, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x7F, 0xFC, 0x40, 0x04
-};
-
-/**
- * --  文字:  一  --
- */
-const uint8_t bitmap_yi[] = {
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFE,
-	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
-
-/**
- * --  文字:  首  --
- */
-const uint8_t bitmap_shou[] = {
-	0x10, 0x10, 0x08, 0x20, 0xFF, 0xFE, 0x02, 0x00, 0x04, 0x00, 0x3F, 0xF8, 0x20, 0x08, 0x20, 0x08,
-	0x3F, 0xF8, 0x20, 0x08, 0x20, 0x08, 0x3F, 0xF8, 0x20, 0x08, 0x20, 0x08, 0x3F, 0xF8, 0x20, 0x08
-};
-
-/**
- * --  文字:  停  --
- */
-const uint8_t bitmap_ting[] = {
-	0x10, 0x80, 0x10, 0x40, 0x17, 0xFC, 0x20, 0x00, 0x23, 0xF8, 0x62, 0x08, 0x63, 0xF8, 0xA0, 0x00,
-	0x2F, 0xFE, 0x28, 0x02, 0x23, 0xF8, 0x20, 0x40, 0x20, 0x40, 0x20, 0x40, 0x21, 0x40, 0x20, 0x80
-};
-
-/**
- * --  文字:  止  --
- */
-const uint8_t bitmap_zhi[] = {
-	0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x11, 0x00, 0x11, 0x00, 0x11, 0xF8, 0x11, 0x00,
-	0x11, 0x00, 0x11, 0x00, 0x11, 0x00, 0x11, 0x00, 0x11, 0x00, 0x11, 0x00, 0xFF, 0xFE, 0x00, 0x00
-};
-
-
-/**
- * \brief       GUI format configuration
- *
- */
-static void u8g_prepare(void)
-{
-	u8g_SetFont(&_u8g, u8g_font_6x10);		/* set the current font and reset the font reference position to "Baseline" */
-	u8g_SetFontRefHeightExtendedText(
-		&_u8g);		/* define the calculation method for the ascent and descent of the current font */
-	u8g_SetDefaultForegroundColor(&_u8g);		/* assign one of the default colors as current color index */
-	u8g_SetFontPosTop(&_u8g);			/* set the reference position for the character and string draw procedure */
-}
-
-/**
  * \brief       Gui Screen 1 Reflash Function to Show Debug Preformace Message
  *
  */
-static void screen1()
+static void perform_screen()
 {
-	u8g_FirstPage(&_u8g);
+	
+	if ( gui_info.network_speed < 0) {
+		//u8g_DrawStr(&_u8g, 80, 0, "Stop!");
+		// Draw_BMP( 80, 0, 96, 1, bitmap_ting);
+		// Draw_BMP( 97, 0, 103, 1, bitmap_zhi);
+		OLED_P6x8Str( 70, 0, "Stop!   ");
+	} else {
+		OLED_PrintInt16( 70, 0, gui_info.network_speed );
+		OLED_P6x8Str( 88, 0, "KB/s");
+	}
 
-	do {
+	if ( gui_info.decord_speed < 0) {
+		//u8g_DrawStr(&_u8g, 80, 18, "Stop!");
+		// Draw_BMP( 80, 18, 2, 16, bitmap_ting);
+		// Draw_BMP( 96, 18, 2, 16, bitmap_zhi);
+		OLED_P6x8Str( 70, 3, "Stop!   ");
+	} else {
+		OLED_PrintInt16( 70, 3,gui_info.decord_speed );
+		OLED_P6x8Str( 88, 3, "ms");
+	}
+
+
+	if ( 0 == gui_info.perf_update ) {
 		/* Display Net Speed */
-		//u8g_DrawStr(&_u8g, 0, 0, "Net Speed:");
-		u8g_DrawBitmap(&_u8g, 0, 0, 2, 16, bitmap_xia);
-		u8g_DrawBitmap(&_u8g, 16, 0, 2, 16, bitmap_zai);
-		u8g_DrawBitmap(&_u8g, 32, 0, 2, 16, bitmap_su);
-		u8g_DrawBitmap(&_u8g, 48, 0, 2, 16, bitmap_du);
-
-		if ( gui_info.network_speed < 0) {
-			//u8g_DrawStr(&_u8g, 80, 0, "Stop!");
-			u8g_DrawBitmap(&_u8g, 80, 0, 2, 16, bitmap_ting);
-			u8g_DrawBitmap(&_u8g, 96, 0, 2, 16, bitmap_zhi);
-		} else {
-			u8g_DrawStr(&_u8g, 80, 7, u8g_u16toa((uint16_t) gui_info.network_speed, 3));
-			u8g_DrawStr(&_u8g, 100, 7, "KB/s");
-		}
+		OLED_CLS();
+		OLED_P6x8Str(0, 0, "Net Speed:");
+		// Draw_BMP( 0, 0, 16, 1, bitmap_xia);
+		// Draw_BMP( 17, 0, 32, 1, bitmap_zai);
+		// Draw_BMP( 33, 0, 48, 1, bitmap_su);
+		// Draw_BMP( 49, 0, 64, 1, bitmap_du);
 
 		/* Display Decord time */
-		//u8g_DrawStr(&_u8g, 0, 15, "Decord:");
-		u8g_DrawBitmap(&_u8g, 0, 18, 2, 16, bitmap_jie);
-		u8g_DrawBitmap(&_u8g, 16, 18, 2, 16, bitmap_ma);
-		u8g_DrawBitmap(&_u8g, 32, 18, 2, 16, bitmap_su);
-		u8g_DrawBitmap(&_u8g, 48, 18, 2, 16, bitmap_du);
-
-		if ( gui_info.decord_speed < 0) {
-			//u8g_DrawStr(&_u8g, 80, 18, "Stop!");
-			u8g_DrawBitmap(&_u8g, 80, 18, 2, 16, bitmap_ting);
-			u8g_DrawBitmap(&_u8g, 96, 18, 2, 16, bitmap_zhi);
-		} else {
-			u8g_DrawStr(&_u8g, 80, 25, u8g_u16toa((uint16_t) gui_info.decord_speed, 2));
-			u8g_DrawStr(&_u8g, 100, 25, "ms");
-		}
+		OLED_P6x8Str( 0, 1, "Decord:");
+		// Draw_BMP( 0, 18, 2, 16, bitmap_jie);
+		// Draw_BMP( 16, 18, 2, 16, bitmap_ma);
+		// Draw_BMP( 32, 18, 2, 16, bitmap_su);
+		// Draw_BMP( 48, 18, 2, 16, bitmap_du);
 
 		/* Display Song Name Playing Now */
-		//u8g_DrawStr(&_u8g, 0, 45, "SONG:");
-		u8g_DrawBitmap(&_u8g, 0, 45, 2, 16, bitmap_ge);
-		u8g_DrawBitmap(&_u8g, 16, 45, 2, 16, bitmap_qu);
+		// Draw_BMP( 0, 45, 2, 16, bitmap_ge);
+		// Draw_BMP( 16, 45, 2, 16, bitmap_qu);
+		OLED_P6x8Str(0, 5, "SONG:");
+		OLED_P6x8Str( 40, 5, gui_info.song_name);
 
-		u8g_DrawStr(&_u8g, 34, 52, ":");
-		u8g_DrawStr(&_u8g, 40, 52, gui_info.song_name);
-	} while ( u8g_NextPage(&_u8g) );
+		/* Display Song Name May be Selected to Play Next*/
+		// Draw_BMP( 0, 0, 2, 16, bitmap_xia);
+		// Draw_BMP( 16, 0, 2, 16, bitmap_yi);
+		// Draw_BMP( 32, 0, 2, 16, bitmap_shou);
+		OLED_P6x8Str(0, 6, "Next Song:");
+		OLED_P6x8Str( 20, 6, gui_info.next_song);
+		gui_info.perf_update = 1;
+	}
+
+	
+
 }
 
 /**
  * \brief       This function used to show song name to select song
  *
  */
-static void screen2()
+
+static void FFT_screen()
 {
-	u8g_FirstPage(&_u8g);
+	gui_info.perf_update = 0;
 
-	/* Display Song Name May be Selected to Play Next*/
-	do {
-		//u8g_DrawStr(&_u8g, 0, 0, "Next Song:");
-		u8g_DrawBitmap(&_u8g, 0, 0, 2, 16, bitmap_xia);
-		u8g_DrawBitmap(&_u8g, 16, 0, 2, 16, bitmap_yi);
-		u8g_DrawBitmap(&_u8g, 32, 0, 2, 16, bitmap_shou);
+	draw_fft();
 
-		u8g_DrawStr(&_u8g, 20, 30, gui_info.next_song);
-	} while ( u8g_NextPage(&_u8g) );
 }
 
-/**
- * \brief       This function used to initialize gui configuration
- *
- */
-void gui_init()
-{
-	/* Initialize Gui Contorl Infomation to Default*/
-	gui_info.screen_point = 0;
-	gui_info.network_speed = -1;
-	gui_info.decord_speed = -1;
-	gui_info.main_cycle = -1;
-	gui_info.flag_next = 0;
-	gui_info.song_name = NULL;
-	gui_info.next_song = NULL;
 
-	u8g_InitComFn(&_u8g, &u8g_dev_ssd1306_128x64_2x_i2c, U8G_COM_SSD_I2C);
-	u8g_Begin(&_u8g);
-	u8g_SetFont(&_u8g, u8g_font_5x7);
+
+
+
+uint8_t led_fft_show[8];
+void LED_FFT()
+{
+	uint8_t i = 0;
+	uint8_t real_val;
+	uint8_t val;
+
+	for ( i = 0;i < 8;i++ )
+	{
+		real_val = gui_info.fft[i] / 8 ;
+		if ( led_fft_show[i] <= real_val )
+		{
+			led_fft_show[i] = real_val;
+		}
+		else
+		{
+			led_fft_show[i] --;
+		}
+		
+		if ( led_fft_show[i] > 8 )
+		{
+			led_fft_show[i] = 8;
+		}
+
+		val = (uint8_t)(( 0x01<<led_fft_show[i]  ) - 1);
+		led_row_ctl( i+1,val);
+		// EMBARC_PRINTF("led_fft_show[%d]=%x\n\r",i,led_fft_show[i] );
+	}
 }
 
 /**
@@ -230,22 +139,27 @@ void gui_init()
 void reflash_screen()
 {
 	/* if No Operation Appears in 5 Seconds,then Return to Performance Page */
-	if ( gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 ) ) {
-		gui_info.screen_point = 0;
+	if ( (gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 )) 
+		&& ( 0 != gui_info.screen_point ) ) {
+			gui_info.screen_point = 0;
+			gui_info.fft_show[0] = 0;
+			gui_info.fft_show[1] = 0;
+			gui_info.fft_show[2] = 0;
+			gui_info.fft_show[3] = 0;
+			OLED_CLS();
 	}
 
 	switch (gui_info.screen_point) {
 		case (0):
-			u8g_prepare();
-			screen1();
+			FFT_screen();
+			
 			break;
 
 		default:
-			u8g_prepare();
-			screen2();
+			perform_screen();
 			break;
 	}
-
+	LED_FFT();
 }
 
 

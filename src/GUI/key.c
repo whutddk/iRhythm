@@ -34,25 +34,25 @@ void key1_isr()//确定键
 			/* If it is the last Song in Play List,Play it again and again and Never Delete */
 			if ( Playlist_HEAD -> next != NULL ) {
 				/* Check if an Online Song in Playlist,then Net Buff should be Reset */
-				if ( Playlist_HEAD -> location != IN_BUFF ) {
-					;
-				} else {
-					flag_netbuff = BUFF_EMPTY;
-				}
-				filelist_delete(FILE_LIST);				//delete it from Playlist
+				// if ( Playlist_HEAD -> location != IN_NET ) {
+				// 	;
+				// } else {
+				// 	flag_netbuff = BUFF_EMPTY;
+				// }
+				filelist_delete();				//delete it from Playlist
 			} else {
 				EMBARC_PRINTF("\r\nNo Song Left!!!\r\n");
 			}
 		}
 
 		/* Reset Gui Control Infomation */
-		gui_info.screen_point = 0;
+		gui_info.screen_point = 1;
 		gui_info.network_speed = -1;
 		gui_info.decord_speed = -1;
 		gui_info.main_cycle = -1;
 	}
-
-	xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
+	gui_info.perf_update = 0;
+	// xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
 }
 
 /**
@@ -78,16 +78,33 @@ void key2_isr()
 
 	gui_info.next_song = file_pointer -> data;			//Update Song Name to Display
 	gui_info.screen_point ++;							//Increase Song Pointer
-
-	xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
+	gui_info.perf_update = 0;
+	// xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
 }
 
 /**
- * \brief       IO Interrupt Callback to Realize BACKUP Key Function
- *              Has been Initialized but No Useage Now
+ * \brief       IO Interrupt Callback to Realize PAUSE Key Function
  *
  */
-void key3_isr()
+void key3_isr()	
 {
 	//EMBARC_PRINTF("key3_isr!\r\n");
+	static bool check_flag = 0;	
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+	if ( check_flag == 0 )
+	{
+		xEventGroupClearBitsFromISR( evt1_cb, BIT_2 );
+		check_flag = 1;
+	}
+
+	else
+	{
+		xEventGroupSetBitsFromISR(
+			evt1_cb,	// The event group being updated.
+			BIT_2,   // The bits being set.
+			&xHigherPriorityTaskWoken );
+		check_flag = 0;
+	}
+
 }
