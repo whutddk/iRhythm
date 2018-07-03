@@ -71,7 +71,7 @@ int32_t play_mp3(int32_t filelenth, uint8_t location)
 
 	/* Prepare to transfer by SPI DMA,Set CS ,Set CLK to 12MHz */
 	spi->spi_control(SPI_CMD_MST_SEL_DEV, CONV2VOID((uint32_t)EMSK_SPI_LINE_0));
-	spi->spi_control(SPI_CMD_MST_SET_FREQ, CONV2VOID(12000000));
+	spi->spi_control(SPI_CMD_MST_SET_FREQ, CONV2VOID(7000000));
 
 	mp3_dec = (MP3DecInfo *)MP3InitDecoder();
 
