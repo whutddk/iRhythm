@@ -86,25 +86,27 @@ void key2_isr()
  * \brief       IO Interrupt Callback to Realize PAUSE Key Function
  *
  */
+
+	
 void key3_isr()	
 {
 	//EMBARC_PRINTF("key3_isr!\r\n");
-	static bool check_flag = 0;	
+	static bool pluse_flag = 0;
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-	if ( check_flag == 0 )
+	if ( pluse_flag == 0 )
 	{
 		xEventGroupClearBitsFromISR( evt1_cb, BIT_2 );
-		check_flag = 1;
-	}
+		pluse_flag = 1;
 
+	}
 	else
 	{
 		xEventGroupSetBitsFromISR(
 			evt1_cb,	// The event group being updated.
 			BIT_2,   // The bits being set.
 			&xHigherPriorityTaskWoken );
-		check_flag = 0;
+		pluse_flag = 0;
 	}
 
 }

@@ -120,6 +120,8 @@ void LED_FFT()
 		{
 			led_fft_show[i] --;
 		}
+
+
 		
 		if ( led_fft_show[i] > 8 )
 		{
