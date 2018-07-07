@@ -1,5 +1,5 @@
 /**
- * API CODE for 2 List 
+ * API CODE for 2 List
  * DDK
  * 2018 03 10
  */
@@ -46,14 +46,14 @@ uint8_t songid_cnt = 0;
 /**
  * \brief       Add data in List
  *
- *                                    
- * \param[in]   id_data                ID Number to Song Id List 
+ *
+ * \param[in]   id_data                ID Number to Song Id List
  *                                     or File Name to Playlist List
- *                                     
- * \param[in]   lenth                  File Lenth Add to Playlist List 
+ *
+ * \param[in]   lenth                  File Lenth Add to Playlist List
  *                                     No Usage in Song Id List
- *                                     
- * \param[in]   location               File Location Add to Playlist List 
+ *
+ * \param[in]   location               File Location Add to Playlist List
  *                                     IN_BUFF/IN_FILE
  *                                     No Usage in Song Id List
  *
@@ -62,15 +62,17 @@ void filelist_add(char *id_data, int32_t lenth, uint8_t location)
 {
 	struct filelist *linklists = NULL;
 	linklists = (struct filelist *)malloc(sizeof(struct filelist));
+
 	if ( NULL == linklists ) {
-		dbg_printf(DBG_LESS_INFO,"\r\nPlay List Malloc Error!\r\n");
+		dbg_printf(DBG_LESS_INFO, "\r\nPlay List Malloc Error!\r\n");
 	}
+
 	memset(linklists, 0, sizeof(struct filelist));
 	strcat(linklists -> data, id_data);
 
 	linklists->lenth = lenth;
 	linklists->location = location;
-	
+
 	if ( location == IN_NET ) {
 		linklists -> next = Playlist_HEAD -> next; 	//Add as the Second Node
 		Playlist_HEAD -> next = linklists ; 		//Head of List No Change
@@ -94,10 +96,11 @@ void filelist_delete()
 	struct filelist *linklists = NULL;
 
 	linklists = Playlist_HEAD;
-	if ( Playlist_HEAD -> location == IN_NET )
-	{
+
+	if ( Playlist_HEAD -> location == IN_NET ) {
 		songid_cnt --;
 	}
+
 	Playlist_HEAD = Playlist_HEAD -> next;
 	free (linklists);
 

@@ -28,7 +28,7 @@ struct _gui_info gui_info;	//GUI Control Infomation
  */
 static void perform_screen()
 {
-	
+
 	if ( gui_info.network_speed < 0) {
 		//u8g_DrawStr(&_u8g, 80, 0, "Stop!");
 		// Draw_BMP( 80, 0, 96, 1, bitmap_ting);
@@ -45,7 +45,7 @@ static void perform_screen()
 		// Draw_BMP( 96, 18, 2, 16, bitmap_zhi);
 		OLED_P6x8Str( 70, 3, "Stop!   ");
 	} else {
-		OLED_PrintInt16( 70, 3,gui_info.decord_speed );
+		OLED_PrintInt16( 70, 3, gui_info.decord_speed );
 		OLED_P6x8Str( 88, 3, "ms");
 	}
 
@@ -81,7 +81,7 @@ static void perform_screen()
 		gui_info.perf_update = 1;
 	}
 
-	
+
 
 }
 
@@ -109,27 +109,23 @@ void LED_FFT()
 	uint8_t real_val;
 	uint8_t val;
 
-	for ( i = 0;i < 8;i++ )
-	{
+	for ( i = 0; i < 8; i++ ) {
 		real_val = gui_info.fft[i] / 8 ;
-		if ( led_fft_show[i] <= real_val )
-		{
+
+		if ( led_fft_show[i] <= real_val ) {
 			led_fft_show[i] = real_val;
-		}
-		else
-		{
+		} else {
 			led_fft_show[i] --;
 		}
 
 
-		
-		if ( led_fft_show[i] > 8 )
-		{
+
+		if ( led_fft_show[i] > 8 ) {
 			led_fft_show[i] = 8;
 		}
 
-		val = (uint8_t)(( 0x01<<led_fft_show[i]  ) - 1);
-		led_row_ctl( i+1,val);
+		val = (uint8_t)(( 0x01 << led_fft_show[i]  ) - 1);
+		led_row_ctl( i + 1, val);
 		// EMBARC_PRINTF("led_fft_show[%d]=%x\n\r",i,led_fft_show[i] );
 	}
 }
@@ -141,26 +137,27 @@ void LED_FFT()
 void reflash_screen()
 {
 	/* if No Operation Appears in 5 Seconds,then Return to Performance Page */
-	if ( (gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 )) 
-		&& ( 0 != gui_info.screen_point ) ) {
-			gui_info.screen_point = 0;
-			gui_info.fft_show[0] = 0;
-			gui_info.fft_show[1] = 0;
-			gui_info.fft_show[2] = 0;
-			gui_info.fft_show[3] = 0;
-			OLED_CLS();
+	if ( (gui_info.delay_cnt < ( xTaskGetTickCount () - 5000 ))
+		 && ( 0 != gui_info.screen_point ) ) {
+		gui_info.screen_point = 0;
+		gui_info.fft_show[0] = 0;
+		gui_info.fft_show[1] = 0;
+		gui_info.fft_show[2] = 0;
+		gui_info.fft_show[3] = 0;
+		OLED_CLS();
 	}
 
 	switch (gui_info.screen_point) {
 		case (0):
 			FFT_screen();
-			
+
 			break;
 
 		default:
 			perform_screen();
 			break;
 	}
+
 	LED_FFT();
 }
 

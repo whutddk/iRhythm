@@ -51,6 +51,7 @@ void key1_isr()//确定键
 		gui_info.decord_speed = -1;
 		gui_info.main_cycle = -1;
 	}
+
 	gui_info.perf_update = 0;
 	// xEventGroupSetBits( GUI_Ev, BIT_0 );				//Now Reflash the Srceen
 }
@@ -67,7 +68,7 @@ void key2_isr()
 	gui_info.delay_cnt = xTaskGetTickCount ();			//Update to Get Another 5 Seconds
 
 	for ( i = gui_info.screen_point ; i > 0 ; i -- ) {
-		file_pointer = file_pointer -> next;			//Update Song Pointer 
+		file_pointer = file_pointer -> next;			//Update Song Pointer
 
 		if ( file_pointer != NULL ) {
 
@@ -87,21 +88,18 @@ void key2_isr()
  *
  */
 
-	
-void key3_isr()	
+
+void key3_isr()
 {
 	//EMBARC_PRINTF("key3_isr!\r\n");
 	static bool pluse_flag = 0;
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-	if ( pluse_flag == 0 )
-	{
+	if ( pluse_flag == 0 ) {
 		xEventGroupClearBitsFromISR( evt1_cb, BIT_2 );
 		pluse_flag = 1;
 
-	}
-	else
-	{
+	} else {
 		xEventGroupSetBitsFromISR(
 			evt1_cb,	// The event group being updated.
 			BIT_2,   // The bits being set.

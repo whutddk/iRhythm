@@ -80,8 +80,9 @@ void ClearBuffer(void *buf, int nBytes)
 	int i;
 	unsigned char *cbuf = (unsigned char *)buf;
 
-	for (i = 0; i < nBytes; i++)
+	for (i = 0; i < nBytes; i++) {
 		cbuf[i] = 0;
+	}
 
 }
 
@@ -108,24 +109,24 @@ MP3DecInfo *AllocateBuffers(void)
 {
 	MP3DecInfo *mp3DecInfo_pointer;
 
-	mp3DecInfo_pointer = (MP3DecInfo*)&mp3DecInfo;
-	ClearBuffer((void*)&mp3DecInfo, sizeof(MP3DecInfo));
+	mp3DecInfo_pointer = (MP3DecInfo *)&mp3DecInfo;
+	ClearBuffer((void *)&mp3DecInfo, sizeof(MP3DecInfo));
 
-	mp3DecInfo.FrameHeaderPS =     (void*)&fh;
-	mp3DecInfo.SideInfoPS =        (void*)&si;
-	mp3DecInfo.ScaleFactorInfoPS = (void*)&sfi;
-	mp3DecInfo.HuffmanInfoPS =     (void*)&hi;
-	mp3DecInfo.DequantInfoPS =     (void*)&di;
-	mp3DecInfo.IMDCTInfoPS =       (void*)&mi;
-	mp3DecInfo.SubbandInfoPS =     (void*)&sbi;
+	mp3DecInfo.FrameHeaderPS =     (void *)&fh;
+	mp3DecInfo.SideInfoPS =        (void *)&si;
+	mp3DecInfo.ScaleFactorInfoPS = (void *)&sfi;
+	mp3DecInfo.HuffmanInfoPS =     (void *)&hi;
+	mp3DecInfo.DequantInfoPS =     (void *)&di;
+	mp3DecInfo.IMDCTInfoPS =       (void *)&mi;
+	mp3DecInfo.SubbandInfoPS =     (void *)&sbi;
 
-	ClearBuffer((void*)&fh,  sizeof(FrameHeader));
-	ClearBuffer((void*)&si,  sizeof(SideInfo));
-	ClearBuffer((void*)&sfi, sizeof(ScaleFactorInfo));
-	ClearBuffer((void*)&hi,  sizeof(HuffmanInfo));
-	ClearBuffer((void*)&di,  sizeof(DequantInfo));
-	ClearBuffer((void*)&mi,  sizeof(IMDCTInfo));
-	ClearBuffer((void*)&sbi, sizeof(SubbandInfo));
-  
+	ClearBuffer((void *)&fh,  sizeof(FrameHeader));
+	ClearBuffer((void *)&si,  sizeof(SideInfo));
+	ClearBuffer((void *)&sfi, sizeof(ScaleFactorInfo));
+	ClearBuffer((void *)&hi,  sizeof(HuffmanInfo));
+	ClearBuffer((void *)&di,  sizeof(DequantInfo));
+	ClearBuffer((void *)&mi,  sizeof(IMDCTInfo));
+	ClearBuffer((void *)&sbi, sizeof(SubbandInfo));
+
 	return mp3DecInfo_pointer;
 }

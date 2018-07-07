@@ -15,7 +15,7 @@
 
 /**
  * Global Definition
- *  
+ *
  */
 /* Define Net Buff and File Buff Size to 15MB */
 #define BUFF_SPACE 15728640
@@ -40,7 +40,7 @@
 
 /**
  * Define in filelist.c
- * 
+ *
  */
 struct filelist {
 	char data[50];				//Save Song ID or Song Name in different Function
@@ -61,19 +61,19 @@ extern void filelist_delete();
 
 /**
  * Define in main.c
- * 
+ *
  */
 extern int32_t error_num ;		//Used to Get Error Num
 
 /**
  * Define in mem.c
- * 
+ *
  */
 extern void readout_file(char *music_name);
 
 /**
  * Define in music.c
- * 
+ *
  */
 extern DEV_SPI_PTR spi;
 extern int8_t file_buff[ BUFF_SPACE ];
@@ -88,20 +88,20 @@ extern int32_t Start_playing();
 
 /**
  * Define in mp3api.c
- * 
+ *
  */
 // extern bool flag_songend;
 extern int32_t play_mp3(int32_t filelenth, uint8_t location);
 
 /**
  * Define in iosignal.c
- * 
+ *
  */
 extern void iosignal_init();
 extern void iosignal_ctrl(uint8_t val, uint8_t num);
 extern uint8_t iosignal_read(uint8_t num);
 extern void net_rst();
-extern void led_row_ctl(uint8_t rows,uint8_t data);
+extern void led_row_ctl(uint8_t rows, uint8_t data);
 /**
  * Define in net.c
  */
@@ -116,7 +116,7 @@ extern void download_mp3();
 
 extern bool flag_netend;
 extern uint8_t songid_cnt;
-extern DEV_UART_PTR uart_obj;					//Pointer to Get UART State in Task 
+extern DEV_UART_PTR uart_obj;					//Pointer to Get UART State in Task
 
 
 
@@ -149,7 +149,7 @@ extern void reflash_screen();
 
 /**
  * Define in key.c
- * 
+ *
  */
 
 extern void key1_isr();
