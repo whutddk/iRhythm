@@ -25,8 +25,6 @@
 
 bool flag_net = IN_NET;					//Net Song flag
 bool flag_netend = false;
-// int8_t net_buff[BUFF_SPACE];			//15MB Net Buff
-
 
 char dllink[500] = { 0 };				//Store Song Download Url
 char songpoint[50] = { 0 };				//Store Song Name Download Form Net ,Unnecessart Now
@@ -412,8 +410,6 @@ void download_mp3()
 
 	if ( http_sum > 1024 ) {
 		/*****Net BUff is Big enough,there must be a Song in It ***********/
-		// filelist_add(FILE_LIST, "online song", http_sum, IN_BUFF);
-		// flag_netbuff = BUFF_FULL;
 		flag_net = IN_FILE;
 	} else {
 		/*****Net BUff is too Small,a 302 or 404 Error may Happen***********/

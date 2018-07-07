@@ -14,34 +14,9 @@
 #include "include.h"
 
 
-// struct filelist *Songid_HEAD = NULL ;			//Head Pointer For Songid List
-// struct filelist *Songid_END = NULL;				//Tail Pointer to Protect Songid List
-
 struct filelist *Playlist_HEAD = NULL ;			//Head Pointer For Playlist List
 struct filelist *Playlist_END = NULL;			//Tail Pointer to Protect Playlist List
 uint8_t songid_cnt = 0;
-// /**
-//  * \brief       Initialize Song ID list and Add Default Song ID
-//  *
-//  */
-// void filelist_init()
-// {
-// 	struct filelist *lists = NULL;
-
-// 	lists = (struct filelist *)malloc(sizeof(struct filelist));
-// 	memset(lists, 0, sizeof(struct filelist));
-
-// 	if ( NULL == lists ) {
-// 		dbg_printf(DBG_LESS_INFO,"\r\nSong Id List Init Error!\r\n");
-// 	}
-
-// 	strcat(lists -> data, "15368282"); //14950804//244200//1271193
-// 	lists -> next = NULL;
-// 	Songid_HEAD = lists;
-// 	Songid_END = lists;
-
-// }
-
 
 /**
  * \brief       Add data in List

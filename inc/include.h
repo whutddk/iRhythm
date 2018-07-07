@@ -81,6 +81,7 @@ extern void play_init();
 
 /**
  * Define in dma2spi.c
+ * 
  */
 extern void spi_dma_prepare(void);
 extern int32_t spi_writeraw(const void *data);
@@ -102,8 +103,10 @@ extern void iosignal_ctrl(uint8_t val, uint8_t num);
 extern uint8_t iosignal_read(uint8_t num);
 extern void net_rst();
 extern void led_row_ctl(uint8_t rows, uint8_t data);
+
 /**
  * Define in net.c
+ * 
  */
 extern bool flag_net;
 extern char dllink[500];
@@ -122,6 +125,7 @@ extern DEV_UART_PTR uart_obj;					//Pointer to Get UART State in Task
 
 /**
  * Define in GUI.c
+ * 
  */
 struct _gui_info {
 	uint8_t screen_point;				//Mark Which Page or Which Song is Pointed

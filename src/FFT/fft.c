@@ -128,15 +128,11 @@ uint8_t fft_out[fft_N / 2];
 compx fft_data[fft_N];
 void fft_cal()
 {
-	// uint8_t fft_num = 0;
 	/* fft data segment */
-
 
 	fft_Data(fft_in, fft_data);
 	fft_Convert(fft_data);           /* FFT resolve */
 	fft_powerMag(fft_data, fft_out); /* data compress */
-
-	// light_mode_music(fft_out);
 
 }
 

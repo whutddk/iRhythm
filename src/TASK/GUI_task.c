@@ -15,12 +15,7 @@
  */
 void gui_task()
 {
-	// xEventGroupWaitBits(
-	// GUI_Ev,
-	// BIT_1 , 		//Wait BIT0 to reflash
-	// pdTRUE, 		//BIT_0 Should be cleared after Returning.
-	// pdFALSE,
-	// portMAX_DELAY );
+
 	while (1) {
 		reflash_screen();
 
@@ -31,12 +26,6 @@ void gui_task()
 			pdFALSE,
 			portMAX_DELAY );
 		_Rtos_Delay(100);
-		// xEventGroupWaitBits(
-		// 	GUI_Ev,
-		// 	BIT_0 , 		//Wait BIT0 to reflash
-		// 	pdTRUE, 		//BIT_0 Should be cleared after Returning.
-		// 	pdFALSE,
-		// 	portMAX_DELAY );
 	}
 
 	return ;
