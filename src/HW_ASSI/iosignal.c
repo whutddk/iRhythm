@@ -25,7 +25,7 @@ DEV_GPIO *LED_signal;
 
 /**
  * \brief       IO Interrupt that Trigger Music Event to Switch back Music Task
- *              
+ *
  */
 void empty_isr()
 {
@@ -40,25 +40,25 @@ void empty_isr()
 
 
 /**
- * \brief       IO Port Initalization 
+ * \brief       IO Port Initalization
  *              3 Key with Interruption\
  *              2 Output for Performance Test during Debug\
  *              2 Input IO with interruption:
  *              One set for Music Task to Monitoring FPGA FIFO State,another is a Backup\
  *              1 Output IO for Reset Pin of ESP8266
- *              
+ *
  */
 void iosignal_init()
 {
 	DEV_GPIO_INT_CFG gpio_int_cfg;
 	DEV_GPIO_BIT_ISR gpio_bit_isr;
 
-/**
- * Change Low Row Function of PM1 to GPIOA
- * Change PM4 to GPIOA GPIO C
- */
+	/**
+	 * Change Low Row Function of PM1 to GPIOA
+	 * Change PM4 to GPIOA GPIO C
+	 */
 	uint32_t val = get_pmod_mux();
-	val &= ~(PM1_LR_SPI_S | PM4_I2C_GPIO_D);	
+	val &= ~(PM1_LR_SPI_S | PM4_I2C_GPIO_D);
 
 	set_pmod_mux(val);
 
@@ -118,7 +118,7 @@ error_exit:
 
 /**
  * \brief       IO Output Control, just Defined For Debug
- * 
+ *
  * \param[in]   val                    1:IO LOGIC HIGH 0:IO LOGIC LOW
  *
  * \param[in]   num                    0 or 1 for two special IO for debug popuse
@@ -147,7 +147,7 @@ void iosignal_ctrl(uint8_t val, uint8_t num)
 }
 
 /**
- * \brief       Read IO Logical Lever 
+ * \brief       Read IO Logical Lever
  *
  * \param[in]   num                    0 or 1 for two special IO
  *
@@ -208,7 +208,7 @@ inline void set_LED(uint8_t data)
 	// EMBARC_PRINTF("VAL = %d\r\n",val);
 }
 
-void led_row_ctl(uint8_t rows,uint8_t data)
+void led_row_ctl(uint8_t rows, uint8_t data)
 {
 	set_LED(data);
 	set_LE(rows);

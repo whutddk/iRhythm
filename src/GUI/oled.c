@@ -405,27 +405,27 @@ void draw_fft()
 {
 	uint8_t i = 0;
 
-	for ( i = 0;i<4;i++ )
-	{
+	for ( i = 0; i < 8; i++ ) {
 		gui_info.fft[i] /= 2;
+	}
 
-		if ( gui_info.fft[i] < gui_info.fft_show[i] )			//下降条
-		{
-			
-			if ( gui_info.fft_show[i] >= 2 )
-			{
-				gui_info.fft_show[i] -= 2;
+	for ( i = 0; i < 4; i++ ) {
+
+		if ( gui_info.fft[i] < gui_info.fft_show[i] ) {		//下降条
+
+			if ( gui_info.fft_show[i] >= 3 ) {
+				gui_info.fft_show[i] -= 3;
 			}
-			OLED_Set_Pos(gui_info.fft_show[i], i*2);
+
+			OLED_Set_Pos(gui_info.fft_show[i], i * 2);
 			Write_IIC_Data(0x00);
 			Write_IIC_Data(0x00);
-			Write_IIC_Data(0x00);		
-		}
-		else
-		{
-			OLED_Set_Pos(gui_info.fft_show[i], i*2);
-			while(gui_info.fft_show[i] < gui_info.fft[i])
-			{							
+			Write_IIC_Data(0x00);
+			Write_IIC_Data(0x00);
+		} else {
+			OLED_Set_Pos(gui_info.fft_show[i], i * 2);
+
+			while (gui_info.fft_show[i] < gui_info.fft[i]) {
 				Write_IIC_Data(0xff);
 				gui_info.fft_show[i] ++;
 			}

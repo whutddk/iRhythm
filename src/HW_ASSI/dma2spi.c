@@ -101,7 +101,7 @@ void spi_xfer_callback(void *param)
  * \brief       Set DMA configration to start DMA transfer
  *
  * \param[in]   xfer                   Transfer configration struct
- *                                     
+ *
  * \retval      0                      Function complete success
  */
 static int32_t spi_xfer(SPI_XFER *xfer)
@@ -182,7 +182,7 @@ static int32_t spi_xfer(SPI_XFER *xfer)
 
 /**
  * \brief       Initialization DMA chnnal
- *                                     
+ *
  */
 void spi_dma_prepare(void)
 {
