@@ -81,7 +81,7 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 	coef = coefBase + 256;
 	vb1 = vbuf + 1024;
 
-	
+
 	MC1M(&sum1L, coef, vb1);
 
 	*( pcm + 32 ) = (char)(SAR32(sum1L, CHECK_BIT));
@@ -98,11 +98,11 @@ void PolyphaseMono(char *pcm, int *vbuf, const int *coefBase)
 		MC2M(&sum1L, &sum2L, coef, vb1);
 		coef += 16;
 		vb1 += 64;
-		
+
 		*( pcm ) =  (char)(SAR32(sum1L, CHECK_BIT));
 		*( pcm + 1 ) = (char)(SAR32(sum1L, CHECK_BIT));
-		*( pcm + 4*i) = (char)(SAR32(sum2L, CHECK_BIT));
-		*( pcm + 4*i + 1 ) = (char)(SAR32(sum2L, CHECK_BIT));
+		*( pcm + 4 * i) = (char)(SAR32(sum2L, CHECK_BIT));
+		*( pcm + 4 * i + 1 ) = (char)(SAR32(sum2L, CHECK_BIT));
 		pcm += 2;
 	}
 

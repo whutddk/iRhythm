@@ -46,10 +46,10 @@
  */
 
 /*!< the buffer of input and output for fast fourier transform */
-typedef struct { 
+typedef struct {
 	float real;
 	float imag;
-}compx;
+} compx;
 
 /* choose the number of fast fourier transform channel number */
 #define fft_16
@@ -93,7 +93,7 @@ typedef struct {
 #ifdef fft_1024
 	#define fft_N 1024
 	#define M 32
-#endif	 
+#endif
 
 /* fft operation */
 
@@ -108,7 +108,7 @@ extern const float cos_tab[fft_N / 2];
 
 /**
  * \brief  	fast fourier transform step1.
- * \details  	Transform real number data to complex number data struct.  
+ * \details  	Transform real number data to complex number data struct.
  * \param[in]	the pointer of adc data array.
  * \param[in]	the pointer of output complex number data struct.
  */
@@ -116,14 +116,14 @@ extern void fft_Data(uint8_t *fftIn, compx *fftData);
 
 /**
  * \brief 	fast fourier transform step2.
- * \details 	fast fourier transform the data in array.  
+ * \details 	fast fourier transform the data in array.
  * \param[in]	the pointer of input data array and the result would be store in this array after transform.
  */
 extern void fft_Convert(compx *xin);
 
 /**
  * \brief	fast fourier transform step3.
- * \details	reduce the size of data by calculate the absolute value of complex data.  
+ * \details	reduce the size of data by calculate the absolute value of complex data.
  * \param[in]	the pointer of the complex data after transform.
  * \param[in]	the pointer of the array storing the compress data.
  */

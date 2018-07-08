@@ -80,11 +80,11 @@
  *----------------------------------------------------------*/
 
 #ifdef INCLUDE_xTimerPendFunctionCall
-    #undef INCLUDE_xTimerPendFunctionCall
+	#undef INCLUDE_xTimerPendFunctionCall
 #endif
 
 #ifdef configUSE_TIMERS
-    #undef configUSE_TIMERS
+	#undef configUSE_TIMERS
 #endif
 
 #define INCLUDE_xTimerPendFunctionCall 1

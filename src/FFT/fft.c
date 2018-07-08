@@ -58,6 +58,7 @@
 void fft_Data(uint8_t *fftIn, compx *fftData)
 {
 	int i = 0;
+
 	for ( i = 0; i < fft_N; i++ ) {
 		fftData[List[i]].real = (float)fftIn[i]; /* Copy the data to fft,using the method of search the table */
 		fftData[List[i]].imag = 0;               /* Clear the imaginary part */
@@ -75,13 +76,16 @@ void fft_Convert(compx *xin)
 {
 	uint16_t i, j, L, p, le, B, ip;
 	compx t, ws;
+
 	for (L = 1; L <= M; L++) {
 		le = (2 << L) >> 1;
 		B = le / 2;
+
 		for (j = 0; j <= B - 1; j++) {
 			p = (((2 << M) >> L) >> 1) * j;
 			ws.real = cos_tab[p];
 			ws.imag = sin_tab[p];
+
 			for (i = j; i <= fft_N - 1; i = i + le) {
 				ip = i + B;
 				t.real = xin[ip].real * ws.real - xin[ip].imag * ws.imag;
@@ -107,6 +111,7 @@ void fft_powerMag(compx *fftData, uint8_t *fftOut)
 {
 	uint8_t i;
 	uint16_t tempfft = 0;
+
 	for (i = 0; i < fft_N / 2; i++) {
 		fftData[i].real = (float)(sqrt(fftData[i].real * fftData[i].real + fftData[i].imag * fftData[i].imag)
 								  / (i == 0 ? fft_N : (fft_N / 2)));
@@ -123,16 +128,12 @@ uint8_t fft_out[fft_N / 2];
 compx fft_data[fft_N];
 void fft_cal()
 {
-	// uint8_t fft_num = 0;
 	/* fft data segment */
-	
 
 	fft_Data(fft_in, fft_data);
 	fft_Convert(fft_data);           /* FFT resolve */
 	fft_powerMag(fft_data, fft_out); /* data compress */
 
-	// light_mode_music(fft_out);
-	
 }
 
 /** @} */
