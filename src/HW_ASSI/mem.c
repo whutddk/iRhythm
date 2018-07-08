@@ -35,11 +35,12 @@ void readout_file(char *music_name)
 
 	/* Sometimes May Open File Fail,Stop Program */
 	if ( error_num != FR_OK) {
-		dbg_printf(DBG_LESS_INFO,"File %s open failed!\r\nContinue!\r\n", filename);
+		dbg_printf(DBG_LESS_INFO, "File %s open failed!\r\nContinue!\r\n", filename);
+
 		while (1);
 	}
 
-	dbg_printf(DBG_LESS_INFO,"Start To Read file %s !!!\r\n", filename);
+	dbg_printf(DBG_LESS_INFO, "Start To Read file %s !!!\r\n", filename);
 	memset( file_buff, 0, sizeof(int8_t) * BUFF_SPACE );
 	num_read = 1;
 
@@ -51,7 +52,7 @@ void readout_file(char *music_name)
 		fbuff_p += num_read;
 		read_sum += num_read;
 
-		
+
 		if ( gui_info.flag_next != 1) {
 			;
 		} else {
@@ -59,8 +60,8 @@ void readout_file(char *music_name)
 		}
 	}
 
-	dbg_printf(DBG_LESS_INFO,"readout %d!!!\r\n", read_sum);
-	dbg_printf(DBG_LESS_INFO,"File %s Read End\r\n", filename);
+	dbg_printf(DBG_LESS_INFO, "readout %d!!!\r\n", read_sum);
+	dbg_printf(DBG_LESS_INFO, "File %s Read End\r\n", filename);
 	f_close(&fp);
 }
 

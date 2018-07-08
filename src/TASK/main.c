@@ -33,7 +33,7 @@
 //the newest embarc osp commit:976b8ed3b24b061df91f78bcc71a726dd2a63fae
 //is necessary to compile!!!
 //because EZ_SIO has become a part of Middleware in resent update!!!
- 
+
 
 
 /* embARC HAL */
@@ -59,7 +59,7 @@ EventGroupHandle_t GUI_Ev;
 int32_t error_num = 0;
 
 /**
- * \brief       Main function of Application,initialize gui task,music task 
+ * \brief       Main function of Application,initialize gui task,music task
  *              and net task.Fuction never return
  *
  */
@@ -80,7 +80,7 @@ int main(void)
 	/* IO Reset ESP8266 */
 	net_rst();
 
-	//  Initialization of Songid List 
+	//  Initialization of Songid List
 	// filelist_init();
 	_Block_Delay( 1000 );
 	/* Initialization of Esp8266 and Connect to Wifi */
@@ -98,6 +98,7 @@ int main(void)
 		EMBARC_PRINTF("create GUI_task error\r\n");
 		return -1;
 	}
+
 	EMBARC_PRINTF("create GUI_task Created\r\n");
 
 	if (xTaskCreate(music_task, "music_task", 512, (void *)NULL, configMAX_PRIORITIES - 2, &MUSIC_task_handle)
@@ -105,17 +106,19 @@ int main(void)
 		EMBARC_PRINTF("create music_task error\r\n");
 		return -1;
 	}
+
 	EMBARC_PRINTF("create Music_task Created\r\n");
 
-	if ( flag_netava == 0 )
-	{
+	if ( flag_netava == 0 ) {
 		if (xTaskCreate(net_task, "net_task", 512, (void *)NULL, configMAX_PRIORITIES - 3, &NET_task_handle)
 			!= pdPASS) {	/*!< FreeRTOS xTaskCreate() API function */
 			EMBARC_PRINTF("create NET_task error\r\n");
 			return -1;
 		}
+
 		EMBARC_PRINTF("create Net_task Created\r\n");
 	}
+
 	// Create Events
 
 	evt1_cb = xEventGroupCreate();
@@ -123,9 +126,10 @@ int main(void)
 
 	xTaskResumeAll();
 
-	
+
 	vTaskSuspend(NULL);
 	vTaskSuspend(NULL);
+
 	while (1);
 
 	return E_SYS;

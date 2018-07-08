@@ -1,6 +1,6 @@
 #ifndef __OLED_H_
-#define __OLED_H_			  	 
-  
+#define __OLED_H_
+
 
 
 #define SIZE 16
@@ -8,9 +8,9 @@
 #define XLevelH		0x10
 #define Max_Column	128
 #define Max_Row		64
-#define	Brightness	0xFF 
+#define	Brightness	0xFF
 #define X_WIDTH 	128
-#define Y_WIDTH 	64	    						  
+#define Y_WIDTH 	64
 
 extern const uint8_t mushroom[];
 extern const uint8_t sky1[];
@@ -43,6 +43,6 @@ extern void OLED_P8x16Str(uint8_t x, uint8_t y, uint8_t ch[]);
 extern void OLED_P14x16Str(uint8_t x, uint8_t y, uint8_t ch[]);
 extern void draw_fft();
 
-#endif  
+#endif
 
 

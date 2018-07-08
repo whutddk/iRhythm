@@ -1,5 +1,5 @@
 #ifndef __OLEDFONT_H_
-#define __OLEDFONT_H_	   
+#define __OLEDFONT_H_
 
 #include "embARC.h"
 
